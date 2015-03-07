@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{A513BC8D-6A7D-D6C5-EEBE-D27CF600D276}</ProjectGuid>
+	<ProjectGuid>{356B736E-D01A-3BF0-6729-67A72A9F3E64}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -46,12 +46,19 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\BaseGameManager.cs" />
+     <Compile Include="Assets\Scripts\BaseObjManager.cs" />
      <Compile Include="Assets\Scripts\BaseSoundManager.cs" />
+     <Compile Include="Assets\Scripts\BaseStatsManager.cs" />
      <Compile Include="Assets\Scripts\ChangeScene.cs" />
-     <Compile Include="Assets\Scripts\MenuManager.cs" />
-     <Compile Include="Assets\Scripts\MenuScreen.cs" />
-     <Compile Include="Assets\Scripts\MusicManager.cs" />
-     <Compile Include="Assets\Scripts\MusicPlaylist.cs" />
+     <Compile Include="Assets\Scripts\ExtendedMonoBehavior.cs" />
+     <Compile Include="Assets\Scripts\Input\BaseInputController.cs" />
+     <Compile Include="Assets\Scripts\Input\Keyboard_Input.cs" />
+     <Compile Include="Assets\Scripts\Input\Mouse_Input.cs" />
+     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
+     <Compile Include="Assets\Scripts\Menu\MenuScreen.cs" />
+     <Compile Include="Assets\Scripts\Music\MusicManager.cs" />
+     <Compile Include="Assets\Scripts\Music\MusicPlaylist.cs" />
      <Compile Include="Assets\Scripts\SceneManager.cs" />
      <None Include="Assets\Docs\COPYING.LESSER.txt" />
      <None Include="Assets\Docs\COPYING.txt" />
