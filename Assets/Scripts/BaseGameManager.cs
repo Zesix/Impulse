@@ -57,7 +57,7 @@ public class BaseGameManager : MonoBehaviour {
 			
 			if (paused) {
 				// pause time
-				Time.timeScale= 0f;
+				Time.timeScale = 0f;
 			} else {
 				// unpause Unity
 				Time.timeScale = 1f;

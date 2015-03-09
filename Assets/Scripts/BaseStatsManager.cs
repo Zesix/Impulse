@@ -25,9 +25,7 @@ public class BaseStatsManager : MonoBehaviour {
 	
 	// this is the display name of the character.
 	public string characterName = "";
-	
-	public int score;
-	public int level;
+
 	public int health;
 	public int maxHealth;
 	
