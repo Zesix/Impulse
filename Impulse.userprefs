@@ -1,14 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\BaseGameManager.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\Desktop\K18872_Web_Downloads\framework_example_games\Assets\Scripts\BASE\BaseSoundController.cs">
     <Files>
-      <File FileName="Assets\Scripts\ExtendedMonoBehavior.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ChangeScene.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\BaseStatsManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\BaseObjManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Input\Keyboard_Input.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Input\Mouse_Input.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\BaseGameManager.cs" Line="30" Column="22" />
+      <File FileName="..\..\Desktop\K18872_Web_Downloads\framework_example_games\Assets\Scripts\BASE\BaseSoundController.cs" Line="73" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
