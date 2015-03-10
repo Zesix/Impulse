@@ -31,5 +31,11 @@ These can be used for a variety of purposes and are easily customizable and exte
 
  * ExtendedMonoBehavior.cs - Includes commonly used variable declarations for caching.
  * ChangeScene.cs - Calls the scene manager to switch scenes.
- * Keyboard_Input.cs - Extensible keyboard input handling.
- * Mouse_Input.cs - Extensible mouse input handling.
+ * AutoSpinObj - Causes an object to spin automatically upon start.
+
+## Input Handling ##
+
+These extend BaseInputController but the entire input system can be easily replaced with a different solution.
+
+ * Keyboard_Input.cs - Translates keyboard inputs into general direction bools such as up, down, left, right, etc.
+ * Mouse_Input.cs - Grabs mouse position and click types.
