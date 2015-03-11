@@ -169,7 +169,19 @@ MonoBehaviour:
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7468690}
+        m_MethodName: ChangeValue
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &7468690
@@ -180,11 +192,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7468687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 915912fe9f89d8840abc25cc22e8e0a6, type: 3}
+  m_Script: {fileID: 11500000, guid: cc5018c8b1430e9409949159861fb4d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: DefaultGame
-  DefaultValue: .5
 --- !u!1 &43440035
 GameObject:
   m_ObjectHideFlags: 0
