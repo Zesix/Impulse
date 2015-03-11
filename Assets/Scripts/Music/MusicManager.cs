@@ -71,9 +71,10 @@ public class MusicManager : MonoBehaviour {
 			Play ();
 	}
 
-	public void Play()
-	{
-		StartCoroutine (PlayMusicList ());
+	public void Play() {
+		if (Playlist) {
+			StartCoroutine (PlayMusicList ());
+		}
 	}
 
 	public void Stop(bool fade)

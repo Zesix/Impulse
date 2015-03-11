@@ -96,6 +96,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 7468688}
   - 114: {fileID: 7468689}
+  - 114: {fileID: 7468690}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -171,6 +172,19 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &7468690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 7468687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915912fe9f89d8840abc25cc22e8e0a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: DefaultGame
+  DefaultValue: .5
 --- !u!1 &43440035
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,7 +366,6 @@ GameObject:
   - 222: {fileID: 156150334}
   - 114: {fileID: 156150333}
   - 114: {fileID: 156150332}
-  - 114: {fileID: 156150331}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -378,30 +391,6 @@ RectTransform:
   m_AnchoredPosition: {x: 108, y: 10}
   m_SizeDelta: {x: 192, y: 32}
   m_Pivot: {x: .5, y: .5}
---- !u!114 &156150331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 156150329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bea1aba80481b34686965bfe1f800ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  options:
-  - 31303234207820373638
-  - 31313532207820383634
-  - 31323830207820383030
-  - 31323830207820393630
-  - 31333630207820373638
-  - 3133363020782031303234
-  - 31333636207820373638
-  - 31343430207820393030
-  - 31363030207820393030
-  - 3136383020782031303530
-  - 3139323020782031303830
-  buffer: 0
 --- !u!114 &156150332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1009,7 +998,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 869459265}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca009ae655d7a4a50bbee935f04c662f, type: 3}
+  m_Script: {fileID: 11500000, guid: 6df1afc904416dd49b4ac06ae7df2a7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &935809409
@@ -1312,7 +1301,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1128451559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca009ae655d7a4a50bbee935f04c662f, type: 3}
+  m_Script: {fileID: 11500000, guid: 6df1afc904416dd49b4ac06ae7df2a7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1156773416
