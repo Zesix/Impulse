@@ -23,7 +23,7 @@ public class MusicPlaylist : MonoBehaviour {
 	public AudioClip[] MusicList;
 
 	void Awake() {
-		if (ActivateOnAwake)
+		if (ActivateOnAwake && MusicManager.Instance)
 			MusicManager.Instance.ChangePlaylist (this);
 	}
 	
