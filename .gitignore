@@ -16,3 +16,6 @@
 *.pidb.meta
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+# OS generated
+Thumbs.db
+Thumbs.db.meta
