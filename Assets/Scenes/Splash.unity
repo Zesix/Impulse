@@ -126,6 +126,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11413118, guid: 6e2062a61652dd64e81ab98ead5df324, type: 2}
+      propertyPath: splashObj
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6e2062a61652dd64e81ab98ead5df324, type: 2}
   m_IsPrefabParent: 0
