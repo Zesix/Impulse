@@ -31,17 +31,17 @@ public class MusicManager : MonoBehaviour {
 			source.volume = value;
 		}
 	}
-
+	
 	public MusicPlaylist Playlist;
 	public bool Shuffle;
-
+	
 	public RepeatMode Repeat;
 	public float FadeDuration;
 	public bool PlayOnAwake;
-
+	
 	private AudioSource source;
-
-
+	
+	
 	void Start () {
 		// If there is no instance of this class, set it.
 		if (Instance == null) {
@@ -51,10 +51,9 @@ public class MusicManager : MonoBehaviour {
 			Debug.LogError ("There is already a Music Manager in the scene.");
 			GameObject.Destroy (this);
 		}
-
-		// create a game object and add an AudioSource to it, to play music on
+		
+		// grab audio source
 		source = gameObject.GetComponent<AudioSource>();
-		source.name = "MusicAudioSource";
 		source.playOnAwake = false;
 		if (FadeDuration > 0)
 			source.volume = 0f;
@@ -66,17 +65,17 @@ public class MusicManager : MonoBehaviour {
 			source.clip = Playlist.MusicList [0];
 		else 
 			Debug.LogError ("There are no music in the list");
-
+		
 		if (PlayOnAwake)
 			Play ();
 	}
-
+	
 	public void Play() {
 		if (Playlist) {
 			StartCoroutine (PlayMusicList ());
 		}
 	}
-
+	
 	public void Stop(bool fade)
 	{
 		StopAllCoroutines ();
@@ -85,24 +84,24 @@ public class MusicManager : MonoBehaviour {
 		else
 			source.Stop ();
 	}
-
+	
 	public void Next () {
 		source.Stop ();
 	}
-
+	
 	public void ChangePlaylist (MusicPlaylist list) {
 		Playlist = list;
 		_counter = 0;
 		StopAllCoroutines ();
 		StartCoroutine (ChangePlaylistE());
 	}
-
+	
 	private IEnumerator ChangePlaylistE () {
 		if (source.isPlaying)
 			yield return StartCoroutine (StopWithFade ());
 		StartCoroutine (PlayMusicList ());
 	}
-
+	
 	private IEnumerator StopWithFade () {
 		if (FadeDuration > 0) {
 			float lerpValue = 0f;
@@ -114,12 +113,12 @@ public class MusicManager : MonoBehaviour {
 		}
 		source.Stop ();
 	}
-
+	
 	public void PlaySong (AudioClip song)
 	{
 		StartCoroutine (PlaySongE (song));
 	}
-
+	
 	private IEnumerator PlaySongE (AudioClip clip)
 	{
 		source.Stop ();
@@ -133,12 +132,13 @@ public class MusicManager : MonoBehaviour {
 			yield return null;
 		}
 	}
-
+	
 	private int _counter = 0;
 	private IEnumerator PlayMusicList () {
 		while (true) {
 			yield return StartCoroutine (PlaySongE (Playlist.MusicList [_counter]));
-			if (RepeatMode.Track == Repeat) {
+			if (Repeat == RepeatMode.Track) {
+				
 			} else if (Shuffle) {
 				int newTrack = GetNewTrack ();
 				while (newTrack == _counter) 
@@ -146,7 +146,7 @@ public class MusicManager : MonoBehaviour {
 					newTrack = GetNewTrack ();
 				}
 				_counter = newTrack;
-
+				
 			} else {
 				_counter++;
 				if (_counter >= Playlist.MusicList.Length-1) 
@@ -159,7 +159,7 @@ public class MusicManager : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	private IEnumerator FadeOut () {
 		if (FadeDuration > 0f) {
 			float startTime = source.clip.length - FadeDuration;
@@ -173,7 +173,7 @@ public class MusicManager : MonoBehaviour {
 			yield break;
 		}
 	}
-
+	
 	private IEnumerator FadeIn () {
 		if (FadeDuration > 0f) {
 			float lerpValue = 0f;
@@ -186,11 +186,11 @@ public class MusicManager : MonoBehaviour {
 			yield break;
 		}
 	}
-
+	
 	private int GetNewTrack () {
 		return Random.Range (0, Playlist.MusicList.Length);
 	}
-
+	
 }
 
 public enum RepeatMode {
