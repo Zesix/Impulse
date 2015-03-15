@@ -18,7 +18,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class TopDown_Camera : MonoBehaviour {
+public class TopDownFollow_Camera : MonoBehaviour {
 
 	public Transform followTarget;
 	public Vector3 targetOffset;

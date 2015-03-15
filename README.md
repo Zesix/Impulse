@@ -10,6 +10,8 @@ These demonstrate the functionality of the included systems, all of which can be
 
  * [Splash Screen, Scene Manager, Menu System](https://www.youtube.com/watch?v=btNqHCoRwB8&index=1&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j)
  * [Music Manager and Playlists](https://www.youtube.com/watch?v=jQGTqGalGVw&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=2)
+ * [Top Down Follow Camera](https://www.youtube.com/watch?v=DLTyrbMxytA)
+ * [Third Person Camera](https://www.youtube.com/watch?v=DDdnLPPZXLg)
 
 ## Manager / Controller System ##
 
@@ -31,7 +33,8 @@ These can be used for a variety of purposes and are easily customizable and exte
 
  * ExtendedMonoBehavior.cs - Includes commonly used variable declarations for caching.
  * ChangeScene.cs - Calls the scene manager to switch scenes.
- * AutoSpinObj - Causes an object to spin automatically upon start.
+ * AutoSpinObj.cs - Causes an object to spin automatically upon start.
+ * ArtificialFriction.cs - Applies artificial friction to an object moved by physics forces.
 
 ## Input Handling ##
 
@@ -39,3 +42,4 @@ These extend BaseInputController but the entire input system can be easily repla
 
  * Keyboard_Input.cs - Translates keyboard inputs into general direction bools such as up, down, left, right, etc.
  * Mouse_Input.cs - Grabs mouse position and click types.
+ * ThirdPersonCameraMouse_Input - Adds panning and zoom-in controls for use with the third person camera.
