@@ -14,28 +14,42 @@
     You should have received a copy of the GNU Lesser General Public License
     along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
 *****************************************/
+
 namespace Impulse
 {
+	using System;
 	using UnityEngine;
-	using System.Collections;
-
+	
 	/// <summary>
-	/// 	Calls the SceneManager to change scene.
+	///     Contains all game systems.
 	/// </summary>
 	/// <remarks>
-	/// 	Attach to a game object in a scene in order to use UGUI OnClick() for changing scenes in the SceneManager.
+	///     Game contains all game systems and persists accross scene loads.
 	/// </remarks>
-	public class ChangeScene : MonoBehaviour
+	public class MainSystem : MonoBehaviour
 	{
-		public void LoadScene (int index, bool animate)
+		private bool _isInitialized;
+
+		public void Awake ()
 		{
-			SceneManager.Instance.LoadLevelFadeInDelegate (index, animate);
+			DontDestroyOnLoad(gameObject);
 		}
 
-		public void LoadScene (string name, bool animate)
+		/// <summary>
+		/// 	Inects necessary dependencies and initalizes the object.
+		/// </summary>
+		public void Initialize (SceneManager sceneManager, MusicManager musicManager)
 		{
-			SceneManager.Instance.LoadLevelFadeInDelegate (name);
-		}
+			if (_isInitialized)
+				throw new InvalidOperationException ("Already initialized.");
 
+			if (sceneManager == null)
+				throw new ArgumentNullException("sceneManager");
+
+			if (musicManager == null)
+				throw new ArgumentNullException("musicManager");
+
+			_isInitialized = true;
+		}
 	}
 }

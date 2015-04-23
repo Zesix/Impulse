@@ -14,28 +14,28 @@
     You should have received a copy of the GNU Lesser General Public License
     along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
 *****************************************/
+
 namespace Impulse
 {
 	using UnityEngine;
 	using System.Collections;
 
 	/// <summary>
-	/// 	Calls the SceneManager to change scene.
+	///     A class that creates MainManagers on awake.
 	/// </summary>
-	/// <remarks>
-	/// 	Attach to a game object in a scene in order to use UGUI OnClick() for changing scenes in the SceneManager.
-	/// </remarks>
-	public class ChangeScene : MonoBehaviour
-	{
-		public void LoadScene (int index, bool animate)
-		{
-			SceneManager.Instance.LoadLevelFadeInDelegate (index, animate);
-		}
+	public class MainSystemStartup : MonoBehaviour {
 
-		public void LoadScene (string name, bool animate)
-		{
-			SceneManager.Instance.LoadLevelFadeInDelegate (name);
-		}
+		[Tooltip("The factory to construct the MainManagers.")]
+		[SerializeField]
+		private MainSystemFactory _mainSystemFactory;
 
+		public void Awake ()
+		{
+			// Create MainManagers
+			_mainSystemFactory.CreateSingletonMainSystem ();
+
+			// Self destruct.
+			Destroy (gameObject);
+		}
 	}
 }

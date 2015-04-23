@@ -15,11 +15,7 @@
     along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
 *****************************************/
 
-using UnityEngine;
-using System.Collections;
-
-public class MenuManager : MonoBehaviour {
-	/* 
+/* 
 	READ ME 
 
 	How to use:
@@ -34,59 +30,77 @@ public class MenuManager : MonoBehaviour {
 	Disable all gameObject with a MenuScreen.cs before run
 
 	*/
-	string MenuScreens;
-	public MenuScreen ActiveScreen;
-	public MenuScreen FirstScreen;
-	// Use this for initialization
-	void Awake () {
-		#if UNITY_EDITOR
+
+namespace Impulse
+{
+	using UnityEngine;
+	using System.Collections;
+
+	public class MenuManager : MonoBehaviour
+	{
+		string MenuScreens;
+		public MenuScreen ActiveScreen;
+		public MenuScreen FirstScreen;
+		// Use this for initialization
+		void Awake ()
+		{
+			#if UNITY_EDITOR
 		if (SceneManager.Instance == null)
 			Application.LoadLevel(0);
-		#endif
-		FirstScreen.gameObject.SetActive (true);
-		ActiveScreen = FirstScreen;
-	}
-
-	public void ChangeMenuAndFade (MenuScreen screen) {
-		StartCoroutine (ChangeScreen (screen, true));
-	}
-
-	public void ChangeMenu (MenuScreen screen) {
-		StartCoroutine (ChangeScreen (screen, false));
-	}
-
-	public void LoadScene (int index, bool animate) {
-		SceneManager.Instance.LoadLevelFadeInDelegate (index, animate);
-	}
-
-	public void LoadScene (string name,  bool animate) {
-		SceneManager.Instance.LoadLevelFadeInDelegate (name);
-	}
-
-	public void LoadSceneFadeIn (string name) {
-		SceneManager.Instance.LoadLevelFadeInDelegate (name);
-	}
-
-	public void LoadScene (string name) {
-		SceneManager.Instance.LoadLevelFadeInDelegate (name, false);
-	}
-
-	IEnumerator ChangeScreen (MenuScreen target, bool animate) {
-		if (animate) {
-			SceneManager.Instance.SetCanvasEnabled (true);
-			yield return StartCoroutine(SceneManager.Instance.PlayFadeAnimation (0f, 1f, SceneManager.Instance.blackOverlay));
+			#endif
+			FirstScreen.gameObject.SetActive (true);
+			ActiveScreen = FirstScreen;
 		}
-		ActiveScreen.gameObject.SetActive (false);
-		ActiveScreen = target;
-		ActiveScreen.gameObject.SetActive (true);
-		if (animate) {
-			yield return StartCoroutine(SceneManager.Instance.PlayFadeAnimation (1f, 0f, SceneManager.Instance.blackOverlay));
-			SceneManager.Instance.SetCanvasEnabled (false);
-		}
-	}
 
-	public void QuitRequest () {
-		Application.Quit ();
+		public void ChangeMenuAndFade (MenuScreen screen)
+		{
+			StartCoroutine (ChangeScreen (screen, true));
+		}
+
+		public void ChangeMenu (MenuScreen screen)
+		{
+			StartCoroutine (ChangeScreen (screen, false));
+		}
+
+		public void LoadScene (int index, bool animate)
+		{
+			SceneManager.Instance.LoadLevelFadeInDelegate (index, animate);
+		}
+
+		public void LoadScene (string name, bool animate)
+		{
+			SceneManager.Instance.LoadLevelFadeInDelegate (name);
+		}
+
+		public void LoadSceneFadeIn (string name)
+		{
+			SceneManager.Instance.LoadLevelFadeInDelegate (name);
+		}
+
+		public void LoadScene (string name)
+		{
+			SceneManager.Instance.LoadLevelFadeInDelegate (name, false);
+		}
+
+		IEnumerator ChangeScreen (MenuScreen target, bool animate)
+		{
+			if (animate) {
+				SceneManager.Instance.SetCanvasEnabled (true);
+				yield return StartCoroutine (SceneManager.Instance.PlayFadeAnimation (0f, 1f, SceneManager.Instance.blackOverlay));
+			}
+			ActiveScreen.gameObject.SetActive (false);
+			ActiveScreen = target;
+			ActiveScreen.gameObject.SetActive (true);
+			if (animate) {
+				yield return StartCoroutine (SceneManager.Instance.PlayFadeAnimation (1f, 0f, SceneManager.Instance.blackOverlay));
+				SceneManager.Instance.SetCanvasEnabled (false);
+			}
+		}
+
+		public void QuitRequest ()
+		{
+			Application.Quit ();
+		}
 	}
 
 }

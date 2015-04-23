@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelNames: []
   gameLevelNum: 0
-  splashObj: {fileID: 122168, guid: 916f1a0912bdf5d4ea857c9ff375dd07, type: 2}
+  splashObj: {fileID: 122168, guid: c7cf8a20471682f49acf75a97f98d405, type: 2}
   Interpolation:
     serializedVersion: 2
     m_Curve:
