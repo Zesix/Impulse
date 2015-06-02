@@ -12,6 +12,9 @@ These demonstrate the functionality of the included systems, all of which can be
  * [Music Manager and Playlists](https://www.youtube.com/watch?v=jQGTqGalGVw&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=2)
  * [Top Down Follow Camera](https://www.youtube.com/watch?v=DLTyrbMxytA)
  * [Third Person Camera](https://www.youtube.com/watch?v=DDdnLPPZXLg)
+ * [Viewcones](https://www.youtube.com/watch?v=Dzby6O7ds3A&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=5)
+ * [UGUI Combobox/Dropdown Box](https://www.youtube.com/watch?v=Wetc5hFMShA&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=6)
+ * [AI Detection System](https://www.youtube.com/watch?v=1ZLkDv9OUNc&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=7)
 
 ## Manager / Controller System ##
 
