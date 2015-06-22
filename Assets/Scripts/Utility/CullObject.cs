@@ -28,15 +28,16 @@ public class CullObject : MonoBehaviour
     public Collider CullingTarget;
 
     // Our renderer.
-    MeshRenderer myRenderer;
+    Renderer myRenderer;
 
     // Our Sphere Collider
     SphereCollider myCullingCollider;
 
     void Awake ()
     {
+        myCullingCollider = GetComponent<SphereCollider>();
         myCullingCollider.isTrigger = true;
-        myRenderer = GetComponent<MeshRenderer>();
+        myRenderer = GetComponent<Renderer>();
         myRenderer.enabled = false;
 
         if (CullingTarget == null)
