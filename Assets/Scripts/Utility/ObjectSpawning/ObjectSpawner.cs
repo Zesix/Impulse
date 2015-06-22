@@ -19,11 +19,11 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Spawns objects randomly from a list and then culls them based on their distance to a target object (such as the player).
+/// Spawns objects randomly from a list.
 /// The spawning bounds are the bounds of the Box Collider.
 /// </summary>
 [RequireComponent(typeof(BoxCollider))]
-public class CulledObjectSpawner : MonoBehaviour
+public class ObjectSpawner : MonoBehaviour
 {
     // Objects to spawn.
     [SerializeField]
@@ -39,20 +39,15 @@ public class CulledObjectSpawner : MonoBehaviour
     [Range(0, 10000)]
     float minDistanceBetweenSpawnedObjects = 10.0f;
 
-    // The object that culling distance will be compared to.
+    // The object that culling distance will be compared to. This object must have a Collider AND a Rigidbody.
     // Ex: If you want objects to be hidden until they are within a certain range of the player, set the player object here.
     [SerializeField]
-    GameObject CullingTarget;
+    Collider CullingTarget;
 
     // The distance from the culling target in which further objects should be hidden.
     [SerializeField]
     [Range(10, 10000)]
     float hideSpawnedObjectDistance = 50.0f;
-
-    // The rate in which spawns are updated (hidden, unhidden)
-    [SerializeField]
-    [Range(0, 5)]
-    float updateInterval = 0.25f;
 
     // The currently spawned game objects. For internal tracking.
     protected GameObject[] CurrentSpawnedObjects;
@@ -60,29 +55,14 @@ public class CulledObjectSpawner : MonoBehaviour
     // Our Box Collider.
     BoxCollider Bounds;
 
-    void Start()
-    {
-        CurrentSpawnedObjects = new GameObject[NumberToSpawn];
-        Bounds = GetComponent<BoxCollider>();
-
-        // Spawn objects.
-        SpawnObjects();
-
-        // Execute Custom Update loop
-        InvokeRepeating("UpdateSpawns", 0, updateInterval);
-    }
-
-    // Update the spawned objects.
-    void UpdateSpawns()
-    {
-        HideFarSpawns();
-    }
-
     /// <summary>
     /// Spawns random objects within the box collider bounds.
     /// </summary>
     public void SpawnObjects()
     {
+        CurrentSpawnedObjects = new GameObject[NumberToSpawn];
+        Bounds = GetComponent<BoxCollider>();
+
         for (int i = 0; i < NumberToSpawn; i++)
         {
             // Get random position within this transform.
@@ -95,7 +75,15 @@ public class CulledObjectSpawner : MonoBehaviour
             {
                 CurrentSpawnedObjects[i] = (GameObject)Instantiate(ObjectSpawnPrefabs[Random.Range(0, ObjectSpawnPrefabs.Length)], rndPosWithin, Quaternion.identity);
                 CurrentSpawnedObjects[i].transform.parent = transform;
-                CurrentSpawnedObjects[i].SetActive(false);
+
+                // We use a sphere collider to determine whether the object should be rendered.
+                SphereCollider spawnCollider = CurrentSpawnedObjects[i].AddComponent<SphereCollider>();
+                spawnCollider.radius = hideSpawnedObjectDistance;
+
+                // The CullObject script determines whether to show or hide the object.
+                CullObject spawnCuller = CurrentSpawnedObjects[i].AddComponent<CullObject>();
+                spawnCuller.CullingTarget = CullingTarget;
+
             }
         }
     }
@@ -118,34 +106,6 @@ public class CulledObjectSpawner : MonoBehaviour
             }
         }
         return false;
-    }
-
-    void HideFarSpawns()
-    {
-        for (int i = 0; i < CurrentSpawnedObjects.Length; i++)
-        {
-            // Evaluate if the object must be hidden.
-            if (CurrentSpawnedObjects[i] != null)
-            {
-                bool ObjectInHideRange = Vector3.Distance(CullingTarget.transform.position, CurrentSpawnedObjects[i].transform.position) > hideSpawnedObjectDistance;
-
-                // If the object is too far from the player, hide it.
-                if (CurrentSpawnedObjects[i].gameObject.activeSelf && ObjectInHideRange)
-                {
-                    CurrentSpawnedObjects[i].SetActive(false);
-
-                    // If the object has AI, insert code here to deactivate the AI.
-                }
-                // Otherwise, reveal the object
-                else if (!ObjectInHideRange)
-                {
-                    // Reveal Swarm
-                    CurrentSpawnedObjects[i].SetActive(true);
-
-                    // If the object has AI, insert code here to activate the AI.
-                }
-            }
-        }
     }
 
 }
