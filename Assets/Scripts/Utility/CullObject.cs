@@ -37,7 +37,7 @@ public class CullObject : MonoBehaviour
     {
         myCullingCollider = GetComponent<SphereCollider>();
         myCullingCollider.isTrigger = true;
-        myRenderer = GetComponent<Renderer>();
+        myRenderer = transform.parent.GetComponent<Renderer>();
         myRenderer.enabled = false;
 
         if (CullingTarget == null)

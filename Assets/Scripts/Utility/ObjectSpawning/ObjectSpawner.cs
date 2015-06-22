@@ -73,15 +73,21 @@ public class ObjectSpawner : MonoBehaviour
 
             if (!isObjectTooClose(rndPosWithin))
             {
-                CurrentSpawnedObjects[i] = (GameObject)Instantiate(ObjectSpawnPrefabs[Random.Range(0, ObjectSpawnPrefabs.Length)], rndPosWithin, Quaternion.identity);
+                GameObject spawnedObject = (GameObject)Instantiate(ObjectSpawnPrefabs[Random.Range(0, ObjectSpawnPrefabs.Length)], rndPosWithin, Quaternion.identity);
+                CurrentSpawnedObjects[i] = spawnedObject;
                 CurrentSpawnedObjects[i].transform.parent = transform;
 
+                // Create a child game object, which we will attach the culling sphere to.
+                GameObject cullingSphere = new GameObject("Culling Sphere");
+                cullingSphere.transform.position = rndPosWithin;
+                cullingSphere.transform.parent = spawnedObject.transform;
+
                 // We use a sphere collider to determine whether the object should be rendered.
-                SphereCollider spawnCollider = CurrentSpawnedObjects[i].AddComponent<SphereCollider>();
+                SphereCollider spawnCollider = cullingSphere.AddComponent<SphereCollider>();
                 spawnCollider.radius = hideSpawnedObjectDistance;
 
                 // The CullObject script determines whether to show or hide the object.
-                CullObject spawnCuller = CurrentSpawnedObjects[i].AddComponent<CullObject>();
+                CullObject spawnCuller = cullingSphere.AddComponent<CullObject>();
                 spawnCuller.CullingTarget = CullingTarget;
 
             }
