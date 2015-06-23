@@ -19,17 +19,17 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(RandomObjectSpawner))]
-public class ObjectSpawnerEditor : Editor
+[CustomEditor(typeof(CirclePathWaypointSpawner))]
+public class CirclePathWaypointSpawnerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        RandomObjectSpawner mySpawner = (RandomObjectSpawner)target;
+        CirclePathWaypointSpawner mySpawner = (CirclePathWaypointSpawner)target;
         if (GUILayout.Button("Spawn"))
         {
-            mySpawner.SpawnObjects();
+            mySpawner.SpawnPath();
         }
     }
 }

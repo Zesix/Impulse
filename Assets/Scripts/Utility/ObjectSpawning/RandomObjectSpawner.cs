@@ -23,7 +23,7 @@ using System.Collections;
 /// The spawning bounds are the bounds of the Box Collider.
 /// </summary>
 [RequireComponent(typeof(BoxCollider))]
-public class ObjectSpawner : MonoBehaviour
+public class RandomObjectSpawner : MonoBehaviour
 {
     // Objects to spawn.
     [SerializeField]
