@@ -24,10 +24,10 @@ namespace SpaceShooter2D
     [RequireComponent(typeof(GenericShipView))]
     public class GenericShipMouseInputController : BaseInputController
     {
-        // Player ship
+        // Our ship
         protected GenericShipView myShip;
 
-        // Player input
+        // Our input
         public Vector2 mouseInput;
         public float CameraDistance = 10.0f;
 

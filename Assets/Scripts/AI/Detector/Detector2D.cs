@@ -27,11 +27,11 @@ public class Detector2D : MonoBehaviour
 
     // Detection parameters
     [Range(0, 1000)]
-    public float DetectionRange = 2.0f;
+    public float DetectionRange = 8.0f;
     [Range(0, 1000)]
-    public float AttackRange = 1.0f;
+    public float AttackRange = 5.0f;
     [Range(0, 1000)]
-    public float AvoidRange = 0.5f;
+    public float AvoidRange = 1.0f;
     [Range(0, 5)]
     public float DetectionRate = 0.1f;
     float LargestRange = 0.0f;
