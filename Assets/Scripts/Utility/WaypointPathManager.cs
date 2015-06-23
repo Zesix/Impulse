@@ -28,6 +28,8 @@ public class WaypointPathManager : MonoBehaviour
 
     [SerializeField]
     bool closed = true;
+
+    // If this is set to true, the waypoint indexes will be reversed.
     [SerializeField]
     bool shouldReverse;
 
@@ -127,7 +129,10 @@ public class WaypointPathManager : MonoBehaviour
         totalTransforms = (int)transforms.Count;
     }
 
-    // Sets the value of shouldReverse, which determines whether or not the path should be reversed.
+    /// <summary>
+    /// Sets the value of shouldReverse, which determines whether or not the path should be reversed.
+    /// </summary>
+    /// <param name="rev"></param>
     public void SetReverseMode(bool rev)
     {
         shouldReverse = rev;
@@ -245,6 +250,12 @@ public class WaypointPathManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets the transform of the waypoint at the index number passed in.
+    /// If shouldReverse is true, the waypoints are reversed: 0 will return the last waypoint in the path instead of the first, etc.
+    /// </summary>
+    /// <param name="index">The index number of a waypoint.</param>
+    /// <returns>The transform of the waypoint of the index number.</returns>
     public Transform GetWaypoint(int index)
     {
         if (shouldReverse)
@@ -268,6 +279,10 @@ public class WaypointPathManager : MonoBehaviour
         return (Transform)transforms[index];
     }
 
+    /// <summary>
+    /// Gets the total number of waypoints.
+    /// </summary>
+    /// <returns>An integer representing the total number of waypoint child objects.</returns>
     public int GetTotal()
     {
         return totalTransforms;

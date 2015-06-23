@@ -35,15 +35,16 @@ namespace SpaceShooter2D
 
         // Our detector.
         [SerializeField]
-        Detector2D ourDetector;
+        Detector ourDetector;
 
         // Use this for initialization
         protected virtual void Start()
         {
             myShip = GetComponent<GenericShipView>();
+            ourDetector = GetComponent<Detector>();
             if (ourDetector == null)
             {
-                ourDetector = GetComponent<Detector2D>();
+                Debug.LogError("No Detector attached to " + gameObject + "!");
             }
 
             // Begin custom update loop for AI.

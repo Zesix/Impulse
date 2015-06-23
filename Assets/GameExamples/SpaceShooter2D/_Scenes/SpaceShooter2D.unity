@@ -2058,8 +2058,8 @@ GameObject:
   - 114: {fileID: 227254052}
   - 95: {fileID: 227254056}
   - 114: {fileID: 227254057}
-  - 114: {fileID: 227254060}
   - 114: {fileID: 227254061}
+  - 114: {fileID: 227254060}
   - 135: {fileID: 227254058}
   - 54: {fileID: 227254059}
   m_Layer: 0
@@ -2222,13 +2222,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 227254051}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e3356f766401b24a8d7de952b0212dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cf8a7d70e358974696a8c41dbcf1f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRange: 15
-  AttackRange: 5
-  AvoidRange: 1
-  DetectionRate: .100000001
+  detectionRange: 15
+  attackRange: 5
+  avoidRange: 1
+  detectionRate: .100000001
+  largestRange: 0
   AllyFactions: 00000000
   EnemyFactions: 01000000
   DetectedEnemies: []
@@ -20144,8 +20145,8 @@ GameObject:
   - 95: {fileID: 1957282768}
   - 114: {fileID: 1957282763}
   - 114: {fileID: 1957282767}
-  - 114: {fileID: 1957282766}
   - 114: {fileID: 1957282772}
+  - 114: {fileID: 1957282766}
   - 135: {fileID: 1957282765}
   - 54: {fileID: 1957282764}
   m_Layer: 0
@@ -20202,13 +20203,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1957282762}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e3356f766401b24a8d7de952b0212dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cf8a7d70e358974696a8c41dbcf1f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DetectionRange: 15
-  AttackRange: 5
-  AvoidRange: 1
-  DetectionRate: .100000001
+  detectionRange: 15
+  attackRange: 5
+  avoidRange: 1
+  detectionRate: .100000001
+  largestRange: 0
   AllyFactions: 01000000
   EnemyFactions: 00000000
   DetectedEnemies: []
