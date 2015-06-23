@@ -19,25 +19,16 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Attach to anything that needs to have a faction specified.
+/// Destroys a gameObject after a set delay.
 /// </summary>
-[System.Serializable]
-public class Faction : MonoBehaviour
+public class AutoDestroyDelay : MonoBehaviour
 {
-    // Once every faction is defined this should be replaced with an enum (much more efficient)
     [SerializeField]
-    Factions factionName;
-    public Factions FactionName
-    {
-        get { return factionName; }
-        private set { factionName = value; }
-    }
+    float delayTime = 1.5f;
 
-
-    // Modify this to add more factions
-    public enum Factions
+    // Update is called once per frame
+    void Update()
     {
-        Players,
-        Enemies
+        Destroy(gameObject, delayTime);
     }
 }

@@ -33,7 +33,7 @@ public class CullObject : MonoBehaviour
     // Our Sphere Collider
     SphereCollider myCullingCollider;
 
-    void Awake ()
+    void Start ()
     {
         myCullingCollider = GetComponent<SphereCollider>();
         myCullingCollider.isTrigger = true;
@@ -48,13 +48,17 @@ public class CullObject : MonoBehaviour
     void OnTriggerEnter(Collider collider)
     {
         if (collider = CullingTarget)
+        {
             myRenderer.enabled = true;
+        }
     }
 
     // When the culling target leaves the collider, we hide the object.
     void OnTriggerExit(Collider collider)
     {
         if (collider = CullingTarget)
+        {
             myRenderer.enabled = false;
+        }
     }
 }

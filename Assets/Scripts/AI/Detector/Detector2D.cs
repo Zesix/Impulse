@@ -20,24 +20,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Generic Detector Script (Detects Generic Faction Objects)
+/// Generic Detector Script (Detects Generic Faction Objects) for 2D objects.
 /// </summary>
-public class Detector : MonoBehaviour
+public class Detector2D : MonoBehaviour
 {
 
     // Detection parameters
-    [SerializeField]
     [Range(0, 1000)]
-    float DetectionRange = 2.0f;
-    [SerializeField]
+    public float DetectionRange = 2.0f;
     [Range(0, 1000)]
-    float AttackRange = 1.0f;
-    [SerializeField]
+    public float AttackRange = 1.0f;
     [Range(0, 1000)]
-    float AvoidRange = 0.5f;
-    [SerializeField]
+    public float AvoidRange = 0.5f;
     [Range(0, 5)]
-    float DetectionRate = 0.1f;
+    public float DetectionRate = 0.1f;
     float LargestRange = 0.0f;
 
     // Faction parameters
@@ -83,7 +79,7 @@ public class Detector : MonoBehaviour
         DetectedNeutral.Clear();
 
         // Detect all characters in range
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, LargestRange);
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, LargestRange);
         int i = 0;
         while (i < hitColliders.Length)
         {

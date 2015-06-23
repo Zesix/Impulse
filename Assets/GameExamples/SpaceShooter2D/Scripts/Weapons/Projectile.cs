@@ -18,26 +18,37 @@
 using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Attach to anything that needs to have a faction specified.
-/// </summary>
-[System.Serializable]
-public class Faction : MonoBehaviour
+namespace SpaceShooter2D
 {
-    // Once every faction is defined this should be replaced with an enum (much more efficient)
-    [SerializeField]
-    Factions factionName;
-    public Factions FactionName
-    {
-        get { return factionName; }
-        private set { factionName = value; }
-    }
 
-
-    // Modify this to add more factions
-    public enum Factions
+    [RequireComponent(typeof(AudioSource))]
+    public class Projectile : MonoBehaviour
     {
-        Players,
-        Enemies
+
+        public float Damage;
+        public Faction.Factions Faction;
+        public AudioClip shootFX;
+        [Range(0, 1)]
+        public float shootFXVolume = 0.5f;
+        protected AudioSource myAudio;
+
+        void OnEnable()
+        {
+            myAudio = GetComponent<AudioSource>();
+        }
+
+        public void PlayShotFX()
+        {
+            myAudio.PlayOneShot(shootFX, shootFXVolume);
+        }
+
+        /// <summary>
+        /// Deacivates this gameobject
+        /// </summary>
+        public void Deactivate()
+        {
+            // This will be replaced with gameObject.SetActive(False) when the pooling system is implemented
+            Destroy(gameObject);
+        }
     }
 }

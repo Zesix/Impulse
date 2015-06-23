@@ -18,26 +18,21 @@
 using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Attach to anything that needs to have a faction specified.
-/// </summary>
-[System.Serializable]
-public class Faction : MonoBehaviour
+namespace SpaceShooter2D
 {
-    // Once every faction is defined this should be replaced with an enum (much more efficient)
-    [SerializeField]
-    Factions factionName;
-    public Factions FactionName
-    {
-        get { return factionName; }
-        private set { factionName = value; }
-    }
 
-
-    // Modify this to add more factions
-    public enum Factions
+    /// <summary>
+    /// Destroys a gameObject after a set delay.
+    /// </summary>
+    public class AutoDestroyDelay : MonoBehaviour
     {
-        Players,
-        Enemies
+        [SerializeField]
+        float delayTime = 1.5f;
+
+        // Update is called once per frame
+        void Update()
+        {
+            Destroy(gameObject, delayTime);
+        }
     }
 }

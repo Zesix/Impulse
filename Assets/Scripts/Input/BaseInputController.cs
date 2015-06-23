@@ -28,6 +28,7 @@ public class BaseInputController : MonoBehaviour {
 	
 	// fire / action buttons
 	public bool Fire1;
+    public bool Fire2;
 	
 	// weapon slots
 	public bool Slot1;
