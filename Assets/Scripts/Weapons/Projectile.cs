@@ -18,37 +18,36 @@
 using UnityEngine;
 using System.Collections;
 
-namespace SpaceShooter2D
+/// <summary>
+/// Attach to any object or prefab that should be a projectile.
+/// </summary>
+[RequireComponent(typeof(AudioSource))]
+public class Projectile : MonoBehaviour
 {
 
-    [RequireComponent(typeof(AudioSource))]
-    public class Projectile : MonoBehaviour
+    public float Damage;
+    public Faction.Factions Faction;
+    public AudioClip shootFX;
+    [Range(0, 1)]
+    public float shootFXVolume = 0.5f;
+    protected AudioSource myAudio;
+
+    void OnEnable()
     {
+        myAudio = GetComponent<AudioSource>();
+    }
 
-        public float Damage;
-        public Faction.Factions Faction;
-        public AudioClip shootFX;
-        [Range(0, 1)]
-        public float shootFXVolume = 0.5f;
-        protected AudioSource myAudio;
+    public void PlayShotFX()
+    {
+        myAudio.PlayOneShot(shootFX, shootFXVolume);
+    }
 
-        void OnEnable()
-        {
-            myAudio = GetComponent<AudioSource>();
-        }
-
-        public void PlayShotFX()
-        {
-            myAudio.PlayOneShot(shootFX, shootFXVolume);
-        }
-
-        /// <summary>
-        /// Deacivates this gameobject
-        /// </summary>
-        public void Deactivate()
-        {
-            // This will be replaced with gameObject.SetActive(False) when the pooling system is implemented
-            Destroy(gameObject);
-        }
+    /// <summary>
+    /// Deacivates this gameobject
+    /// </summary>
+    public void Deactivate()
+    {
+        // This will be replaced with gameObject.SetActive(False) when the pooling system is implemented
+        Destroy(gameObject);
     }
 }

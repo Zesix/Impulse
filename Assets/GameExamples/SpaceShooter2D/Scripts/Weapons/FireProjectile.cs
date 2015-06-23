@@ -20,7 +20,9 @@ using System.Collections;
 
 namespace SpaceShooter2D
 {
-
+    /// <summary>
+    /// Fires a projectile in 2D. This is a modified version of FireProjectile.cs included with the framework that works in 3D.
+    /// </summary>
     public class FireProjectile : MonoBehaviour
     {
         // Ship parameters
