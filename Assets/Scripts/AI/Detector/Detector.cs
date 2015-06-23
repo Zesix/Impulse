@@ -68,6 +68,7 @@ public class Detector : MonoBehaviour
         // Get largest search range
         float[] ranges = new float[] { detectionRange, attackRange, avoidRange };
         largestRange = Mathf.Max(ranges);
+        Debug.Log(largestRange);
 
         // Start Automatic Faction Detection
         InvokeRepeating("DetectFactionObjects", 0.0f, detectionRate);
@@ -86,36 +87,36 @@ public class Detector : MonoBehaviour
         // Detect all characters in range
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, largestRange);
         int i = 0;
-        while (i < hitColliders.Length)
-        {
-            // Ignore self object
-            if (hitColliders[i].gameObject == gameObject)
-                continue;
+        //while (i < hitColliders.Length)
+        //{
+        //     Ignore self object
+        //    if (hitColliders[i].gameObject == gameObject)
+        //        continue;
 
-            // Check if the object has a faction
-            Faction currentObject = hitColliders[i].GetComponent<Faction>();
+        //     Check if the object has a faction
+        //    Faction currentObject = hitColliders[i].GetComponent<Faction>();
 
-            // Organize the detected factions
-            if (currentObject != null)
-            {
-                // Check if it is an akkt
-                if (AllyFactions.Contains(currentObject.FactionName))
-                {
-                    DetectedAllies.Add(currentObject);
-                }
-                // Check if it is an enemy
-                else if (EnemyFactions.Contains(currentObject.FactionName))
-                {
-                    DetectedEnemies.Add(currentObject);
-                }
-                // Otherwise, set it as a neutral object
-                else
-                    DetectedNeutral.Add(currentObject);
-            }
+        //     Organize the detected factions
+        //    if (currentObject != null)
+        //    {
+        //         Check if it is an ally
+        //        if (AllyFactions.Contains(currentObject.FactionName))
+        //        {
+        //            DetectedAllies.Add(currentObject);
+        //        }
+        //         Check if it is an enemy
+        //        else if (EnemyFactions.Contains(currentObject.FactionName))
+        //        {
+        //            DetectedEnemies.Add(currentObject);
+        //        }
+        //         Otherwise, set it as a neutral object
+        //        else
+        //            DetectedNeutral.Add(currentObject);
+        //    }
 
-            // Move to the next object
-            i++;
-        }
+        //     Move to the next object
+        //    i++;
+        //}
     }
     #endregion
 
