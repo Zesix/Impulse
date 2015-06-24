@@ -31,7 +31,7 @@ namespace SpaceShooter2D
         protected GenericShipModel myModel;
         protected Animator myAnimator;
         protected Faction myFaction;
-        protected Detector2D myDetector;
+        protected Detector myDetector;
         protected AudioSource myAudio;
 
         // Animation parameters
@@ -41,23 +41,24 @@ namespace SpaceShooter2D
         public float forwardAngleThreshold = 10.0f;
 
         // Player or AI Inputs
-        protected Vector2 destinationInput = Vector2.zero;
+        protected Vector3 destinationInput = Vector3.zero;
+        protected bool strafeToDestination = false;
         protected bool fireInput = false;
         protected bool secondaryInput = false;
         public bool forcedPosition = false;
-        protected Vector2 offsetFromTarget = Vector2.zero;
+        protected Vector3 offsetFromTarget = Vector3.zero;
 
         // Control parameters
         [Range(0, 10)]
         public float forcedPositionTime = 3.0f;
-        protected Vector2 currentDirection = Vector2.zero;
-        protected Vector2 currentVelocity = Vector2.zero;
+        protected Vector3 currentDirection = Vector3.zero;
+        protected Vector3 currentVelocity = Vector3.zero;
         [Range(0, 1)]
         public float WeaponMomentum = 0.2f;
 
         virtual protected void Start()
         {
-            myDetector = GetComponent<Detector2D>();
+            myDetector = GetComponent<Detector>();
             myModel = GetComponent<GenericShipModel>();
             myAnimator = GetComponent<Animator>();
             if (myAnimator == null)
@@ -114,8 +115,8 @@ namespace SpaceShooter2D
         virtual protected void ExecuteAnimations()
         {
             // Get relative angle
-            Vector2 up2D = new Vector2(myModel.transform.up.x, myModel.transform.up.y);
-            float relativeAngle = Vector2.Angle(up2D, currentDirection.normalized);
+            Vector3 up2D = new Vector3(myModel.transform.up.x, myModel.transform.up.y, 0);
+            float relativeAngle = Vector3.Angle(up2D, currentDirection.normalized);
 
             // Get relative sign
             Vector3 relativeCross = Vector3.Cross(myModel.transform.up, currentDirection.normalized);
@@ -135,35 +136,39 @@ namespace SpaceShooter2D
         virtual protected void ExecuteMovement()
         {
             // Set desired destination
-            Vector2 destination = destinationInput;
+            Vector3 destination = destinationInput;
 
             // Set desired acceleration
             float MaxAcceleration = myModel.MaxAcceleration;
 
             // Get movement direction
-            Vector2 targetDirection = destination - new Vector2(myModel.transform.position.x,
-                                                                myModel.transform.position.y);
+            Vector3 targetDirection = destination - new Vector3(myModel.transform.position.x,
+                                                                myModel.transform.position.y,
+                                                                myModel.transform.position.z);
 
             // Execute movement momentum
-            currentDirection = Vector2.Lerp(currentDirection, targetDirection, myModel.Drift * Time.fixedDeltaTime);
+            currentDirection = Vector3.Lerp(currentDirection, targetDirection, myModel.Drift * Time.fixedDeltaTime);
 
             // Execute movement
-            currentVelocity = Vector2.ClampMagnitude(currentVelocity + currentDirection * myModel.Acceleration * Time.fixedDeltaTime,
+            currentVelocity = Vector3.ClampMagnitude(currentVelocity + currentDirection * myModel.Acceleration * Time.fixedDeltaTime,
                                                      MaxAcceleration);
             if (!forcedPosition)
                 myModel.transform.Translate(currentVelocity * Time.fixedDeltaTime, Space.World);
 
             // Get absolute angle
-            float absoluteAngle = Vector2.Angle(Vector2.up, currentDirection.normalized);
+            float absoluteAngle = Vector3.Angle(Vector2.up, currentDirection.normalized);
 
             // Get absolute angle sign
             Vector3 absoluteCross = Vector3.Cross(Vector2.up, currentDirection.normalized);
             if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
 
-            // Rotate towards proper orientation
-            Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
-            myModel.transform.rotation = Quaternion.Lerp(myModel.transform.rotation, destinationAngle, myModel.Rotation * Time.fixedDeltaTime);
-
+            // If we are strafing, we do not rotate toward the target.
+            if (!strafeToDestination)
+            {
+                // Rotate towards proper orientation
+                Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
+                myModel.transform.rotation = Quaternion.Lerp(myModel.transform.rotation, destinationAngle, myModel.Rotation * Time.fixedDeltaTime);
+            }
         }
 
         /// <summary>
@@ -199,7 +204,7 @@ namespace SpaceShooter2D
         /// <summary>
         /// Collsion Detection
         /// </summary>
-        virtual protected void OnTriggerEnter2D(Collider2D coll)
+        virtual protected void OnTriggerEnter(Collider coll)
         {
             Projectile incomingProjectile = coll.gameObject.GetComponent<Projectile>();
             if (incomingProjectile != null && myFaction.FactionName != incomingProjectile.Faction)
@@ -239,7 +244,7 @@ namespace SpaceShooter2D
             myAnimator.SetTrigger("ReverseTrigger");
         }
 
-        virtual public Detector2D getDetector()
+        virtual public Detector getDetector()
         {
             return myDetector;
         }
@@ -249,12 +254,12 @@ namespace SpaceShooter2D
             return myModel.Health > 0;
         }
 
-        virtual public Vector2 GetCurrentDirection()
+        virtual public Vector3 GetCurrentDirection()
         {
             return currentDirection;
         }
 
-        virtual public void setDestinationInput(Vector2 input)
+        virtual public void setDestinationInput(Vector3 input)
         {
             destinationInput = input;
         }
@@ -278,7 +283,7 @@ namespace SpaceShooter2D
             forcedPosition = false;
         }
 
-        virtual public void setForcedPosition(Vector2 input)
+        virtual public void setForcedPosition(Vector3 input)
         {
             transform.position = input;
         }
@@ -299,14 +304,19 @@ namespace SpaceShooter2D
             secondaryInput = input;
         }
 
-        virtual public void setOffsetFromTarget(Vector2 offset)
+        virtual public void setOffsetFromTarget(Vector3 offset)
         {
             offsetFromTarget = offset;
         }
 
-        virtual public Vector2 getOffsetFromTarget()
+        virtual public Vector3 getOffsetFromTarget()
         {
             return offsetFromTarget;
+        }
+
+        virtual public void setStrafeToDestination(bool value)
+        {
+            strafeToDestination = value;
         }
         #endregion
     }

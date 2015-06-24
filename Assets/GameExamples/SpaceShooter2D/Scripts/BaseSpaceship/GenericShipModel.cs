@@ -43,7 +43,7 @@ namespace SpaceShooter2D
         [SerializeField]
         protected float bulletSpeed = 10f;
 
-        protected Rigidbody2D myRigidbody;
+        protected Rigidbody myRigidbody;
         protected SpriteRenderer[] shipRenderers;
 
         // Getters and setters
@@ -86,7 +86,7 @@ namespace SpaceShooter2D
         {
             Init();
 
-            myRigidbody = GetComponent<Rigidbody2D>();
+            myRigidbody = GetComponent<Rigidbody>();
         }
 
         /// <summary>
@@ -125,12 +125,12 @@ namespace SpaceShooter2D
             }
 
             // Debug
-            Debug.Log("Ship received: " + Damage + " Points of damage. Current Shields: " + shields);
+            Debug.Log(gameObject + " received: " + Damage + " Points of damage. Current Shields: " + shields);
         }
 
         virtual public void Accelerate()
         {
-            myRigidbody.AddRelativeForce(new Vector2(0, acceleration));
+            myRigidbody.AddRelativeForce(new Vector3(0, acceleration, 0));
         }
 
         virtual public void RotateRight()
@@ -145,7 +145,7 @@ namespace SpaceShooter2D
 
         virtual public void Decelerate()
         {
-            myRigidbody.AddRelativeForce(new Vector2(0, -acceleration));
+            myRigidbody.AddRelativeForce(new Vector3(0, -acceleration, 0));
         }
 
     }

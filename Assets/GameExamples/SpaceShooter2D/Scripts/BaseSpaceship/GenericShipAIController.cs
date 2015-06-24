@@ -41,6 +41,8 @@ namespace SpaceShooter2D
         [SerializeField]
         float behaviorChangeRate = 1.0f;
 
+        Vector3 ourPosition;
+
         // Use this for initialization
         protected virtual void Start()
         {
@@ -52,49 +54,81 @@ namespace SpaceShooter2D
             }
 
             // Begin custom update loop for AI.
-            InvokeRepeating("HandleClosestEnemy", 0.0f, behaviorChangeRate);
+            InvokeRepeating("HandleClosestObject", 0.0f, behaviorChangeRate);
         }
 
         // Check if enemies are detected and handle accordingly.
-        private void HandleClosestEnemy()
+        private void HandleClosestObject()
         {
+            ourPosition = transform.position;
             GameObject closestEnemy = ourDetector.ClosestEnemy();
+            GameObject closestAlly = ourDetector.ClosestAlly();
 
-            if (closestEnemy != null)
+            // Handle case if there is a close ally and a close enemy.
+            if (closestAlly != null && closestEnemy != null)
             {
-                AttackPlayer(closestEnemy);
+                float closestAllyDistance = Vector3.Distance(transform.position, closestAlly.transform.position);
+                float closestEnemyDistance = Vector3.Distance(transform.position, closestEnemy.transform.position);
+
+                if (closestEnemyDistance <= closestAllyDistance)
+                {
+                    if (closestEnemyDistance > ourDetector.AvoidRange)
+                    {
+                        myShip.setStrafeToDestination(false);
+                        myShip.setDestinationInput(closestEnemy.transform.position);
+                        AttackPlayer(closestEnemy);
+                    }
+
+                    if (closestEnemyDistance < ourDetector.AvoidRange)
+                    {
+                        myShip.setDestinationInput(transform.position * -1);
+                    }
+                }
+
+                if (closestEnemyDistance > closestAllyDistance)
+                {
+                    float distanceToClosestAlly = Vector3.Distance(transform.position, closestAlly.transform.position);
+
+                    if (distanceToClosestAlly < ourDetector.AvoidRange)
+                    {
+                        AvoidNearbyAllies();
+                    }
+                }
+            }
+
+            // Handle case if there is a close enemy but no close ally.
+            if (closestAlly == null && closestEnemy != null)
+            {
+                float closestEnemyDistance = Vector3.Distance(transform.position, closestEnemy.transform.position);
+
+
+                if (closestEnemyDistance > ourDetector.AvoidRange)
+                {
+                    myShip.setStrafeToDestination(false);
+                    myShip.setDestinationInput(closestEnemy.transform.position);
+                    AttackPlayer(closestEnemy);
+                }
+
+                if (closestEnemyDistance < ourDetector.AvoidRange)
+                {
+                    myShip.setDestinationInput(transform.position * -1);
+                }
+            }
+
+            // Handle case if there is a close ally but no close enemy.
+            if (closestAlly != null && closestEnemy == null)
+            {
+                float distanceToClosestAlly = Vector3.Distance(transform.position, closestAlly.transform.position);
+
+                if (distanceToClosestAlly < ourDetector.AvoidRange)
+                {
+                    AvoidNearbyAllies();
+                }
             }
         }
 
         void AttackPlayer(GameObject enemy)
         {
-            float distance = Vector2.Distance(transform.position, enemy.transform.position);
-            Vector2 ourPosition = transform.position;
-            Vector2 enemyPosition = enemy.transform.position;
-
-            // If the closest enemy is outside avoid range, fly toward it and attack.
-            if (distance > ourDetector.AvoidRange)
-            {
-                myShip.setDestinationInput(enemyPosition);
-            }
-
-            // Otherwise, fly away from it.
-            if (distance <= ourDetector.AvoidRange)
-            {
-
-                // Get away position.
-
-                // This one turns the enemy away 180 degrees.
-                // Vector2 awayPosition = ourPosition + (ourPosition - enemyPosition).normalized;
-
-                // This one turns the enemy a bit to the side, chosen randomly from specified angles.
-                float[] angleOffsets = { 45, 60 };
-                int myRandomIndex = Random.Range(0, angleOffsets.Length);
-                Vector2 awayPosition = new Vector2(ourPosition.x + angleOffsets[myRandomIndex], ourPosition.y + angleOffsets[myRandomIndex]);
-
-                myShip.setDestinationInput(awayPosition);
-            }
-
             // While facing the enemy, shoot.
             if (isFacingTarget(enemy))
             {
@@ -105,8 +139,27 @@ namespace SpaceShooter2D
                 myShip.setFireInput(false);
             }
         }
-            
-            
+
+        void AvoidNearbyAllies()
+        {
+            Vector3 ourPosition = transform.position;
+
+            // Get away position.
+
+            // This one sets the destination 180 degrees.
+            // Vector3 awayPosition = ourPosition * -1;
+
+            // This one turns the destination at specified angled offsets, chosen randomly.
+            // float[] angleOffsets = { -90, 180, 90 };
+            // int myRandomIndex = Random.Range(0, angleOffsets.Length);
+            // Vector3 awayPosition = new Vector3(ourPosition.x + angleOffsets[myRandomIndex], ourPosition.y + angleOffsets[myRandomIndex], 0);
+
+            // This one sets a random angle.
+            Vector3 awayPosition = new Vector3(ourPosition.x + Random.Range(-45, 45), ourPosition.y + Random.Range(-45, 45), 0);
+
+            myShip.setDestinationInput(awayPosition);
+        }
+
         /// <summary>
         /// Returns if the current gameobject is facing the target gameobject
         /// </summary>

@@ -148,6 +148,29 @@ public class Detector : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns closest ally game object within detection range.
+    /// </summary>
+    /// <returns></returns>
+    public GameObject ClosestAlly()
+    {
+        GameObject closestAlly = null;
+        float currentMinDistance = Mathf.Infinity;
+
+        // Analize all detected enemies
+        foreach (Faction current in DetectedAllies)
+        {
+            // Get distance to the enemy
+            float distance = Vector3.Distance(transform.position, current.transform.position);
+
+            // First check the enemy is in the detection range and is the closest distance found until now
+            if (distance <= detectionRange && distance < currentMinDistance)
+                closestAlly = current.gameObject;
+        }
+
+        return closestAlly;
+    }
+
+    /// <summary>
     /// Returns closest enemy game object of a specific faction.
     /// </summary>
     /// <param name="type"></param>
