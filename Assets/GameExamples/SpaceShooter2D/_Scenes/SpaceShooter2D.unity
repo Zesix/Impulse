@@ -2226,8 +2226,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRange: 15
-  attackRange: 5
-  avoidRange: 1
+  attackRange: 8
+  avoidRange: 4
   detectionRate: .100000001
   largestRange: 0
   AllyFactions: 00000000
@@ -20168,6 +20168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ourDetector: {fileID: 0}
+  behaviorChangeRate: .200000003
 --- !u!54 &1957282764
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -20207,8 +20208,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRange: 15
-  attackRange: 5
-  avoidRange: 1
+  attackRange: 8
+  avoidRange: 4
   detectionRate: .100000001
   largestRange: 0
   AllyFactions: 01000000
@@ -20288,7 +20289,7 @@ MonoBehaviour:
   maxShields: 100
   acceleration: 3
   maxAcceleration: 6
-  rotation: 10
+  rotation: 5
   drift: 5
   bulletSpeed: 26
 --- !u!4 &1957282771

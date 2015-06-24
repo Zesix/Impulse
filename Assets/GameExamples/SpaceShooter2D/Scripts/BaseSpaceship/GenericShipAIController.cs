@@ -37,6 +37,10 @@ namespace SpaceShooter2D
         [SerializeField]
         Detector ourDetector;
 
+        // Our AI behavior update rate. Increase this if you want the AI to stick to a behavior longer.
+        [SerializeField]
+        float behaviorChangeRate = 1.0f;
+
         // Use this for initialization
         protected virtual void Start()
         {
@@ -48,7 +52,7 @@ namespace SpaceShooter2D
             }
 
             // Begin custom update loop for AI.
-            InvokeRepeating("HandleClosestEnemy", 0.0f, ourDetector.DetectionRate);
+            InvokeRepeating("HandleClosestEnemy", 0.0f, behaviorChangeRate);
         }
 
         // Check if enemies are detected and handle accordingly.
@@ -72,25 +76,46 @@ namespace SpaceShooter2D
             if (distance > ourDetector.AvoidRange)
             {
                 myShip.setDestinationInput(enemyPosition);
-                Debug.Log("Attacking player.");
-
-                // Shoot once we are within attack range.
-                if (distance <= ourDetector.AttackRange)
-                {
-                    myShip.setFireInput(true);
-                }
             }
 
             // Otherwise, fly away from it.
             if (distance <= ourDetector.AvoidRange)
             {
-                Debug.Log("Avoiding player.");
-                // Get away position
-                Vector2 awayPosition = ourPosition +
-                               (ourPosition - enemyPosition).normalized;
+
+                // Get away position.
+
+                // This one turns the enemy away 180 degrees.
+                // Vector2 awayPosition = ourPosition + (ourPosition - enemyPosition).normalized;
+
+                // This one turns the enemy a bit to the side, chosen randomly from specified angles.
+                float[] angleOffsets = { 45, 60 };
+                int myRandomIndex = Random.Range(0, angleOffsets.Length);
+                Vector2 awayPosition = new Vector2(ourPosition.x + angleOffsets[myRandomIndex], ourPosition.y + angleOffsets[myRandomIndex]);
 
                 myShip.setDestinationInput(awayPosition);
             }
+
+            // While facing the enemy, shoot.
+            if (isFacingTarget(enemy))
+            {
+                myShip.setFireInput(true);
+            }
+            if (!isFacingTarget(enemy))
+            {
+                myShip.setFireInput(false);
+            }
+        }
+            
+            
+        /// <summary>
+        /// Returns if the current gameobject is facing the target gameobject
+        /// </summary>
+        /// <returns></returns>
+        bool isFacingTarget(GameObject target)
+        {
+            float AngleThreshold = 30.0f;
+            // Note: this is for 2D only (XY plane). If you're going to use 3D, replace transform.up with transform.forward
+            return AngleThreshold >= Vector3.Angle((target.transform.position - transform.position).normalized, transform.up);
         }
     }
 }
