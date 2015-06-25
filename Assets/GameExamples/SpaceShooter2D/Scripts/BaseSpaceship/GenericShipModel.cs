@@ -42,9 +42,12 @@ namespace SpaceShooter2D
 
         [SerializeField]
         protected float bulletSpeed = 10f;
+        
+        // Used by the AI for moving along axes.
+        public float horzAIAxis;
+        public float vertAIAxis;
 
         protected Rigidbody myRigidbody;
-        protected SpriteRenderer[] shipRenderers;
 
         // Getters and setters
         public float Acceleration
@@ -85,8 +88,6 @@ namespace SpaceShooter2D
         virtual protected void Start()
         {
             Init();
-
-            myRigidbody = GetComponent<Rigidbody>();
         }
 
         /// <summary>
@@ -96,8 +97,6 @@ namespace SpaceShooter2D
         {
             health = maxHealth;
             shields = maxShields;
-
-            shipRenderers = GetComponentsInChildren<SpriteRenderer>();
         }
 
         /// <summary>
@@ -126,26 +125,6 @@ namespace SpaceShooter2D
 
             // Debug
             Debug.Log(gameObject + " received: " + Damage + " Points of damage. Current Shields: " + shields);
-        }
-
-        virtual public void Accelerate()
-        {
-            myRigidbody.AddRelativeForce(new Vector3(0, acceleration, 0));
-        }
-
-        virtual public void RotateRight()
-        {
-            transform.Rotate(new Vector3(0, 0, -rotation) * Time.deltaTime);
-        }
-
-        virtual public void RotateLeft()
-        {
-            transform.Rotate(new Vector3(0, 0, rotation) * Time.deltaTime);
-        }
-
-        virtual public void Decelerate()
-        {
-            myRigidbody.AddRelativeForce(new Vector3(0, -acceleration, 0));
         }
 
     }

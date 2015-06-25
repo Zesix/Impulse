@@ -581,10 +581,6 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 39f79365a7ec7f846a38f8b873f25d68, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
---- !u!4 &69825204 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-  m_PrefabInternal: {fileID: 547941998}
 --- !u!1 &81471276
 GameObject:
   m_ObjectHideFlags: 0
@@ -3909,52 +3905,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 50
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &442821914
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 698526831}
-    m_Modifications:
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 6.45702314
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 12.7565184
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 171700, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_Name
-      value: EnemySpaceShip (2)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &442884258
 GameObject:
   m_ObjectHideFlags: 0
@@ -5350,52 +5300,6 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ee6ef8d769cb71f4298438a12068b07a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
---- !u!1001 &547941998
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 698526831}
-    m_Modifications:
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 6.50702286
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -12.5634813
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 171700, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_Name
-      value: EnemySpaceShip (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &556954071
 GameObject:
   m_ObjectHideFlags: 0
@@ -6584,9 +6488,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1957282771}
-  - {fileID: 69825204}
-  - {fileID: 1364258103}
-  - {fileID: 921477880}
   m_Father: {fileID: 0}
   m_RootOrder: 5
 --- !u!1 &707342225
@@ -9016,10 +8917,6 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 39f79365a7ec7f846a38f8b873f25d68, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
---- !u!4 &921477880 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-  m_PrefabInternal: {fileID: 1353590413}
 --- !u!1 &926735442
 GameObject:
   m_ObjectHideFlags: 0
@@ -13427,6 +13324,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11434620, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
+      propertyPath: rotateTransform
+      value: 
+      objectReference: {fileID: 1957282771}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
   m_IsPrefabParent: 0
@@ -13750,52 +13651,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 50
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &1353590413
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 698526831}
-    m_Modifications:
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 14.0100002
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -.863481283
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 171700, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-      propertyPath: m_Name
-      value: EnemySpaceShip (3)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1353737299
 GameObject:
   m_ObjectHideFlags: 0
@@ -13904,10 +13759,6 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 39f79365a7ec7f846a38f8b873f25d68, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
---- !u!4 &1364258103 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 413992, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
-  m_PrefabInternal: {fileID: 442821914}
 --- !u!1 &1374311306
 GameObject:
   m_ObjectHideFlags: 0

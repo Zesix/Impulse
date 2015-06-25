@@ -56,6 +56,9 @@ namespace SpaceShooter2D
         [Range(0, 1)]
         public float WeaponMomentum = 0.2f;
 
+        bool AIControlled = false;
+        Vector3 AILookDirection = Vector3.zero;
+
         virtual protected void Start()
         {
             myDetector = GetComponent<Detector>();
@@ -94,7 +97,10 @@ namespace SpaceShooter2D
         /// </summary>
         virtual protected void FixedUpdate()
         {
-            ExecuteMovement();
+            if (!AIControlled)
+                ExecuteMovement();
+            if (AIControlled)
+                ExecuteAIMovement();
         }
 
         virtual protected void ExecuteThrustersFX()
@@ -169,6 +175,21 @@ namespace SpaceShooter2D
                 Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
                 myModel.transform.rotation = Quaternion.Lerp(myModel.transform.rotation, destinationAngle, myModel.Rotation * Time.fixedDeltaTime);
             }
+
+        }
+
+        /// <summary>
+        /// Moves the ship according to AI.
+        /// </summary>
+        virtual protected void ExecuteAIMovement()
+        {
+            Vector3 move = new Vector3(myModel.horzAIAxis, myModel.vertAIAxis, 0);
+            transform.position += move * myModel.Acceleration * Time.fixedDeltaTime;
+
+            // Get absolute angle
+            float absoluteAngle = Vector3.Angle(Vector2.up, currentDirection.normalized);
+            Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
+            myModel.transform.rotation = Quaternion.Lerp(myModel.transform.rotation, destinationAngle, myModel.Rotation * Time.fixedDeltaTime);
         }
 
         /// <summary>
@@ -317,6 +338,16 @@ namespace SpaceShooter2D
         virtual public void setStrafeToDestination(bool value)
         {
             strafeToDestination = value;
+        }
+
+        virtual public void setAIControlled(bool value)
+        {
+            AIControlled = value;
+        }
+
+        virtual public void setAILookDirection(Vector3 direction)
+        {
+            AILookDirection = direction;
         }
         #endregion
     }

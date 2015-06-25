@@ -43,6 +43,7 @@ GameObject:
   - 114: {fileID: 11453054}
   - 95: {fileID: 9517380}
   - 114: {fileID: 11450346}
+  - 114: {fileID: 11434620}
   - 114: {fileID: 11438390}
   - 114: {fileID: 11402140}
   - 114: {fileID: 11448852}
@@ -167,6 +168,47 @@ MonoBehaviour:
   rotation: 5
   drift: 5
   bulletSpeed: 20
+--- !u!114 &11434620
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58697b2139e2b8844880a40298b67da8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myTransform: {fileID: 0}
+  myGameObject: {fileID: 0}
+  didInit: 0
+  id: 0
+  updateAIRate: .100000001
+  horz: 0
+  vert: 0
+  isStationary: 0
+  currentAIState: 0
+  patrolSpeed: 5
+  patrolTurnSpeed: 10
+  wallAvoidDistance: 40
+  followTarget: {fileID: 0}
+  modelRotateSpeed: 15
+  followTargetMaxTurnAngle: 120
+  minChaseDistance: 2
+  maxChaseDistance: 10
+  visionHeightOffset: 1
+  myWayControl: {fileID: 0}
+  currentWaypointNum: 0
+  waypointDistance: 5
+  moveSpeed: 30
+  pathSmoothing: 2
+  shouldReversePathFollowing: 0
+  loopPath: 0
+  destroyAtEndOfWaypoints: 0
+  faceWaypoints: 0
+  startAtFirstWaypoint: 0
+  rotateTransform: {fileID: 0}
+  AIControlled: 0
 --- !u!114 &11438390
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -209,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10e286bd06809a542b22bcd7aa4198f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ourDetector: {fileID: 11402140}
+  myDetector: {fileID: 0}
   behaviorChangeRate: 1
 --- !u!114 &11453054
 MonoBehaviour:
@@ -333,6 +375,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: behaviorChangeRate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: AIControlled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
