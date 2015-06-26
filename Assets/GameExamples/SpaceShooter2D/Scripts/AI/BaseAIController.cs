@@ -504,12 +504,12 @@ namespace SpaceShooter2D
 
         public virtual void MoveForward()
         {
-            vert = 1;
+            vert = -1;
         }
 
         public virtual void MoveBack()
         {
-            vert = -1;
+            vert = 1;
         }
 
         public virtual void NoMove()
@@ -800,6 +800,11 @@ namespace SpaceShooter2D
         public float GetVertical()
         {
             return vert;
+        }
+
+        public bool GetInverseMovement()
+        {
+            return currentAIState == AIState.backing_up_looking_for_target;
         }
     }
 }

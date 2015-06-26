@@ -183,12 +183,20 @@ namespace SpaceShooter2D
         /// </summary>
         virtual protected void ExecuteAIMovement()
         {
-            Vector3 move = new Vector3(myModel.horzAIAxis, myModel.vertAIAxis, 0);
-            transform.position += move * myModel.Acceleration * Time.fixedDeltaTime;
+            Vector3 WorldMoveDirection = new Vector3(myModel.horzAIAxis, myModel.vertAIAxis, 0);
+
+            // Move the ship
+            transform.position += WorldMoveDirection * myModel.Acceleration * Time.fixedDeltaTime;
+
+            // Get absolute angle sign
+            float absoluteAngle = Vector3.Angle(Vector2.up, WorldMoveDirection.normalized);
+            Vector3 absoluteCross = Vector3.Cross(Vector2.up, WorldMoveDirection.normalized);
+            if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
 
             // Get absolute angle
-            float absoluteAngle = Vector3.Angle(Vector2.up, currentDirection.normalized);
-            Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
+            Quaternion destinationAngle = Quaternion.AngleAxis(myModel.inverseMovement ? absoluteAngle + 180.0f: absoluteAngle, Vector3.forward);
+
+            // Execute rotation
             myModel.transform.rotation = Quaternion.Lerp(myModel.transform.rotation, destinationAngle, myModel.Rotation * Time.fixedDeltaTime);
         }
 
