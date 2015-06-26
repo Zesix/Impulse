@@ -46,6 +46,7 @@ namespace SpaceShooter2D
         // Used by the AI for moving along axes.
         public float horzAIAxis;
         public float vertAIAxis;
+        public bool inverseMovement = false;
 
         protected Rigidbody myRigidbody;
 
