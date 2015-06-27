@@ -24,6 +24,7 @@ namespace SpaceShooter2D
         // are saved in the horz and vert variables.
         public float horz;
         public float vert;
+        public float magnitude;
 
         private int obstacleHitType;
 
@@ -495,27 +496,41 @@ namespace SpaceShooter2D
 
         public virtual void TurnLeft()
         {
+            magnitude = 0;
             horz = -1;
         }
 
         public virtual void TurnRight()
         {
+            magnitude = 0;
             horz = 1;
+        }
+
+        public virtual void TurnUp()
+        {
+            magnitude = 0;
+            vert = 1;
+        }
+
+        public virtual void TurnDown()
+        {
+            magnitude = 0;
+            vert = -1;
         }
 
         public virtual void MoveForward()
         {
-            vert = -1;
+            magnitude = 1;
         }
 
         public virtual void MoveBack()
         {
-            vert = 1;
+            magnitude = -1;
         }
 
         public virtual void NoMove()
         {
-            vert = 0;
+            magnitude = 0;
         }
 
         public virtual void LookAroundFor(Transform aTransform)
@@ -791,6 +806,11 @@ namespace SpaceShooter2D
                 currentWaypointTransform = myWayControl.GetWaypoint(currentWaypointNum);
 
             }
+        }
+
+        public float GetMagnitude()
+        {
+            return magnitude;
         }
 
         public float GetHorizontal()

@@ -44,6 +44,7 @@ namespace SpaceShooter2D
         protected float bulletSpeed = 10f;
         
         // Used by the AI for moving along axes.
+        public float movementMagnitude = 0;
         public float horzAIAxis;
         public float vertAIAxis;
         public bool inverseMovement = false;
