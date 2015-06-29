@@ -360,6 +360,7 @@ namespace SpaceShooter2D
                     // stopped, turning right
                     TurnRight();
 
+
                     // check results from looking, to see if path ahead is clear
                     if (obstacleFinderResult == 0)
                     {

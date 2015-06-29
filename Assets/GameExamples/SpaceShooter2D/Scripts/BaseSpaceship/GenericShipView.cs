@@ -183,7 +183,7 @@ namespace SpaceShooter2D
         /// </summary>
         virtual protected void ExecuteAIMovement()
         {
-            Vector3 WorldMoveDirection = new Vector3(myModel.horzAIAxis, myModel.vertAIAxis, 0);
+            Vector3 WorldMoveDirection = new Vector3(0, myModel.vertAIAxis, 0);
 
             // Move the ship
             transform.position += WorldMoveDirection * myModel.Acceleration * Time.fixedDeltaTime;
