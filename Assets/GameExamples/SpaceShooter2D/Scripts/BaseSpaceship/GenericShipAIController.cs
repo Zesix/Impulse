@@ -100,6 +100,7 @@ namespace SpaceShooter2D
             myShipModel.horzAIAxis = myController.GetHorizontal();
             myShipModel.vertAIAxis = myController.GetVertical();
             myShipModel.inverseMovement = myController.GetInverseMovement();
+            myShipModel.movementMagnitude = myController.GetMagnitude();
 
         }
 
