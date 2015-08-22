@@ -13328,6 +13328,10 @@ Prefab:
       propertyPath: rotateTransform
       value: 
       objectReference: {fileID: 1957282771}
+    - target: {fileID: 11402140, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
+      propertyPath: avoidRange
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
   m_IsPrefabParent: 0

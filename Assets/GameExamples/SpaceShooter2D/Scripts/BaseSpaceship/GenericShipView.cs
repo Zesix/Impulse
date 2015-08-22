@@ -184,6 +184,7 @@ namespace SpaceShooter2D
         virtual protected void ExecuteAIMovement()
         {
             Vector3 MoveDirection = transform.up * myModel.movementMagnitude;
+            Debug.Log(myModel.movementMagnitude);
 
             // Move the ship
             transform.position += MoveDirection * myModel.Acceleration * Time.fixedDeltaTime;

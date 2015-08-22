@@ -20,26 +20,70 @@ using System.Collections;
 
 public class Mouse_Input : BaseInputController
 {
+    // Object View
+    BaseObjectView myView; 
+
     // Player input
     [SerializeField]
     Vector2 mouseInput;
     [SerializeField]
-    float CameraDistance = 10.0f;
+    float cameraDistance = 10.0f;
+
+    // Where the mouse has clicked, in 3D coordinates.
+    [SerializeField]
+    Vector3 clickPosition;
+
+    void Awake()
+    {
+        myView = GetComponent<BaseObjectView>();
+        if (myView == null)
+            Debug.LogError(gameObject.name + " is missing a View!");
+        
+        // By default, set our click position to our current position.
+        clickPosition = transform.position;
+    }
 
     public override void CheckInput()
     {
         // Get mouse position
         Vector3 mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,
-                                                                        CameraDistance));
+                                                                        cameraDistance));
         mouseInput = new Vector2(mouse3DInput.x, mouse3DInput.y);
 
         // get fire / action buttons
         Fire1 = Input.GetButton("Fire1");
+
+        // If we have clicked, get the world space position and send it to our view.
+        // If you want to use something other than the fire button for movement, replace 'Fire1'.
+        if (Fire1)
+        {
+            SetClickPosition();
+            SendInput();
+        }
     }
 
-    private void Update()
+    void Update()
     {
         CheckInput();
+    }
+
+    /// <summary>
+    /// Sets the click position.
+    /// </summary>
+    void SetClickPosition()
+    {
+        Plane clickPlane = new Plane(Vector3.up, transform.position);
+        Ray clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float rayPoint = 0f;
+
+        if (clickPlane.Raycast(clickRay, out rayPoint))
+            clickPosition = clickRay.GetPoint(rayPoint);
+    }
+
+    protected virtual void SendInput()
+    {
+        myView.setDestinationInput(clickPosition);
+        myView.setFireInput(Fire1);
     }
 
 }
