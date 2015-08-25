@@ -19,16 +19,11 @@ These demonstrate the functionality of the included systems, all of which can be
 ## Manager / Controller System ##
 
 Keep in mind the framework is not intended to force you into any particular programming paradigm. 
-However, the manager / controller system used by the framework is an easy way to organize a project and can 
-be further adapted to MVC, MVVM, or any number of architectural patterns should the developer choose to do so.
+However, the manager system used by the framework is an easy way to organize a project and can 
+be further adapted to MVC, MVVM, or any number of architectural patterns should the developer choose to do so. A basic MVC structure is already present within the framework for setting up movable objects quickly and easily.
 
 **Managers** manipulate the game itself, such as creating and destroying game objects. 
-**Controllers** manipulate game objects within the game and are commonly used for movement.
 
-For example, in an FPS game there would a player controller and manager. When the controller detects a collision
-with an enemy projectile, it passes this information to the manager, which determines the damage is dealt and
-subtracts health accordingly. If the manager determines the player has zero health, it passes this information
-to the global game manager that destroys or pools the player object and updates the number of players remaining.
 
 ## Useful Scripts ##
 
