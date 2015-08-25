@@ -17,6 +17,7 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class BaseInputController : MonoBehaviour {
 	
@@ -50,8 +51,8 @@ public class BaseInputController : MonoBehaviour {
 	
 	public virtual void CheckInput () {    
 		// override with your own code to deal with input
-		horz = Input.GetAxis ("Horizontal");
-		vert = Input.GetAxis ("Vertical");
+		horz = CrossPlatformInputManager.GetAxis ("Horizontal");
+        vert = CrossPlatformInputManager.GetAxis("Vertical");
 	}
 	
 	public virtual float GetHorizontal() {

@@ -17,6 +17,7 @@
 
 using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Mouse_Input : BaseInputController
 {
@@ -46,12 +47,12 @@ public class Mouse_Input : BaseInputController
     public override void CheckInput()
     {
         // Get mouse position
-        Vector3 mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,
+        Vector3 mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(CrossPlatformInputManager.mousePosition.x, CrossPlatformInputManager.mousePosition.y,
                                                                         cameraDistance));
         mouseInput = new Vector2(mouse3DInput.x, mouse3DInput.y);
 
         // get fire / action buttons
-        Fire1 = Input.GetButton("Fire1");
+        Fire1 = CrossPlatformInputManager.GetButton("Fire1");
 
         // If we have clicked, get the world space position and send it to our view.
         // If you want to use something other than the fire button for movement, replace 'Fire1'.
