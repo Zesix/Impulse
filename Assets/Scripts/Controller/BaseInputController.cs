@@ -60,14 +60,14 @@ public class BaseInputController : MonoBehaviour
     Repeater _ver = new Repeater("Vertical");
 
     // Whenever a Repeater reports movement input, we will share it as a static event.
-    public static event EventHandler<InfoEventArgs<int>> moveEvent;
+    public static event EventHandler<InfoEventArgs<MovementDirs>> moveEvent;
 
     // Whenever a Repeater reports firing input, we will pass it along.
     public static event EventHandler<InfoEventArgs<int>> fireEvent;
 
+    // Used for debugging purposes mainly. Prefer to use input events to handle player input.
     public virtual void CheckInput()
     {
-        // override with your own code to deal with input
         horz = CrossPlatformInputManager.GetAxis("Horizontal");
         vert = CrossPlatformInputManager.GetAxis("Vertical");
     }
@@ -101,7 +101,7 @@ public class BaseInputController : MonoBehaviour
         return TEMPVec3;
     }
 
-    // Update is called once per frame
+    // Instead of handling input every frame, we handle it according to events within the main loop for performance.
     void Update()
     {
         // Set axis variables to update according to the Repeater instead of general Update() loop.
@@ -111,15 +111,18 @@ public class BaseInputController : MonoBehaviour
         // If we have movement input, then execute the movement input event at the appropriate time.
         if (x != 0 || y != 0)
         {
-            // if (moveEvent != null)
-            //        Handle the movement event here.
+            if (moveEvent != null)
+            {
+                if (x > 0)
+                    moveEvent(this, new InfoEventArgs<MovementDirs>(MovementDirs.Left));
+            }
         }
 
         // Loop through each of our firing inputs.
         for (int i = 0; i < _fires.Length; ++i)
         {
             // We specify button up since the firing button release is considered confirmation.
-            if (Input.GetButtonUp(_fires[i]))
+            if (CrossPlatformInputManager.GetButtonUp(_fires[i]))
             {
                 if (fireEvent != null)
                     fireEvent(this, new InfoEventArgs<int>(i));
