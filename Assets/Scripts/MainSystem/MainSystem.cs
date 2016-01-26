@@ -38,7 +38,7 @@ namespace Impulse
 		/// <summary>
 		/// 	Inects necessary dependencies and initalizes the object.
 		/// </summary>
-		public void Initialize (SceneManager sceneManager, MusicManager musicManager)
+		public void Initialize (GameSceneManager sceneManager, MusicManager musicManager)
 		{
 			if (_isInitialized)
 				throw new InvalidOperationException ("Already initialized.");

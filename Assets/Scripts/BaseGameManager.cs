@@ -16,53 +16,68 @@
 *****************************************/
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class BaseGameManager : MonoBehaviour {
-	
-	bool paused;
-	
-	public virtual void PlayerLostHealth () {
-		// deal with player health lost (update U.I. etc.)
-	}
-	
-	public virtual void SpawnPlayer () {
-		// spawn the player
-	}
-	
-	public virtual void Respawn () {
-		// respawn the player, possibly in a respawn location
-	}
-	
-	public virtual void StartGame () {
-		// handle start of game
-	}
-	
-	public virtual void RestartCurrentLevel () {
-		// Reload current scene.
-		Application.LoadLevel(Application.loadedLevelName);
-	}
-	
-	public virtual void EnemyDestroyed (Vector3 aPosition, int pointsValue, int hitByID) {
-		// handle what happens (score update, etc.) when an enemy is destroyed
-	}
-	
-	public bool Paused {
-		get { 
-			// get paused
-			return paused; 
-		} set {
-			// set paused 
-			paused = value;
-			
-			if (paused) {
-				// pause time
-				Time.timeScale = 0f;
-			} else {
-				// unpause Unity
-				Time.timeScale = 1f;
-			}
-		}
-	}
-	
+public class BaseGameManager : MonoBehaviour
+{
+
+    bool paused;
+
+    public virtual void PlayerLostHealth()
+    {
+        // deal with player health lost (update U.I. etc.)
+    }
+
+    public virtual void SpawnPlayer()
+    {
+        // spawn the player
+    }
+
+    public virtual void Respawn()
+    {
+        // respawn the player, possibly in a respawn location
+    }
+
+    public virtual void StartGame()
+    {
+        // handle start of game
+    }
+
+    public virtual void RestartCurrentLevel()
+    {
+        // Reload current scene.
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public virtual void EnemyDestroyed(Vector3 aPosition, int pointsValue, int hitByID)
+    {
+        // handle what happens (score update, etc.) when an enemy is destroyed
+    }
+
+    public bool Paused
+    {
+        get
+        {
+            // get paused
+            return paused;
+        }
+        set
+        {
+            // set paused 
+            paused = value;
+
+            if (paused)
+            {
+                // pause time
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                // unpause Unity
+                Time.timeScale = 1f;
+            }
+        }
+    }
+
 }

@@ -29,12 +29,12 @@ namespace Impulse
 	{
 		public void LoadScene (int index, bool animate)
 		{
-			SceneManager.Instance.LoadLevelFadeInDelegate (index, animate);
+			GameSceneManager.Instance.LoadLevelFadeInDelegate (index, animate);
 		}
 
 		public void LoadScene (string name, bool animate)
 		{
-			SceneManager.Instance.LoadLevelFadeInDelegate (name);
+			GameSceneManager.Instance.LoadLevelFadeInDelegate (name);
 		}
 
 	}
