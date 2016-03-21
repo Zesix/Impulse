@@ -41,7 +41,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FileLocation: InventoryDemo/Text
   FileName: Items
-  OutputFolder: InventoryDemo/Prefabs/Items
+  OutputFolder: InventoryDemo/Prefabs/Items/
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
