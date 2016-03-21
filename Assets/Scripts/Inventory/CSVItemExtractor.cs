@@ -42,8 +42,8 @@ public class CSVItemExtractor : MonoBehaviour
         // Create .asset file
         ItemAssetData itemAsset = ScriptableObject.CreateInstance<ItemAssetData>();
         itemAsset.Name = (string) data[i]["NAME"];
-        itemAsset.Range = (int) data[i]["RANGE"];
         itemAsset.Attack = (int) data[i]["ATTACK"];
+        itemAsset.Range = (int) data[i]["RANGE"];
         itemAsset.Defense = (int) data[i]["DEFENSE"];
         itemAsset.Durability = (int) data[i]["DURABILITY"];
         itemAsset.Cost = (int) data[i]["COST"];
@@ -55,7 +55,7 @@ public class CSVItemExtractor : MonoBehaviour
         var gameobject = new GameObject();
         gameobject.transform.name = itemAsset.Name;
         ItemPrefabData itemPrefab = gameobject.AddComponent<ItemPrefabData>();
-        itemPrefab.Initialize(itemAsset.Name, itemAsset.Range, itemAsset.Attack, itemAsset.Defense,
+        itemPrefab.Initialize(itemAsset.Name, itemAsset.Attack, itemAsset.Range, itemAsset.Defense,
             itemAsset.Durability, itemAsset.Cost);
 
 #pragma warning disable 618

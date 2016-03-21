@@ -291,7 +291,7 @@ GameObject:
   - 114: {fileID: 247965557}
   - 114: {fileID: 247965556}
   m_Layer: 5
-  m_Name: Attack
+  m_Name: Range
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -475,6 +475,7 @@ GameObject:
   - 124: {fileID: 308024168}
   - 92: {fileID: 308024167}
   - 81: {fileID: 308024166}
+  - 114: {fileID: 308024171}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -549,6 +550,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &308024171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 308024165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eba3c4b2e30c5a42acccd161d909d36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &363400844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,7 +1620,7 @@ GameObject:
   - 114: {fileID: 1931392302}
   - 114: {fileID: 1931392301}
   m_Layer: 5
-  m_Name: Range
+  m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1681,7 +1693,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Range
+  m_Text: Attack
 --- !u!222 &1931392303
 CanvasRenderer:
   m_ObjectHideFlags: 0

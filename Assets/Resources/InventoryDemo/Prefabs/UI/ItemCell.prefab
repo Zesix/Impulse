@@ -160,7 +160,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Range
+  m_Text: Attack
 --- !u!114 &11403580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -206,8 +206,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: {fileID: 11436978}
-  Range: {fileID: 11426188}
   Attack: {fileID: 11402840}
+  Range: {fileID: 11426188}
   Defense: {fileID: 11467152}
   Durability: {fileID: 11403580}
   Cost: {fileID: 11494942}
@@ -594,8 +594,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 22426986}
-  - {fileID: 22410570}
   - {fileID: 22433538}
+  - {fileID: 22410570}
   - {fileID: 22489206}
   - {fileID: 22474952}
   - {fileID: 22459128}
@@ -617,10 +617,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 22403976}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60.666664, y: -25}
+  m_AnchoredPosition: {x: 123.33, y: -25}
   m_SizeDelta: {x: 62.666664, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22426986
@@ -651,10 +651,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 22403976}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 123.33333, y: -25}
+  m_AnchoredPosition: {x: 60.663, y: -25}
   m_SizeDelta: {x: 62.666664, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22459128
