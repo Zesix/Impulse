@@ -61,6 +61,8 @@ public class ItemScrollerController : MonoBehaviour
             var newItemCell = Instantiate(ItemCellViewPrefab) as ItemCellView;
             newItemCell.transform.SetParent(this.MyScroller.content);
             newItemCell.transform.localPosition = Vector3.zero;
+            newItemCell.transform.localScale = Vector3.one;
+            newItemCell.transform.localRotation = Quaternion.identity;
 
             newItemCell.SetData(item);
         }
