@@ -26,18 +26,11 @@ public class Keyboard_Input : BaseInputController
     {
         // get input data from vertical and horizontal axis and store them internally in vert and horz so we don't
         // have to access them every time we need to relay input data.
-        vert = CrossPlatformInputManager.GetAxis("Vertical");
-        horz = CrossPlatformInputManager.GetAxis("Horizontal");
-
-        // set up some boolean values for up, down, left and right
-        Up = (vert > 0);
-        Down = (vert < 0);
-        Left = (horz < 0);
-        Right = (horz > 0);
+        vertical = CrossPlatformInputManager.GetAxis("Vertical");
+        horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
 
         // get fire / action keys
         Fire1 = CrossPlatformInputManager.GetButton("Fire1");
-        shouldRespawn = CrossPlatformInputManager.GetButton("Fire3");
     }
 
     public void LateUpdate()

@@ -19,40 +19,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class BaseGameManager : MonoBehaviour
+public class BaseGameController : StateMachine
 {
-
+    [SerializeField]
     bool paused;
 
-    public virtual void PlayerLostHealth()
+    public virtual void Start()
     {
-        // deal with player health lost (update U.I. etc.)
-    }
-
-    public virtual void SpawnPlayer()
-    {
-        // spawn the player
-    }
-
-    public virtual void Respawn()
-    {
-        // respawn the player, possibly in a respawn location
-    }
-
-    public virtual void StartGame()
-    {
-        // handle start of game
+        // Begin initial game setup state. You should define this per your own project requirements.
+        // ChangeState<InitState>();
     }
 
     public virtual void RestartCurrentLevel()
     {
         // Reload current scene.
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public virtual void EnemyDestroyed(Vector3 aPosition, int pointsValue, int hitByID)
-    {
-        // handle what happens (score update, etc.) when an enemy is destroyed
     }
 
     public bool Paused

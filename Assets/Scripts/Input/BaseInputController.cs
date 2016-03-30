@@ -22,33 +22,27 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class BaseInputController : MonoBehaviour
 {
-
-    // directional buttons
-    public bool Up;
-    public bool Down;
-    public bool Left;
-    public bool Right;
-
     // firing buttons
     public bool Fire1;
     public bool Fire2;
 
-    // weapon slots
-    public bool Slot1;
-    public bool Slot2;
-    public bool Slot3;
-    public bool Slot4;
-    public bool Slot5;
-    public bool Slot6;
-    public bool Slot7;
-    public bool Slot8;
-    public bool Slot9;
+    // Horizontal and vertical movement.
+    [SerializeField]
+    protected float vertical;
+    public float Vertical
+    {
+        get { return vertical; }
+        set { vertical = value; }
+    }
+    [SerializeField]
+    protected float horizontal;
+    public float Horizontal
+    {
+        get { return horizontal; }
+        set { horizontal = value; }
+    }
 
-    public float vert;
-    public float horz;
-    public bool shouldRespawn;
-
-    public Vector3 TEMPVec3;
+    Vector3 TEMPVec3;
 
     // A string array containing our firing buttons.
     string[] _fires = new string[]
@@ -59,34 +53,28 @@ public class BaseInputController : MonoBehaviour
     Repeater _hor = new Repeater("Horizontal");
     Repeater _ver = new Repeater("Vertical");
 
+
     // Whenever a Repeater reports movement input, we will share it as a static event.
     public static event EventHandler<InfoEventArgs<MovementDirs>> moveEvent;
 
     // Whenever a Repeater reports firing input, we will pass it along.
     public static event EventHandler<InfoEventArgs<int>> fireEvent;
 
-    // Used for debugging purposes mainly. Prefer to use input events to handle player input.
+    // Used for realtime input.
     public virtual void CheckInput()
     {
-        horz = CrossPlatformInputManager.GetAxis("Horizontal");
-        vert = CrossPlatformInputManager.GetAxis("Vertical");
+        horizontal = CrossPlatformInputManager.GetAxisRaw("Horizontal");
+        vertical = CrossPlatformInputManager.GetAxisRaw("Vertical");
     }
 
     public virtual float GetHorizontal()
     {
-        // returns our cached horizontal input axis value
-        return horz;
+        return horizontal;
     }
 
     public virtual float GetVertical()
     {
-        // returns our cached vertical input axis value
-        return vert;
-    }
-
-    public bool GetRespawn()
-    {
-        return shouldRespawn;
+        return vertical;
     }
 
     public virtual Vector3 GetMovementDirectionVector()
@@ -94,14 +82,14 @@ public class BaseInputController : MonoBehaviour
         // temp vector for movement dir gets set to the value of an otherwise unused vector that always have the value of 0,0,0
         TEMPVec3 = Vector3.zero;
 
-        TEMPVec3.x = horz;
-        TEMPVec3.y = vert;
+        TEMPVec3.x = horizontal;
+        TEMPVec3.y = vertical;
 
         // return the movement vector
         return TEMPVec3;
     }
 
-    // Instead of handling input every frame, we handle it according to events within the main loop for performance.
+    // For nonrealtime games, handle inpute via events within the main loop for performance.
     void Update()
     {
         // Set axis variables to update according to the Repeater instead of general Update() loop.
@@ -115,6 +103,12 @@ public class BaseInputController : MonoBehaviour
             {
                 if (x > 0)
                     moveEvent(this, new InfoEventArgs<MovementDirs>(MovementDirs.Left));
+                if (x < 0)
+                    moveEvent(this, new InfoEventArgs<MovementDirs>(MovementDirs.Right));
+                if (y > 0)
+                    moveEvent(this, new InfoEventArgs<MovementDirs>(MovementDirs.Up));
+                if (y < 0)
+                    moveEvent(this, new InfoEventArgs<MovementDirs>(MovementDirs.Down));
             }
         }
 
@@ -134,6 +128,7 @@ public class BaseInputController : MonoBehaviour
 
 /// <summary>
 /// Used to check for 'repeat' functionality, such as holding down a movement button will cause it to repeat the movement again after a short time.
+/// If using realtime input, then do not use the repeater and instead use CheckInput().
 /// </summary>
 class Repeater
 {
