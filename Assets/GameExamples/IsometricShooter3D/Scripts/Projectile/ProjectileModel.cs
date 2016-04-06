@@ -26,18 +26,13 @@ namespace IsometricShooter3D
         // The distance this projectile has moved.
         [SerializeField]
         float moveDistance;
-        public float MoveDistance
-        {
-            get { return moveDistance; }
-        }
 
         // Collision mask. Used in collision detection.
         [SerializeField]
         LayerMask collisionMask;
-        public LayerMask CollisionMask
-        {
-            get { return collisionMask; }
-        }
+
+        // A generic short distance used to fix edge cases where collisions may not be detected.
+        float skinWidth = 0.1f;
         #endregion
 
         /// <summary>
@@ -47,6 +42,17 @@ namespace IsometricShooter3D
         public void SetSpeed(float amount)
         {
             speed = amount;
+        }
+
+        void Start()
+        {
+            // Check for initial collisions. This allows us to register a hit even if we start inside another object.
+            Collider[] initialCollisions = Physics.OverlapSphere(transform.position, skinWidth, collisionMask);
+
+            if (initialCollisions.Length > 0)
+            {
+                OnHitObject(initialCollisions[0]);
+            }
         }
 
         void Update()
@@ -66,7 +72,7 @@ namespace IsometricShooter3D
             Ray ray = new Ray(transform.position, transform.forward);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, moveDistance, collisionMask, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(ray, out hit, moveDistance + skinWidth, collisionMask, QueryTriggerInteraction.Collide))
             {
                 OnHitObject(hit);
             }
@@ -77,6 +83,15 @@ namespace IsometricShooter3D
             IDamageable damageableObject = hit.collider.GetComponent <IDamageable>();
             if (damageableObject != null)
                 damageableObject.TakeHit(damage, hit);
+
+            GameObject.Destroy(gameObject);
+        }
+
+        void OnHitObject(Collider c)
+        {
+            IDamageable damageableObject = c.GetComponent<IDamageable>();
+            if (damageableObject != null)
+                damageableObject.TakeDamage(damage);
 
             GameObject.Destroy(gameObject);
         }

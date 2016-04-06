@@ -24,7 +24,7 @@ using System.Collections;
 public class BaseObjectView : MonoBehaviour {
 
     // Our input controller.
-    Mouse_Input myController;
+    MouseInputController myController;
 
     // Our movement destination.
     [SerializeField]
@@ -39,7 +39,7 @@ public class BaseObjectView : MonoBehaviour {
 
 	virtual protected void Awake () {
         // Get our controller.
-        myController = GetComponent<Mouse_Input>();
+        myController = GetComponent<MouseInputController>();
         if (myController == null)
             Debug.LogError(gameObject.name + " is missing a Controller!");
 

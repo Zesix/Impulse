@@ -74,6 +74,7 @@ namespace IsometricShooter3D
 
                 // Fire projectile.
                 ProjectileModel newProjectile = Instantiate(projectile, muzzle.position, muzzle.rotation) as ProjectileModel;
+                newProjectile.gameObject.AddComponent<AutoDestroyDelay>();
                 newProjectile.transform.parent = projectileParent;
                 newProjectile.SetSpeed(muzzleVelocity);
             }

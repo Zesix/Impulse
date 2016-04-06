@@ -27,7 +27,6 @@ namespace IsometricShooter3D
         }
 
         // References.
-        PlayerController controller;
         Rigidbody myRigidbody;
         #endregion
 
@@ -40,7 +39,6 @@ namespace IsometricShooter3D
         protected override void Start()
         {
             base.Start();
-            controller = GetComponent<PlayerController>();
             myRigidbody = GetComponent<Rigidbody>();
         }
 

@@ -19,7 +19,7 @@ using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class Keyboard_Input : BaseInputController
+public class KeyboardInputController : BaseInputController
 {
 
     public override void CheckInput()

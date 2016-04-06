@@ -18,8 +18,8 @@ namespace IsometricShooter3D
             controller.ModifyEnemyCount(0);
 
             yield return null;
-            
-            // Change to next state here.
+
+            controller.ChangeState<GameplayState>();
 
         }
     }

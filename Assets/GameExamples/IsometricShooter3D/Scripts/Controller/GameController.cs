@@ -19,17 +19,17 @@ namespace IsometricShooter3D
 
         void OnEnable()
         {
-            this.AddObserver(OnCharacterDeath, CharacterModel.CharacterDeathNotification);
+            this.AddObserver(OnGameOver, GameplayState.GameOverNotification);
         }
 
         void OnDisable()
         {
-            this.RemoveObserver(OnCharacterDeath, CharacterModel.CharacterDeathNotification);
+            this.RemoveObserver(OnGameOver, GameplayState.GameOverNotification);
         }
 
-        void OnCharacterDeath (object sender, object args)
+        void OnGameOver(object sender, object args)
         {
-            // TODO Determine if type of character that died is the player.
+
         }
 
         public override void Start()

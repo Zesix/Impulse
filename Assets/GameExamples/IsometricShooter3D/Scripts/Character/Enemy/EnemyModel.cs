@@ -19,6 +19,7 @@ namespace IsometricShooter3D
 
         // The target we are chasing.
         Transform target;
+        CharacterModel targetModel;
 
         // Collision radii of target and our own mesh.
         // Used in pathfinding to prevent 'going inside' the target.
@@ -41,6 +42,14 @@ namespace IsometricShooter3D
         [SerializeField]
         float attackDistanceThreshold = 0.5f;
 
+        // Attack damage.
+        [SerializeField]
+        float attackDamage = 1f;
+        public float AttackDamage
+        {
+            get { return attackDamage; }
+        }
+
         // Attack speed.
         [SerializeField]
         float attackSpeed = 3f;
@@ -58,12 +67,22 @@ namespace IsometricShooter3D
         float nextAttackTime;
 
         // States this object can be in. Used to prevent an error in which the object tries to attack in the middle of pathfinding.
-        enum State { Idle, Chasing, Attacking };
+        enum EnemyState { Idle, Chasing, Attacking };
 
         // Current state.
         [SerializeField]
-        State currentState;
+        EnemyState currentState;
         #endregion
+
+        void OnEnable()
+        {
+            this.AddObserver(OnGameOver, GameplayState.GameOverNotification);
+        }
+
+        void OnDisable()
+        {
+            this.RemoveObserver(OnGameOver, GameplayState.GameOverNotification);
+        }
 
         protected override void Start()
         {
@@ -71,13 +90,17 @@ namespace IsometricShooter3D
             pathfinder = GetComponent<NavMeshAgent>();
             skinMaterial = GetComponent<Renderer>().material;
             normalColor = skinMaterial.color;
-            target = GameObject.FindGameObjectWithTag("Player").transform;
 
             myCollisionRadius = GetComponent<CapsuleCollider>().radius;
             targetCollisionRadius = GetComponent<CapsuleCollider>().radius;
 
-            // Set default state to 'Chasing'
-            currentState = State.Chasing;
+            // If we have a target, set target and begin chasing.
+            if (GameObject.FindGameObjectWithTag("Player") != null)
+            {
+                currentState = EnemyState.Chasing;
+                target = GameObject.FindGameObjectWithTag("Player").transform;
+                targetModel = target.GetComponent<CharacterModel>();
+            }
 
             // Begin pathfinding.
             StartCoroutine(UpdatePath());
@@ -86,7 +109,7 @@ namespace IsometricShooter3D
         void Update()
         {
             // Check if in range of attack and sufficient time has passed since last attack. If so, then attack.
-            if (Time.time > nextAttackTime)
+            if (Time.time > nextAttackTime && target != null)
             {
                 // Compare square distance to target with attack distance for more performant calculation.
                 float sqrDistToTarget = (target.position - transform.position).sqrMagnitude;
@@ -99,11 +122,16 @@ namespace IsometricShooter3D
             }
         }
 
+        void OnGameOver(object sender, object args)
+        {
+            currentState = EnemyState.Idle;
+        }
+
         IEnumerator UpdatePath()
         {
-            while (target != null)
+            while (target != null && target != null)
             {
-                if (currentState == State.Chasing)
+                if (currentState == EnemyState.Chasing)
                 {
                     Vector3 directionToTarget = (target.position - transform.position).normalized;
                     // Set pathfinding position so that we don't go 'inside' the target. We also add half the attackDistance to prevent 'crowding' the target.
@@ -118,8 +146,11 @@ namespace IsometricShooter3D
 
         IEnumerator Attack()
         {
+            // Have we dealt damage yet?
+            bool hasAppliedDamage = false;
+
             // Set current state to attacking.
-            currentState = State.Attacking;
+            currentState = EnemyState.Attacking;
 
             // Disable moving toward target while attacking.
             pathfinder.enabled = false;
@@ -135,6 +166,13 @@ namespace IsometricShooter3D
 
             while (attackCompletePercent <= 1)
             {
+                // Deal damage when the enemy hits the target, not at start of attack animation.
+                if (attackCompletePercent >= 0.5f && !hasAppliedDamage)
+                {
+                    hasAppliedDamage = true;
+                    targetModel.TakeDamage(attackDamage);
+                }
+
                 attackCompletePercent += Time.deltaTime * attackSpeed;
 
                 // Since we need to interpolate from 0 to 1 and then back to zero,
@@ -150,7 +188,7 @@ namespace IsometricShooter3D
             skinMaterial.color = normalColor;
             
             // Reenable pathfinder and resume chasing.
-            currentState = State.Chasing;
+            currentState = EnemyState.Chasing;
             pathfinder.enabled = true;
         }
     }

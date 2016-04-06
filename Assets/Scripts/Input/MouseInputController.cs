@@ -19,7 +19,7 @@ using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class Mouse_Input : BaseInputController
+public class MouseInputController : BaseInputController
 {
     // Object View
     BaseObjectView myView; 

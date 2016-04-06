@@ -42,12 +42,12 @@ namespace IsometricShooter3D
 
         void OnEnable()
         {
-            this.AddObserver(OnCharacterDeath, CharacterModel.CharacterDeathNotification);
+            this.AddObserver(OnNextWaveNotification, GameplayState.NextWaveNotification);
         }
 
         void OnDisable()
         {
-            this.RemoveObserver(OnCharacterDeath, CharacterModel.CharacterDeathNotification);
+            this.RemoveObserver(OnNextWaveNotification, GameplayState.NextWaveNotification);
         }
 
         void Awake()
@@ -55,7 +55,7 @@ namespace IsometricShooter3D
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         }
 
-        void Start()
+        public void OnNextWaveNotification(object sender, object args)
         {
             if (enemySpawnParent == null)
                 enemySpawnParent = new GameObject("Enemy Spawn Parent").transform;
@@ -90,17 +90,6 @@ namespace IsometricShooter3D
                 currentWave = waves[currentWaveNumber - 1];
 
                 enemiesRemainingToSpawn = currentWave.EnemyCountToSpawn;
-            }
-        }
-
-        void OnCharacterDeath(object sender, object args) 
-        {
-            // TODO determine if sender is an enemy.
-            gameController.ModifyEnemyCount(-1);
-
-            if (gameController.EnemiesAlive == 0)
-            {
-                NextWave();
             }
         }
     }

@@ -18,7 +18,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ThirdPersonCameraMouse_Input : MonoBehaviour
+public class ThirdPersonCameraMouseInputController : MonoBehaviour
 {
 	private ThirdPerson_Camera thirdPersonCamera;
 	public float mouseXSensitivity = 5f;                    // Mouse X sensitivity.
