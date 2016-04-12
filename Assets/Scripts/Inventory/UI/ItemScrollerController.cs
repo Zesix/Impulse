@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -37,22 +38,22 @@ public class ItemScrollerController : MonoBehaviour
             foreach (var itemObject in itemPrefabs)
             {
                 var item = itemObject as ItemAssetData;
-                if(item != null)
-                    this._data.Add(new ItemData(item.Name,item.Range,item.Attack,item.Defense,item.Durability,item.Cost));
+                if (item != null)
+                    this._data.Add(new ItemData(item.Name, item.Range, item.Attack, item.Defense, item.Durability, item.Cost));
             }
         }
         else
         {
-            Debug.LogError("A CSVItemExtractor prefab wasn't found in " + CsvItemExtractorPath +". Please fix this by adding this prefab there or changing the path in CsvItemExtractorPath in the ItemScrollerController class");
+            Debug.LogError("A CSVItemExtractor prefab wasn't found in " + CsvItemExtractorPath + ". Please fix this by adding this prefab there or changing the path in CsvItemExtractorPath in the ItemScrollerController class");
         }
 
-       this.RefreshScroll();
+        this.RefreshScroll();
     }
 
     private void RefreshScroll()
     {
         // Erase previous childrens
-        for(int i = 0; i < this.MyScroller.content.childCount;i++)
+        for (int i = 0; i < this.MyScroller.content.childCount; i++)
             Destroy(this.MyScroller.content.GetChild(i).gameObject);
 
         // Update scroll list
@@ -73,3 +74,4 @@ public class ItemScrollerController : MonoBehaviour
         return this._data.Count;
     }
 }
+#endif

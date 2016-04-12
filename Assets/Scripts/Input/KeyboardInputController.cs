@@ -24,18 +24,6 @@ public class KeyboardInputController : BaseInputController
 
     public override void CheckInput()
     {
-        // get input data from vertical and horizontal axis and store them internally in vert and horz so we don't
-        // have to access them every time we need to relay input data.
-        vertical = CrossPlatformInputManager.GetAxis("Vertical");
-        horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-
-        // get fire / action keys
-        Fire1 = CrossPlatformInputManager.GetButton("Fire1");
-    }
-
-    public void LateUpdate()
-    {
-        // check inputs each LateUpdate() ready for the next tick
-        CheckInput();
+        base.CheckInput();
     }
 }

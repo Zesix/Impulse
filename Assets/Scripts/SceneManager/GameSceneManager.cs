@@ -38,8 +38,11 @@ namespace Impulse
         public int gameLevelNum = 0;
         public GameObject splashObj;           		// Put a canvas here (with image child object) for splash screen loading.
         public AnimationCurve Interpolation;		// Interpolates the splash screen with the curve.
-        public float Duration = 1f;					// The duration of the animation in seconds.
+        public float initialSplashDuration = 3f;    // The duration of the initial splash screen overlay.
+        public float duration = 2f;					// The duration of the animation in seconds.
         private CanvasGroup splashCanvasGroup;		// Used to grab the alpha of the canvas group.
+        public bool inTransition;                   // Are we in the middle of a fade transition?
+        public float transitionPercent;             // How far are we in a transition?
 
         public CanvasGroup blackOverlay;			//Canvas for black overlay
 
@@ -66,7 +69,6 @@ namespace Impulse
                     canvasObj.GetComponent<Canvas>().sortingOrder = 999;
                     DontDestroyOnLoad(splashObj);
                 }
-                DontDestroyOnLoad(blackOverlay);
                 blackOverlay.GetComponent<Canvas>().sortingOrder = 998;
                 Instance.StartCoroutine(LoadNextLevelFadeIn());
             }
@@ -81,14 +83,26 @@ namespace Impulse
         {
             // Start a lerp value from zero
             float lerpValue = 0f;
+            inTransition = true;
             while (lerpValue <= 1f)
             {
-                //Incerement the value each frame
-                lerpValue += Time.deltaTime / Duration;
+                if (SceneManager.GetActiveScene().buildIndex == 0)
+                {
+                    //Increment the value each frame
+                    lerpValue += Time.deltaTime / initialSplashDuration;
+                    transitionPercent = lerpValue / initialSplashDuration;
+                }
+                else
+                {
+                    //Increment the value each frame
+                    lerpValue += Time.deltaTime / duration;
+                    transitionPercent = lerpValue / duration;
+                }
                 //Set the alpha by the interpolated lerp value
                 target.alpha = Mathf.Lerp(start, end, Interpolation.Evaluate(lerpValue));
                 yield return null;
             }
+            inTransition = false;
         }
 
         private IEnumerator PlayFadeAnimation(bool forward, CanvasGroup target)

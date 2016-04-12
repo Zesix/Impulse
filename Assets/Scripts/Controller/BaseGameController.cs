@@ -21,8 +21,13 @@ using System.Collections;
 
 public class BaseGameController : StateMachine
 {
+    #region Properties
     [SerializeField]
-    bool paused;
+    protected bool paused;
+    #endregion
+
+    // Paused notification.
+    public const string GameControllerPausedNotification = "GameController.PausedNotification";
 
     public virtual void Start()
     {
@@ -50,7 +55,8 @@ public class BaseGameController : StateMachine
 
             if (paused)
             {
-                // pause time
+                // Post the paused notification and then pause the game.
+                this.PostNotification(GameControllerPausedNotification);
                 Time.timeScale = 0f;
             }
             else

@@ -29,7 +29,7 @@ namespace Impulse
 		[SerializeField]
 		private MainSystemFactory _mainSystemFactory;
 
-		public void Awake ()
+		public void Start ()
 		{
 			// Create MainManagers
 			_mainSystemFactory.CreateSingletonMainSystem ();

@@ -27,7 +27,7 @@
 
     Assign a Menu Screen object to First Screen to start with that screen
 
-    Disable all gameObject with a MenuScreen.cs before run
+    Disable all gameObjects with a MenuScreen component before running.
 
     */
 

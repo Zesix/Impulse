@@ -57,12 +57,10 @@ namespace Impulse
 
 			// Create scene manager
 			GameObject sceneObject = Instantiate (_sceneManagerPrefab);
-			sceneObject.transform.parent = mainObject.transform;
 			GameSceneManager sceneManager = sceneObject.GetComponent<GameSceneManager>();
 
 			// Create music manager
 			GameObject musicObject = Instantiate (_musicManagerPrefab);
-			musicObject.transform.parent = mainObject.transform;
 			MusicManager musicManager = musicObject.GetComponent<MusicManager>();
 
 			// Initialize main system

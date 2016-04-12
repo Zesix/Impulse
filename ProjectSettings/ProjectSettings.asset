@@ -9,17 +9,17 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: Test
+  companyName: Impulse, Ltd.
+  productName: Torus Runner v0.1.0
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
-  m_ShowUnitySplashScreen: 1
+  m_ShowUnitySplashScreen: 0
   m_VirtualRealitySplashScreen: {fileID: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
-  m_RenderingPath: 1
+  m_RenderingPath: 3
   m_MobileRenderingPath: 1
   m_ActiveColorSpace: 0
   m_MTRendering: 1
@@ -45,7 +45,7 @@ PlayerSettings:
   Prepare IOS For Recording: 0
   submitAnalytics: 1
   usePlayerLog: 1
-  bakeCollisionMeshes: 0
+  bakeCollisionMeshes: 1
   forceSingleInstance: 0
   resizableWindow: 0
   useMacAppStoreValidation: 0
@@ -110,8 +110,8 @@ PlayerSettings:
   ForceSDCardPermission: 0
   CreateWallpaper: 0
   APKExpansionFiles: 0
-  preloadShaders: 0
-  StripUnusedMeshComponents: 0
+  preloadShaders: 1
+  StripUnusedMeshComponents: 1
   VertexChannelCompressionMask:
     serializedVersion: 2
     m_Bits: 238
@@ -169,9 +169,21 @@ PlayerSettings:
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
-  m_BuildTargetIcons: []
-  m_BuildTargetBatching: []
-  m_BuildTargetGraphicsAPIs: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 0}
+      m_Width: 128
+      m_Height: 128
+  m_BuildTargetBatching:
+  - m_BuildTarget: WebGL
+    m_StaticBatching: 1
+    m_DynamicBatching: 1
+  m_BuildTargetGraphicsAPIs:
+  - m_BuildTarget: WebGLSupport
+    m_APIs: 080000000b000000
+    m_Automatic: 0
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
   wiiUTitleID: 0005000011000000
@@ -446,7 +458,7 @@ PlayerSettings:
   - WebGL::useEmbeddedResources
   - XboxOne::enus
   WebGL::analyzeBuildSize: 0
-  WebGL::dataCaching: 0
+  WebGL::dataCaching: 1
   WebGL::useEmbeddedResources: 0
   XboxOne::enus: 1
   stringPropertyNames:
@@ -454,7 +466,7 @@ PlayerSettings:
   - WebGL::template
   - additionalIl2CppArgs::additionalIl2CppArgs
   WebGL::emscriptenArgs: 
-  WebGL::template: APPLICATION:Default
+  WebGL::template: APPLICATION:Minimal
   additionalIl2CppArgs::additionalIl2CppArgs: 
   cloudProjectId: 
   projectName: 
