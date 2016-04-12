@@ -38,10 +38,6 @@ namespace EndlessTorusRunner3D
         [SerializeField]
         float ringDistance;
 
-        // Spot spawner.
-        [SerializeField]
-        PipeItemRingSpawner spotSpawner;
-
         // Random item spawners.
         [SerializeField]
         PipeItemGenerator[] randomItemSpawners;
@@ -118,9 +114,6 @@ namespace EndlessTorusRunner3D
             // Destroy previously generated items.
             for (int i = 0; i < transform.childCount; i++)
                 Destroy(transform.GetChild(i).gameObject);
-
-            // Generate spot items.
-            spotSpawner.GenerateItems(this);
 
             // Generate random items.
             if (withItems)
