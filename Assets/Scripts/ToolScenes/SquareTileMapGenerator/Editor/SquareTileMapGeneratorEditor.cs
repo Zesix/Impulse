@@ -11,11 +11,21 @@ public class SquareTileMapGeneratorEditor : Editor
         if (DrawDefaultInspector())
         {
             mapGenerator.GenerateMap();
+        }
 
-            if (GUILayout.Button("Generate Map"))
-            {
-                mapGenerator.GenerateMap();
-            }
+        if (GUILayout.Button("Load Map"))
+        {
+            mapGenerator.LoadMap();
+        }
+
+        if (GUILayout.Button("Generate Map"))
+        {
+            mapGenerator.GenerateMap();
+        }
+
+        if (GUILayout.Button("Save Map"))
+        {
+            mapGenerator.SaveMap();
         }
     }
 

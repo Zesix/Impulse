@@ -1,10 +1,22 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
 public class SquareTileMapGenerator : MonoBehaviour
 {
     #region Properties
+    // Name of this map.
+    [SerializeField]
+    string mapName = "My new map";
+
+    // Are we loading a map?
+    [SerializeField]
+    SquareTileMapData loadedMap;
+
     // Tile Prefab
     [SerializeField]
     Transform tilePrefab;
@@ -103,11 +115,11 @@ public class SquareTileMapGenerator : MonoBehaviour
         get { return tileOutlinePercent; }
     }
 
-    // Tiles list.
-    List<SquareTile> tiles = new List<SquareTile>();
+    // Points list.
+    List<Point> points = new List<Point>();
 
-    // Coordinates list.
-    List<Point> points;
+    // Tiles dictionary.
+    Dictionary<Point, SquareTile> tiles = new Dictionary<Point, SquareTile>();
     Queue<Point> shuffledTilePoints;
 
     Point mapCenter
@@ -119,6 +131,30 @@ public class SquareTileMapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        // If empty parent transforms exist, then create them. This most likely occurs when generating a map at runtime.
+        if (mapParent == null)
+        {
+            mapParent = new GameObject("Generated SquareTileMap").transform;
+
+            if (tilesParent == null)
+            {
+                tilesParent = new GameObject("Square Tiles").transform;
+                tilesParent.parent = mapParent;
+            }
+
+            if (obstaclesParent == null)
+            {
+                obstaclesParent = new GameObject("Obstacles").transform;
+                obstaclesParent.parent = mapParent;
+            }
+
+            if (navmeshMasksParent == null)
+            {
+                navmeshMasksParent = new GameObject("Navemesh Floor Masks").transform;
+                navmeshMasksParent.parent = mapParent;
+            }
+        }
+
         // Set floor box collider size.
         navmeshFloor.GetComponent<BoxCollider>().size = new Vector3(minMapSize.x * tileSize, 0.05f, minMapSize.y * tileSize);
 
@@ -168,7 +204,7 @@ public class SquareTileMapGenerator : MonoBehaviour
                 SquareTile newSquareTile = newTile.gameObject.GetComponent<SquareTile>();
                 newSquareTile.SetPos(x, y);
                 newSquareTile.Height = 0;
-                tiles.Add(newSquareTile);
+                tiles.Add(new Point(x, y), newSquareTile);
             }
         }
 
@@ -191,7 +227,7 @@ public class SquareTileMapGenerator : MonoBehaviour
             {
                 float obstacleHeight = Mathf.Lerp(minObstacleHeight, maxObstacleHeight, (float)pRNG.NextDouble());
                 Vector3 obstaclePosition = PointToPosition(randomPoint.x, randomPoint.y);
-                Transform newObstacle = Instantiate(obstaclePrefab, obstaclePosition + (Vector3.up * obstacleHeight/2f), Quaternion.identity) as Transform;
+                Transform newObstacle = Instantiate(obstaclePrefab, obstaclePosition + (Vector3.up * obstacleHeight / 2f), Quaternion.identity) as Transform;
                 newObstacle.localScale = new Vector3((1 - tileOutlinePercent) * tileSize, obstacleHeight, (1 - tileOutlinePercent) * tileSize);
                 newObstacle.parent = obstaclesParent;
 
@@ -244,8 +280,70 @@ public class SquareTileMapGenerator : MonoBehaviour
 
     }
 
+#if UNITY_EDITOR
+    /// <summary>
+    /// Saves the current squaretilemap as a data asset file.
+    /// </summary>
+    public void SaveMap()
+    {
+        string filePath = Application.dataPath + "/Resources/SquareTileMaps/";
+        if (!Directory.Exists(filePath))
+            CreateSaveDirectory();
+
+        SquareTileMapData savedSquareTileMap = ScriptableObject.CreateInstance<SquareTileMapData>();
+
+        // Populate data values.
+        savedSquareTileMap.SquareTiles = new List<Vector3>(tiles.Count);
+        foreach (SquareTile t in tiles.Values)
+            savedSquareTileMap.SquareTiles.Add(new Vector3(t.Pos.x, t.Height, t.Pos.y));
+        savedSquareTileMap.MinMapSize = minMapSize;
+        savedSquareTileMap.MaxMapSize = maxMapSize;
+        savedSquareTileMap.ObstaclePercent = obstaclePercent;
+        savedSquareTileMap.ObstaclePlaceSeed = obstaclePlaceSeed;
+        savedSquareTileMap.MinObstacleHeight = minObstacleHeight;
+        savedSquareTileMap.MaxObstacleHeight = maxObstacleHeight;
+        savedSquareTileMap.ForegroundColor = foregroundColor;
+        savedSquareTileMap.BackgroundColor = backgroundColor;
+        savedSquareTileMap.TileSize = tileSize;
+        savedSquareTileMap.TileOutlinePercent = tileOutlinePercent;
+
+        string fileName = string.Format("Assets/Resources/SquareTileMaps/{1}.asset", filePath, mapName);
+        AssetDatabase.CreateAsset(savedSquareTileMap, fileName);
+    }
+
+    public void LoadMap()
+    {
+        if (loadedMap == null)
+            return;
+
+        tiles.Clear();
+        minMapSize = loadedMap.MinMapSize;
+        maxMapSize = loadedMap.MaxMapSize;
+        obstaclePercent = loadedMap.ObstaclePercent;
+        obstaclePlaceSeed = loadedMap.ObstaclePlaceSeed;
+        minObstacleHeight = loadedMap.MinObstacleHeight;
+        maxObstacleHeight = loadedMap.MaxObstacleHeight;
+        foregroundColor = loadedMap.ForegroundColor;
+        backgroundColor = loadedMap.BackgroundColor;
+        tileSize = loadedMap.TileSize;
+        tileOutlinePercent = loadedMap.TileOutlinePercent;
+        GenerateMap();
+    }
+
+    void CreateSaveDirectory()
+    {
+        string filePath = Application.dataPath + "/Resources";
+        if (!Directory.Exists(filePath))
+            AssetDatabase.CreateFolder("Assets", "Resources");
+        filePath += "/SquareTileMaps";
+        if (!Directory.Exists(filePath))
+            AssetDatabase.CreateFolder("Assets/Resources", "SquareTileMaps");
+        AssetDatabase.Refresh();
+    }
+#endif
+
     // Uses a flood-fill algorithm to check for map connectivity.
-    bool MapIsFullyAccessible (bool[,] obstacleMap, int currentObstacleCount)
+    bool MapIsFullyAccessible(bool[,] obstacleMap, int currentObstacleCount)
     {
         bool[,] mapFlags = new bool[obstacleMap.GetLength(0), obstacleMap.GetLength(1)];
         Queue<Point> queue = new Queue<Point>();
@@ -296,7 +394,7 @@ public class SquareTileMapGenerator : MonoBehaviour
     {
         Point randomPoint = shuffledTilePoints.Dequeue();
         shuffledTilePoints.Enqueue(randomPoint);
-        
+
         return randomPoint;
     }
 

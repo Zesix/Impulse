@@ -7,8 +7,6 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/_Scenes/Splash.unity
-  - enabled: 1
-    path: Assets/GameExamples/EndlessTorusRunner3D/_Scenes/EndlessTorusRunner3D_Game.unity
   - enabled: 0
     path: Assets/_Scenes/Menu.unity
   - enabled: 0
