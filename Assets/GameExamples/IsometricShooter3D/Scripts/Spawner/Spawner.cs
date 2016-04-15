@@ -35,6 +35,20 @@ namespace IsometricShooter3D
         [SerializeField]
         Wave[] waves;
 
+        // The color a tile flashes when we spawn an enemy on that tile.
+        [SerializeField]
+        Color spawningFlashColor = Color.red;
+
+        // How long a tile flashes before the enemy is spawned.
+        [SerializeField]
+        float spawnDelay = 1f;
+
+        // How many times per second a tile flashes when an enemy is being spawned on it.
+        [SerializeField]
+        float spawningFlashSpeed = 4f;
+
+        // Ref to map generator. Used to determine where we can spawn.
+        SquareTileMapGenerator generator;
 
         // Ref to GameController.
         GameController gameController;
@@ -53,6 +67,7 @@ namespace IsometricShooter3D
         void Awake()
         {
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+            generator = FindObjectOfType<SquareTileMapGenerator>();
         }
 
         public void OnNextWaveNotification(object sender, object args)
@@ -75,10 +90,7 @@ namespace IsometricShooter3D
                 enemiesRemainingToSpawn--;
                 nextSpawnTime = Time.time + currentWave.TimeBetweenSpawns;
 
-                EnemyModel spawnedEnemy = Instantiate(enemyToSpawn, Vector3.zero, Quaternion.identity) as EnemyModel;
-                spawnedEnemy.transform.parent = enemySpawnParent;
-
-                gameController.ModifyEnemyCount(1);
+                StartCoroutine(SpawnEnemyUnit());
             }
         }
 
@@ -91,6 +103,34 @@ namespace IsometricShooter3D
 
                 enemiesRemainingToSpawn = currentWave.EnemyCountToSpawn;
             }
+        }
+
+        IEnumerator SpawnEnemyUnit()
+        {
+            Transform spawnTile = generator.GetRandomUnoccupiedTile();
+
+            // If player is camping, spawn on top of the player instead of a random tile.
+            if (gameController.PlayerIsCamping)
+            {
+                spawnTile = generator.GetTransformFromPosition(gameController.Player.transform.position);
+            }
+
+            Material tileMat = spawnTile.GetComponent<Renderer>().material;
+            Color originalColor = tileMat.color;
+            float spawnTimer = 0f;
+
+            // Make the spawning tile flash.
+            while (spawnTimer < spawnDelay)
+            {
+                tileMat.color = Color.Lerp(originalColor, spawningFlashColor, Mathf.PingPong(spawnTimer * spawningFlashSpeed, 1f));
+                spawnTimer += Time.deltaTime;
+                yield return null;
+            }
+
+            EnemyModel spawnedEnemy = Instantiate(enemyToSpawn, spawnTile.position + Vector3.up, Quaternion.identity) as EnemyModel;
+            spawnedEnemy.transform.parent = enemySpawnParent;
+
+            gameController.ModifyEnemyCount(1);
         }
     }
 }

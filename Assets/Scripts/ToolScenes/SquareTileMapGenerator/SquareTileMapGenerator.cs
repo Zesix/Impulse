@@ -118,9 +118,14 @@ public class SquareTileMapGenerator : MonoBehaviour
     // Points list.
     List<Point> points = new List<Point>();
 
-    // Tiles dictionary.
+    // Point - Tile dictionary.
     Dictionary<Point, SquareTile> tiles = new Dictionary<Point, SquareTile>();
+    // Tile - Obstacle dictionary.
+    Dictionary<SquareTile, Transform> obstacles = new Dictionary<SquareTile, Transform>();
+    // Used for getting a random point.
     Queue<Point> shuffledTilePoints;
+    // Used for getting a random tile that is not occupied.
+    Queue<Point> unOccupiedTilePoints;
 
     Point mapCenter
     {
@@ -131,7 +136,7 @@ public class SquareTileMapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        // If empty parent transforms exist, then create them. This most likely occurs when generating a map at runtime.
+        // If empty parent transforms exist, then create them.
         if (mapParent == null)
         {
             mapParent = new GameObject("Generated SquareTileMap").transform;
@@ -150,7 +155,7 @@ public class SquareTileMapGenerator : MonoBehaviour
 
             if (navmeshMasksParent == null)
             {
-                navmeshMasksParent = new GameObject("Navemesh Floor Masks").transform;
+                navmeshMasksParent = new GameObject("Navmesh Floor Masks").transform;
                 navmeshMasksParent.parent = mapParent;
             }
         }
@@ -161,6 +166,7 @@ public class SquareTileMapGenerator : MonoBehaviour
         // Random number seed for placing obstacles and modifying obstacle height.
         System.Random pRNG = new System.Random(obstaclePlaceSeed);
 
+        // List of points in the map.
         points = new List<Point>();
         for (int x = 0; x < minMapSize.x; x++)
         {
@@ -170,6 +176,10 @@ public class SquareTileMapGenerator : MonoBehaviour
                 points.Add(new Point(x, y));
             }
         }
+
+        // List of unoccupied points in the map. We remove points from this list during obstacle generation.
+        List<Point> unoccupiedPoints = new List<Point>(points);
+
         shuffledTilePoints = new Queue<Point>(SquareTileMapUtility.ShuffleArray(points.ToArray(), obstaclePlaceSeed));
 
         // Destroy previous tiles.
@@ -204,7 +214,10 @@ public class SquareTileMapGenerator : MonoBehaviour
                 SquareTile newSquareTile = newTile.gameObject.GetComponent<SquareTile>();
                 newSquareTile.SetPos(x, y);
                 newSquareTile.Height = 0;
+                // Add to tiles dictionary.
                 tiles.Add(new Point(x, y), newSquareTile);
+                // Since we haven't generated obstacles yet, add this squaretile to the obstacles dictionary with a null obstacle.
+                obstacles.Add(newSquareTile, null);
             }
         }
 
@@ -231,6 +244,15 @@ public class SquareTileMapGenerator : MonoBehaviour
                 newObstacle.localScale = new Vector3((1 - tileOutlinePercent) * tileSize, obstacleHeight, (1 - tileOutlinePercent) * tileSize);
                 newObstacle.parent = obstaclesParent;
 
+                // Remove this point from our unoccupied points list.
+                unoccupiedPoints.Remove(randomPoint);
+
+                // Add to obstacles dictionary.
+                // Get the tile at our random point.
+                SquareTile ourTile = tiles[randomPoint];
+                // Add obstacle transform to obstacles dictionary.
+                obstacles[ourTile] = newObstacle;
+
                 // Color settings based on foreground/background colors.
                 Renderer obstacleRenderer = newObstacle.GetComponent<Renderer>();
                 Material obstacleMaterial = new Material(obstacleRenderer.sharedMaterial);
@@ -249,11 +271,30 @@ public class SquareTileMapGenerator : MonoBehaviour
             }
         }
 
+        unOccupiedTilePoints = new Queue<Point>(SquareTileMapUtility.ShuffleArray(unoccupiedPoints.ToArray(), obstaclePlaceSeed));
+
         // Destroy previous navmesh floor masks.
         for (int i = navmeshMasksParent.childCount - 1; i >= 0; --i)
         {
             DestroyImmediate(navmeshMasksParent.GetChild(i).gameObject);
         }
+
+        // Destroy previous navmesh floor.
+        for (int i = 0; i < mapParent.childCount; i++)
+        {
+            if (mapParent.GetChild(i).GetComponent<NavmeshFloor>())
+            {
+                DestroyImmediate(mapParent.GetChild(i).gameObject);
+                break;
+            }
+        }
+
+        // Generate navmesh floor.
+        Transform ourFloor = Instantiate(navmeshFloor);
+        ourFloor.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        ourFloor.localScale = new Vector3(maxMapSize.x, maxMapSize.y) * tileSize;
+        ourFloor.GetComponent<BoxCollider>().size = new Vector3(1f, 1f, 0);
+        ourFloor.parent = mapParent;
 
         // Generate navmesh floor masks.
         Transform maskLeft = Instantiate(navmeshMaskPrefab, Vector3.left * (minMapSize.x + maxMapSize.x) / 4f * tileSize, Quaternion.identity) as Transform;
@@ -269,8 +310,6 @@ public class SquareTileMapGenerator : MonoBehaviour
         maskRight.localScale = new Vector3((maxMapSize.x - minMapSize.x) / 2f, 1, minMapSize.y) * tileSize;
         maskTop.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - minMapSize.y) / 2f) * tileSize;
         maskBottom.localScale = new Vector3(maxMapSize.x, 1, (maxMapSize.y - minMapSize.y) / 2f) * tileSize;
-
-        navmeshFloor.localScale = new Vector3(maxMapSize.x, maxMapSize.y) * tileSize;
 
         // Save to map parent.
         if (mapParent.GetComponent<SquareTileMap>() == null)
@@ -306,6 +345,8 @@ public class SquareTileMapGenerator : MonoBehaviour
         savedSquareTileMap.BackgroundColor = backgroundColor;
         savedSquareTileMap.TileSize = tileSize;
         savedSquareTileMap.TileOutlinePercent = tileOutlinePercent;
+        savedSquareTileMap.tiles = tiles;
+        savedSquareTileMap.obstacles = obstacles;
 
         string fileName = string.Format("Assets/Resources/SquareTileMaps/{1}.asset", filePath, mapName);
         AssetDatabase.CreateAsset(savedSquareTileMap, fileName);
@@ -389,6 +430,32 @@ public class SquareTileMapGenerator : MonoBehaviour
         return targetAccessibleTilecount == accessibleTileCount;
     }
 
+    /// <summary>
+    /// Returns a random unoccupied tile.
+    /// </summary>
+    /// <returns>The transform of a random unoccupied tile.</returns>
+    public Transform GetRandomUnoccupiedTile()
+    {
+        Point randomPoint = unOccupiedTilePoints.Dequeue();
+        unOccupiedTilePoints.Enqueue(randomPoint);
+        return tiles[randomPoint].transform;
+    }
+
+    /// <summary>
+    /// Gets the transform at a position.
+    /// </summary>
+    /// <param name="position">Vector3 of the position.</param>
+    /// <returns>The transform of the object at the position.</returns>
+    public Transform GetTransformFromPosition (Vector3 position)
+    {
+        int x = Mathf.RoundToInt(position.x / tileSize + (minMapSize.x - 1) / 2f);
+        int y = Mathf.RoundToInt(position.z / tileSize + (minMapSize.y - 1) / 2f);
+
+        x = Mathf.Clamp(x, 0, (int) maxMapSize.x);
+        y = Mathf.Clamp(y, 0, (int) maxMapSize.y);
+
+        return tiles[new Point(x, y)].transform;
+    }
 
     Point GetRandomPoint()
     {
@@ -407,5 +474,7 @@ public class SquareTileMapGenerator : MonoBehaviour
     {
         if (tilesParent == null)
             tilesParent = transform;
+
+        GenerateMap();
     }
 }

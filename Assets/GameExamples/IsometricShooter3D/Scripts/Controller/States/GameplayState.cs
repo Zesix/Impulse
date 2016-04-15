@@ -5,11 +5,13 @@ namespace IsometricShooter3D
 {
     public class GameplayState : ExtendedState
     {
+        #region Properties
         // Start next wave notification.
         public const string NextWaveNotification = "GameplayState.NextWaveNotification";
 
         // Game over notification.
         public const string GameOverNotification = "GameplayState.GameOverNotification";
+        #endregion
 
         void OnEnable()
         {
@@ -42,6 +44,13 @@ namespace IsometricShooter3D
         {
             base.Enter();
             this.PostNotification(NextWaveNotification);
+            controller.NextCampCheckTime = controller.TimeBetweenCampingChecks + Time.time;
+            controller.CampPositionOld = controller.Player.transform.position;
+        }
+
+        void Update()
+        {
+
         }
 
         public override void Exit()
