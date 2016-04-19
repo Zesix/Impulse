@@ -21,12 +21,16 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class MouseInputController : BaseInputController
 {
-    // Object View
-    BaseObjectView myView; 
+    // Reference to the model. Replace with your own specific model during implementation.
+    BaseObjectModel myModel;
 
-    // Player input
+    // 2D mouse position on screen.
     [SerializeField]
     Vector2 mouseInput;
+
+    // Mouse position in world space, from screen to world point.
+    Vector3 mouse3DInput;
+
     [SerializeField]
     float cameraDistance = 10.0f;
 
@@ -36,8 +40,9 @@ public class MouseInputController : BaseInputController
 
     void Awake()
     {
-        myView = GetComponent<BaseObjectView>();
-        if (myView == null)
+        myModel = GetComponent<BaseObjectModel>();
+
+        if (myModel == null)
             Debug.LogError(gameObject.name + " is missing a View!");
         
         // By default, set our click position to our current position.
@@ -47,7 +52,7 @@ public class MouseInputController : BaseInputController
     public override void CheckInput()
     {
         // Get mouse position
-        Vector3 mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(CrossPlatformInputManager.mousePosition.x, CrossPlatformInputManager.mousePosition.y,
+        mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(CrossPlatformInputManager.mousePosition.x, CrossPlatformInputManager.mousePosition.y,
                                                                         cameraDistance));
         mouseInput = new Vector2(mouse3DInput.x, mouse3DInput.y);
 
@@ -83,8 +88,8 @@ public class MouseInputController : BaseInputController
 
     protected virtual void SendInput()
     {
-        myView.setDestinationInput(clickPosition);
-        myView.setFireInput(Fire1);
+        myModel.setDestinationInput(clickPosition);
+        myModel.setFireInput(Fire1);
     }
 
 }

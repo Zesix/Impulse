@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Impulse;
 
 namespace EndlessTorusRunner3D
 {

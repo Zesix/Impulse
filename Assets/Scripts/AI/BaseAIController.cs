@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using AIStates;
 
 public class BaseAIController : ExtendedMonoBehaviour
 {

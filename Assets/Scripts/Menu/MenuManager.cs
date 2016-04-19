@@ -31,79 +31,76 @@
 
     */
 
-namespace Impulse
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
+
+public class MenuManager : MonoBehaviour
 {
-    using UnityEngine;
-    using UnityEngine.SceneManagement;
-    using System.Collections;
-
-    public class MenuManager : MonoBehaviour
+    string MenuScreens;
+    public MenuScreen ActiveScreen;
+    public MenuScreen FirstScreen;
+    // Use this for initialization
+    void Awake()
     {
-        string MenuScreens;
-        public MenuScreen ActiveScreen;
-        public MenuScreen FirstScreen;
-        // Use this for initialization
-        void Awake()
-        {
 #if UNITY_EDITOR
-            if (GameSceneManager.Instance == null)
-                SceneManager.LoadScene(0);
+        if (GameSceneManager.Instance == null)
+            SceneManager.LoadScene(0);
 #endif
-            FirstScreen.gameObject.SetActive(true);
-            ActiveScreen = FirstScreen;
-        }
+        FirstScreen.gameObject.SetActive(true);
+        ActiveScreen = FirstScreen;
+    }
 
-        public void ChangeMenuAndFade(MenuScreen screen)
-        {
-            StartCoroutine(ChangeScreen(screen, true));
-        }
+    public void ChangeMenuAndFade(MenuScreen screen)
+    {
+        StartCoroutine(ChangeScreen(screen, true));
+    }
 
-        public void ChangeMenu(MenuScreen screen)
-        {
-            StartCoroutine(ChangeScreen(screen, false));
-        }
+    public void ChangeMenu(MenuScreen screen)
+    {
+        StartCoroutine(ChangeScreen(screen, false));
+    }
 
-        public void LoadScene(int index, bool animate)
-        {
-            GameSceneManager.Instance.LoadLevelFadeInDelegate(index, animate);
-        }
+    public void LoadScene(int index, bool animate)
+    {
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(index, animate);
+    }
 
-        public void LoadScene(string name, bool animate)
-        {
-            GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
-        }
+    public void LoadScene(string name, bool animate)
+    {
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
+    }
 
-        public void LoadSceneFadeIn(string name)
-        {
-            GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
-        }
+    public void LoadSceneFadeIn(string name)
+    {
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
+    }
 
-        public void LoadScene(string name)
-        {
-            GameSceneManager.Instance.LoadLevelFadeInDelegate(name, false);
-        }
+    public void LoadScene(string name)
+    {
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(name, false);
+    }
 
-        IEnumerator ChangeScreen(MenuScreen target, bool animate)
+    IEnumerator ChangeScreen(MenuScreen target, bool animate)
+    {
+        if (animate)
         {
-            if (animate)
-            {
-                GameSceneManager.Instance.SetCanvasEnabled(true);
-                yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.blackOverlay));
-            }
-            ActiveScreen.gameObject.SetActive(false);
-            ActiveScreen = target;
-            ActiveScreen.gameObject.SetActive(true);
-            if (animate)
-            {
-                yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.blackOverlay));
-                GameSceneManager.Instance.SetCanvasEnabled(false);
-            }
+            GameSceneManager.Instance.SetCanvasEnabled(true);
+            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.blackOverlay));
         }
-
-        public void QuitRequest()
+        ActiveScreen.gameObject.SetActive(false);
+        ActiveScreen = target;
+        ActiveScreen.gameObject.SetActive(true);
+        if (animate)
         {
-            Application.Quit();
+            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.blackOverlay));
+            GameSceneManager.Instance.SetCanvasEnabled(false);
         }
     }
 
+    public void QuitRequest()
+    {
+        Application.Quit();
+    }
 }
+

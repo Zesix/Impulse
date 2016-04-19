@@ -19,48 +19,40 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// A basic view for gameObjects that comes with basic movement functionality.
+/// A basic model for gameObjects that comes with basic movement functionality.
 /// </summary>
-public class BaseObjectView : MonoBehaviour {
-
-    // Our input controller.
-    MouseInputController myController;
+public class BaseObjectModel : MonoBehaviour
+{
 
     // Our movement destination.
     [SerializeField]
     Vector3 destinationPosition;
-    
+
     // The spped our object moves.
     [SerializeField]
-    float moveSpeed;
+    float moveSpeed = 1.5f;
 
     bool fireInput = false;                 // Are we firing?
     bool isMoving = false;                  // Are we moving?
 
-	virtual protected void Awake () {
-        // Get our controller.
-        myController = GetComponent<MouseInputController>();
-        if (myController == null)
-            Debug.LogError(gameObject.name + " is missing a Controller!");
-
-        // Set destination position to current position.
+    virtual protected void Awake()
+    {
+        // Set destination position to current position on awake.
         destinationPosition = transform.position;
+    }
 
-        // TODO This is normally acquired from the model. We use a placeholder value here for testing.
-        moveSpeed = 1.5f;
-	}
-	
-	// Update is called once per frame
-	virtual protected void Update () {
+    // Update is called once per frame
+    virtual protected void Update()
+    {
         if (destinationPosition != transform.position)
             MoveObject();
-	}
+    }
 
     /// <summary>
     /// Moves the object to the destination position (acquired from the input controller) and also rotates them to look at the destination position.
     /// When the object reaches the destination position, stop movement.
     /// </summary>
-    virtual protected void MoveObject ()
+    virtual protected void MoveObject()
     {
         transform.LookAt(destinationPosition);
         transform.position = Vector3.MoveTowards(transform.position, destinationPosition, moveSpeed * Time.deltaTime);
@@ -68,6 +60,8 @@ public class BaseObjectView : MonoBehaviour {
         // If we are at the desired position, then stop moving.
         if (transform.position == destinationPosition)
             isMoving = false;
+        else
+            isMoving = true;
 
         // Draw a debug line to show where we are moving.
         Debug.DrawLine(transform.position, destinationPosition, Color.red);

@@ -15,59 +15,55 @@
     along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
 *****************************************/
 
-namespace Impulse
+using UnityEngine;
+using System.Collections;
+
+/// <summary>
+///     A Singleton Factory that creates the MainSystem and wires it up for use.
+/// </summary>
+/// <remarks>
+///     Attach this to a prefab. You do not have to instantiate the prefab to use the factory.
+/// </remarks>
+public class MainSystemFactory : MonoBehaviour
 {
-	using UnityEngine;
-	using System.Collections;
 
-	/// <summary>
-	///     A Singleton Factory that creates the MainSystem and wires it up for use.
-	/// </summary>
-	/// <remarks>
-	///     Attach this to a prefab. You do not have to instantiate the prefab to use the factory.
-	/// </remarks>
-	public class MainSystemFactory : MonoBehaviour
-	{
+    [SerializeField]
+    private GameObject _mainSystemPrefab;
 
-		[SerializeField]
-		private GameObject _mainSystemPrefab;
+    [SerializeField]
+    private GameObject _sceneManagerPrefab;
 
-		[SerializeField]
-		private GameObject _sceneManagerPrefab;
+    [SerializeField]
+    private GameObject _musicManagerPrefab;
 
-		[SerializeField]
-		private GameObject _musicManagerPrefab;
+    private static MainSystem _mainSystem;
 
-		private static MainSystem _mainSystem;
+    /// <summary>
+    /// 	Returns a singletone instance of MainManagers. Creates a new one if necessary.
+    /// </summary>
+    public MainSystem CreateSingletonMainSystem()
+    {
+        // Enforce Singleton Factory
+        if (_mainSystem != null)
+        {
+            return _mainSystem;
+        }
 
-		/// <summary>
-		/// 	Returns a singletone instance of MainManagers. Creates a new one if necessary.
-		/// </summary>
-		public MainSystem CreateSingletonMainSystem()
-		{
-			// Enforce Singleton Factory
-			if (_mainSystem != null)
-			{
-				return _mainSystem;
-			}
+        // Create main system
+        GameObject mainObject = Instantiate(_mainSystemPrefab);
+        _mainSystem = mainObject.GetComponent<MainSystem>();
 
-			// Create main system
-			GameObject mainObject = Instantiate (_mainSystemPrefab);
-			_mainSystem = mainObject.GetComponent<MainSystem>();
+        // Create scene manager
+        GameObject sceneObject = Instantiate(_sceneManagerPrefab);
+        GameSceneManager sceneManager = sceneObject.GetComponent<GameSceneManager>();
 
-			// Create scene manager
-			GameObject sceneObject = Instantiate (_sceneManagerPrefab);
-			GameSceneManager sceneManager = sceneObject.GetComponent<GameSceneManager>();
+        // Create music manager
+        GameObject musicObject = Instantiate(_musicManagerPrefab);
+        MusicManager musicManager = musicObject.GetComponent<MusicManager>();
 
-			// Create music manager
-			GameObject musicObject = Instantiate (_musicManagerPrefab);
-			MusicManager musicManager = musicObject.GetComponent<MusicManager>();
+        // Initialize main system
+        _mainSystem.Initialize(sceneManager, musicManager);
 
-			// Initialize main system
-			_mainSystem.Initialize (sceneManager, musicManager);
-
-			return _mainSystem;
-		}
-	}
-
+        return _mainSystem;
+    }
 }

@@ -15,27 +15,26 @@
     along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
 *****************************************/
 
-namespace Impulse
+
+using UnityEngine;
+using System.Collections;
+
+/// <summary>
+///     A class that creates MainManagers on awake.
+/// </summary>
+public class MainSystemStartup : MonoBehaviour
 {
-	using UnityEngine;
-	using System.Collections;
 
-	/// <summary>
-	///     A class that creates MainManagers on awake.
-	/// </summary>
-	public class MainSystemStartup : MonoBehaviour {
+    [Tooltip("The factory to construct the MainManagers.")]
+    [SerializeField]
+    private MainSystemFactory _mainSystemFactory;
 
-		[Tooltip("The factory to construct the MainManagers.")]
-		[SerializeField]
-		private MainSystemFactory _mainSystemFactory;
+    public void Start()
+    {
+        // Create MainManagers
+        _mainSystemFactory.CreateSingletonMainSystem();
 
-		public void Start ()
-		{
-			// Create MainManagers
-			_mainSystemFactory.CreateSingletonMainSystem ();
-
-			// Self destruct.
-			Destroy (gameObject);
-		}
-	}
+        // Self destruct.
+        Destroy(gameObject);
+    }
 }
