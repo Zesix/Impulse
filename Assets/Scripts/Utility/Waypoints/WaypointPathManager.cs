@@ -251,6 +251,30 @@ public class WaypointPathManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets the next waypoint in the waypoint list.
+    /// </summary>
+    /// <param name="index">The current waypoint.</param>
+    /// <param name="reverse">Are we already going backward through the waypoints?</param>
+    /// <returns>The integer index of the next waypoint in the list.</returns>
+    public int GetNextWaypoint(int index, bool reverse)
+    {
+        // If we are already going backward, keep going backward unless we have reached the front again.
+        if (reverse == true && index != 0)
+        {
+            return index - 1;
+        }
+        // If we have reached the end of the waypoints, go backward.
+        if (reverse == false && index == transforms.Count - 1)
+        {
+            return transforms.Count - 2;
+        }
+        else
+        {
+            return index + 1;
+        }
+    }
+
+    /// <summary>
     /// Gets the transform of the waypoint at the index number passed in.
     /// If shouldReverse is true, the waypoints are reversed: 0 will return the last waypoint in the path instead of the first, etc.
     /// </summary>
@@ -286,6 +310,18 @@ public class WaypointPathManager : MonoBehaviour
     public int GetTotal()
     {
         return totalTransforms;
+    }
+
+    /// <summary>
+    /// Returns true if the end of the path has been reached and the traveler should go through the waypoints in backward order.
+    /// </summary>
+    /// <param name="index">The waypoint number to check for. This is usually the previously reached waypoint.</param>
+    /// <returns>True if we have reached the end of the waypoint list, otherwise false.</returns>
+    public bool ReachedEndOfPath(int index)
+    {
+        if (index == 0 || index == transforms.Count - 1)
+            return true;
+        return false;
     }
 
 }
