@@ -21,25 +21,29 @@ using System.Collections;
 namespace SpaceShooter2D
 {
 
-    [RequireComponent(typeof(GenericShipView))]
+    [RequireComponent(typeof(GenericShipModel))]
     public class GenericShipMouseInputController : BaseInputController
     {
         // Our ship
-        protected GenericShipView myShip;
+        protected GenericShipModel myShip;
 
         // Our input
-        public Vector2 mouseInput;
-        public float CameraDistance = 10.0f;
+        [SerializeField]
+        Vector2 mouseInput;
+        [SerializeField]
+        Vector3 mouse3DInput;
+        [SerializeField]
+        float CameraDistance = 10.0f;
 
         protected virtual void Start()
         {
-            myShip = GetComponent<GenericShipView>();
+            myShip = GetComponent<GenericShipModel>();
         }
 
         public override void CheckInput()
         {
             // Get mouse position
-            Vector3 mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,
+            mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,
                                                                             CameraDistance));
             mouseInput = new Vector2(mouse3DInput.x, mouse3DInput.y);
 
@@ -50,9 +54,10 @@ namespace SpaceShooter2D
 
         protected virtual void SendInput()
         {
-            myShip.setDestinationInput(mouseInput);
-            myShip.setFireInput(Fire1);
-            myShip.setSecondaryInput(Fire2);
+            // Enable if you want the ship to fly toward the mouse cursor position.
+            myShip.SetRotationInput(mouseInput);
+            myShip.SetFireInput(Fire1);
+            myShip.SetSecondaryInput(Fire2);
         }
 
         private void Update()

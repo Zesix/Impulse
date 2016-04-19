@@ -23,7 +23,8 @@ namespace SpaceShooter2D
 {
     public class GenericShipModel : MonoBehaviour
     {
-        // Model properties
+        #region Properties
+        // Ship properties
         protected float health;
         [SerializeField]
         protected float maxHealth = 100;
@@ -87,9 +88,55 @@ namespace SpaceShooter2D
             get { return health; }
         }
 
+        // Control parameters
+        [Range(0, 10)]
+        public float forcedPositionTime = 3.0f;
+        protected Vector3 currentDirection = Vector3.zero;
+        protected Vector3 currentVelocity = Vector3.zero;
+        [Range(0, 1)]
+        public float WeaponMomentum = 0.2f;
+
+        bool AIControlled = false;
+        Vector3 AILookDirection = Vector3.zero;
+
+        // Player or AI Inputs
+        protected Vector3 destinationInput = Vector3.zero;
+        protected Vector3 rotationInput = Vector3.zero;
+        protected bool strafeToDestination = false;
+        protected bool fireInput = false;
+        protected bool secondaryInput = false;
+        public bool forcedPosition = false;
+        protected Vector3 offsetFromTarget = Vector3.zero;
+
+        // Components.
+        [SerializeField]
+        protected FireProjectile myShooter;
+        [SerializeField]
+        protected FireProjectile mySecondaryShooter;
+        protected Faction myFaction;
+        protected Detector myDetector;
+#endregion
+
         virtual protected void Start()
         {
             Init();
+        }
+
+        /// <summary>
+        /// Execute the fixed Update
+        /// </summary>
+        virtual protected void FixedUpdate()
+        {
+            if (!AIControlled)
+                ExecuteMovement();
+            if (AIControlled)
+                ExecuteAIMovement();
+        }
+
+        virtual protected void Update()
+        {
+            ExecuteWeapons();
+            ExecuteMovement();
         }
 
         /// <summary>
@@ -99,6 +146,19 @@ namespace SpaceShooter2D
         {
             health = maxHealth;
             shields = maxShields;
+
+            myDetector = GetComponent<Detector>();
+            myFaction = GetComponent<Faction>();
+            if (myFaction != null)
+            {
+                if (myShooter != null)
+                    myShooter.SetWeaponFaction(myFaction.FactionName);
+                if (mySecondaryShooter != null)
+                    mySecondaryShooter.SetWeaponFaction(myFaction.FactionName);
+            }
+
+            // Set the current position as the desired destination
+            destinationInput = transform.position;
         }
 
         /// <summary>
@@ -129,5 +189,194 @@ namespace SpaceShooter2D
             Debug.Log(gameObject + " received: " + Damage + " Points of damage. Current Shields: " + shields);
         }
 
+        /// <summary>
+        /// Executes the movement.
+        /// </summary>
+        virtual protected void ExecuteMovement()
+        {
+            // Set desired destination
+            Vector3 destination = destinationInput;
+
+            // Get movement direction
+            Vector3 targetDirection = destination - new Vector3(transform.position.x,
+                                                                transform.position.y,
+                                                                transform.position.z);
+
+            // Execute movement momentum
+            currentDirection = Vector3.Lerp(currentDirection, targetDirection, drift * Time.fixedDeltaTime);
+
+            // Execute movement
+            currentVelocity = Vector3.ClampMagnitude(currentVelocity + currentDirection * acceleration * Time.fixedDeltaTime,
+                                                     MaxAcceleration);
+            if (!forcedPosition)
+                transform.Translate(currentVelocity * Time.fixedDeltaTime, Space.World);
+
+            // Get absolute angle
+            float absoluteAngle = Vector3.Angle(Vector2.up, currentDirection.normalized);
+
+            // Get absolute angle sign
+            Vector3 absoluteCross = Vector3.Cross(Vector2.up, currentDirection.normalized);
+            if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+
+            // If we are strafing, we do not rotate toward the target.
+            if (!strafeToDestination)
+            {
+                // Rotate towards proper orientation
+                Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
+                transform.rotation = Quaternion.Lerp(transform.rotation, destinationAngle, rotation * Time.fixedDeltaTime);
+            }
+
+        }
+
+        /// <summary>
+        /// Moves the ship according to AI.
+        /// </summary>
+        virtual protected void ExecuteAIMovement()
+        {
+            Vector3 MoveDirection = transform.up * movementMagnitude;
+
+            // Move the ship
+            transform.position += MoveDirection * acceleration * Time.fixedDeltaTime;
+
+            // Get movement angle
+            Vector3 WorldRotateDirection = new Vector3(horzAIAxis, vertAIAxis, 0);
+
+
+            // Get absolute angle sign
+            float absoluteAngle = Vector3.Angle(Vector2.up, WorldRotateDirection.normalized);
+            Vector3 absoluteCross = Vector3.Cross(Vector2.up, WorldRotateDirection.normalized);
+            if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+
+            // Get absolute angle
+            Quaternion destinationAngle = Quaternion.AngleAxis(inverseMovement ? absoluteAngle + 180.0f : absoluteAngle, Vector3.forward);
+
+            // Execute rotation
+            transform.rotation = Quaternion.Lerp(transform.rotation, destinationAngle, rotation * Time.fixedDeltaTime);
+        }
+
+        /// <summary>
+        /// Executes firing of weapons.
+        /// </summary>
+        virtual protected void ExecuteWeapons()
+        {
+            if (fireInput)
+                ExecuteSpecificWeapon(myShooter);
+            else if (secondaryInput)
+                ExecuteSpecificWeapon(mySecondaryShooter);
+        }
+
+        virtual protected void ExecuteSpecificWeapon(FireProjectile shooter)
+        {
+            // Check if the shooter exist
+            if (shooter == null || shooter.firing) return;
+
+            // Single shoot mode
+            if (shooter.fireMode == FireProjectile.FiringMode.Single)
+            {
+                // Fire the main weapon and send the current ship's velocity as momentum
+                shooter.Fire(bulletSpeed, currentVelocity * WeaponMomentum);
+            }
+            // Continuous shoot mode
+            else if (shooter.fireMode == FireProjectile.FiringMode.Continuous)
+            {
+                // Shoot as long as burst beam duration allows it
+                shooter.Fire(bulletSpeed, currentVelocity * WeaponMomentum);
+            }
+        }
+
+        /// <summary>
+        /// Collsion Detection
+        /// </summary>
+        virtual protected void OnTriggerEnter(Collider coll)
+        {
+            Projectile incomingProjectile = coll.gameObject.GetComponent<Projectile>();
+            if (incomingProjectile != null && myFaction.FactionName != incomingProjectile.Faction)
+            {
+                DealDamage(incomingProjectile.Damage);
+                incomingProjectile.Deactivate();
+            }
+        }
+
+        #region Setters and Getters
+        virtual public Detector GetDetector()
+        {
+            return myDetector;
+        }
+
+        virtual public void SetDestinationInput(Vector3 input)
+        {
+            destinationInput = input;
+        }
+
+        virtual public void SetRotationInput (Vector3 input)
+        {
+            rotationInput = input;
+        }
+
+        virtual public void SetTemporaryForcedPosition()
+        {
+            forcedPosition = true;
+            StopCoroutine("removeForcedPositionDelayed");
+            StartCoroutine("removeForcedPositionDelayed");
+        }
+
+        virtual public void RemoveTemporaryForcedPosition()
+        {
+            forcedPosition = false;
+            StopCoroutine("removeForcedPositionDelayed");
+        }
+
+        IEnumerator RemoveForcedPositionDelayed()
+        {
+            yield return new WaitForSeconds(forcedPositionTime * Random.value);
+            forcedPosition = false;
+        }
+
+        virtual public void RemoveForcedPosition()
+        {
+            forcedPosition = false;
+            StopCoroutine("removeForcedPositionDelayed");
+        }
+
+        virtual public void SetFireInput(bool input)
+        {
+            fireInput = input;
+        }
+
+        virtual public void SetSecondaryInput(bool input)
+        {
+            secondaryInput = input;
+        }
+
+        virtual public void SetOffsetFromTarget(Vector3 offset)
+        {
+            offsetFromTarget = offset;
+        }
+
+        virtual public Vector3 GetOffsetFromTarget()
+        {
+            return offsetFromTarget;
+        }
+
+        virtual public void SetStrafeToDestination(bool value)
+        {
+            strafeToDestination = value;
+        }
+
+        virtual public void SetAIControlled(bool value)
+        {
+            AIControlled = value;
+        }
+
+        virtual public void SetAILookDirection(Vector3 direction)
+        {
+            AILookDirection = direction;
+        }
+
+        virtual public Vector3 GetCurrentDirection()
+        {
+            return currentDirection;
+        }
+        #endregion
     }
 }

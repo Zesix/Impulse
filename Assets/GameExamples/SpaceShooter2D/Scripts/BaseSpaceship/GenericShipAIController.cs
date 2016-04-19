@@ -69,7 +69,7 @@ namespace SpaceShooter2D
             }
 
             myController.SetAIControl(true);
-            myShipView.setAIControlled(true);
+            myShipModel.SetAIControlled(true);
 
             // Begin custom update loop for AI.
             InvokeRepeating("UpdateAIController", 0.0f, behaviorChangeRate);
@@ -94,7 +94,7 @@ namespace SpaceShooter2D
             {
                 myController.SetChaseTarget(closestEnemy.transform);
                 AttackTarget(closestEnemy);
-                myShipView.setAILookDirection(closestEnemy.transform.position);
+                myShipModel.SetAILookDirection(closestEnemy.transform.position);
             }
 
             myShipModel.horzAIAxis = myController.GetHorizontal();
@@ -109,11 +109,11 @@ namespace SpaceShooter2D
             // While facing the enemy, shoot.
             if (isFacingTarget(enemy))
             {
-                myShipView.setFireInput(true);
+                myShipModel.SetFireInput(true);
             }
             if (!isFacingTarget(enemy))
             {
-                myShipView.setFireInput(false);
+                myShipModel.SetFireInput(false);
             }
         }
 
