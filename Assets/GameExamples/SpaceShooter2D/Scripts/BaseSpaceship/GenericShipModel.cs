@@ -104,7 +104,7 @@ namespace SpaceShooter2D
         protected Vector3 destinationInput = Vector3.zero;
         protected Vector3 keyboardDestinationInput = Vector3.zero;
         protected Vector3 rotationInput = Vector3.zero;
-        public bool UseKeyboardMovement = false;
+        protected bool useKeyboardMovement = false;
         protected bool strafeToDestination = false;
         protected bool fireInput = false;
         protected bool secondaryInput = false;
@@ -209,7 +209,7 @@ namespace SpaceShooter2D
             currentLookDirection = Vector3.Lerp(currentLookDirection, targetLookDirection, drift * Time.fixedDeltaTime);
 
             // Mouse based movement
-            if(!this.UseKeyboardMovement && !forcedPosition)
+            if(!this.useKeyboardMovement && !forcedPosition)
             {
                 // Get movement direction
                 currentMovementDirection = currentLookDirection;
@@ -232,7 +232,7 @@ namespace SpaceShooter2D
 
             // Execute Rotation Towards Mouse Input (keyboard movement)
             float absoluteAngle;
-            if (UseKeyboardMovement)
+            if (useKeyboardMovement)
             {
                 absoluteAngle = Vector3.Angle(Vector2.up, targetLookDirection.normalized);
 
@@ -400,6 +400,11 @@ namespace SpaceShooter2D
         virtual public void SetAIControlled(bool value)
         {
             AIControlled = value;
+        }
+
+        virtual public void SetKeyboardMovement(bool value)
+        {
+            useKeyboardMovement = value;
         }
 
         virtual public void SetAILookDirection(Vector3 direction)
