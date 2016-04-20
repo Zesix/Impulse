@@ -91,7 +91,8 @@ namespace SpaceShooter2D
         // Control parameters
         [Range(0, 10)]
         public float forcedPositionTime = 3.0f;
-        protected Vector3 currentDirection = Vector3.zero;
+        protected Vector3 currentLookDirection = Vector3.zero;
+        protected Vector3 currentMovementDirection = Vector3.zero;
         protected Vector3 currentVelocity = Vector3.zero;
         [Range(0, 1)]
         public float WeaponMomentum = 0.2f;
@@ -101,7 +102,9 @@ namespace SpaceShooter2D
 
         // Player or AI Inputs
         protected Vector3 destinationInput = Vector3.zero;
+        protected Vector3 keyboardDestinationInput = Vector3.zero;
         protected Vector3 rotationInput = Vector3.zero;
+        public bool UseKeyboardMovement = false;
         protected bool strafeToDestination = false;
         protected bool fireInput = false;
         protected bool secondaryInput = false;
@@ -198,32 +201,63 @@ namespace SpaceShooter2D
             Vector3 destination = destinationInput;
 
             // Get movement direction
-            Vector3 targetDirection = destination - new Vector3(transform.position.x,
+            Vector3 targetLookDirection = destination - new Vector3(transform.position.x,
                                                                 transform.position.y,
                                                                 transform.position.z);
 
-            // Execute movement momentum
-            currentDirection = Vector3.Lerp(currentDirection, targetDirection, drift * Time.fixedDeltaTime);
+            // Execute look momentum
+            currentLookDirection = Vector3.Lerp(currentLookDirection, targetLookDirection, drift * Time.fixedDeltaTime);
+
+            // Mouse based movement
+            if(!this.UseKeyboardMovement && !forcedPosition)
+            {
+                // Get movement direction
+                currentMovementDirection = currentLookDirection;
+            }
+            // Keyboard based movement
+            else
+            {
+                // Get relative direction
+                Vector3 targetKeyboardDirection = this.transform.TransformDirection(keyboardDestinationInput);
+
+                // Get movement direction
+                currentMovementDirection = Vector3.Lerp(currentMovementDirection, targetKeyboardDirection, drift * Time.fixedDeltaTime);
+            }
 
             // Execute movement
-            currentVelocity = Vector3.ClampMagnitude(currentVelocity + currentDirection * acceleration * Time.fixedDeltaTime,
-                                                     MaxAcceleration);
-            if (!forcedPosition)
-                transform.Translate(currentVelocity * Time.fixedDeltaTime, Space.World);
+            currentVelocity = Vector3.ClampMagnitude(currentVelocity + currentMovementDirection * acceleration * Time.fixedDeltaTime,
+                         MaxAcceleration);
+            transform.Translate(currentVelocity * Time.fixedDeltaTime, Space.World);
 
-            // Get absolute angle
-            float absoluteAngle = Vector3.Angle(Vector2.up, currentDirection.normalized);
 
-            // Get absolute angle sign
-            Vector3 absoluteCross = Vector3.Cross(Vector2.up, currentDirection.normalized);
-            if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+            // Execute Rotation Towards Mouse Input (keyboard movement)
+            float absoluteAngle;
+            if (UseKeyboardMovement)
+            {
+                absoluteAngle = Vector3.Angle(Vector2.up, targetLookDirection.normalized);
+
+                // Get absolute angle sign
+                Vector3 absoluteCross = Vector3.Cross(Vector2.up, targetLookDirection.normalized);
+                if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+            }
+            // Execute Rotation Towards Movement Direction
+            else
+            {
+                // Get absolute angle
+                absoluteAngle = Vector3.Angle(Vector2.up, currentLookDirection.normalized);
+
+                // Get absolute angle sign
+                Vector3 absoluteCross = Vector3.Cross(Vector2.up, currentLookDirection.normalized);
+                if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+            }
 
             // If we are strafing, we do not rotate toward the target.
             if (!strafeToDestination)
             {
                 // Rotate towards proper orientation
                 Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
-                transform.rotation = Quaternion.Lerp(transform.rotation, destinationAngle, rotation * Time.fixedDeltaTime);
+                transform.rotation = Quaternion.Lerp(transform.rotation, destinationAngle,
+                    rotation * Time.fixedDeltaTime);
             }
 
         }
@@ -308,6 +342,11 @@ namespace SpaceShooter2D
             destinationInput = input;
         }
 
+        virtual public void SetKeyboardDestinationInput(Vector3 input)
+        {
+            keyboardDestinationInput = input;
+        }
+
         virtual public void SetRotationInput (Vector3 input)
         {
             rotationInput = input;
@@ -358,11 +397,6 @@ namespace SpaceShooter2D
             return offsetFromTarget;
         }
 
-        virtual public void SetStrafeToDestination(bool value)
-        {
-            strafeToDestination = value;
-        }
-
         virtual public void SetAIControlled(bool value)
         {
             AIControlled = value;
@@ -373,9 +407,14 @@ namespace SpaceShooter2D
             AILookDirection = direction;
         }
 
+        virtual public Vector3 GetCurrentLookDirection()
+        {
+            return currentLookDirection;
+        }
+
         virtual public Vector3 GetCurrentDirection()
         {
-            return currentDirection;
+            return currentMovementDirection;
         }
         #endregion
     }

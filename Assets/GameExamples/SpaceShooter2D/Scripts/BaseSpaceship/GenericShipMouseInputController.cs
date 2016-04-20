@@ -31,6 +31,8 @@ namespace SpaceShooter2D
         [SerializeField]
         Vector2 mouseInput;
         [SerializeField]
+        Vector2 keyboardInput;
+        [SerializeField]
         Vector3 mouse3DInput;
         [SerializeField]
         float CameraDistance = 10.0f;
@@ -47,6 +49,9 @@ namespace SpaceShooter2D
                                                                             CameraDistance));
             mouseInput = new Vector2(mouse3DInput.x, mouse3DInput.y);
 
+            // Get keyboard input
+            keyboardInput = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
+
             // get fire / action buttons
             Fire1 = Input.GetButton("Fire1");
             Fire2 = Input.GetButton("Fire2");
@@ -54,7 +59,10 @@ namespace SpaceShooter2D
 
         protected virtual void SendInput()
         {
-            // Enable if you want the ship to fly toward the mouse cursor position.
+            // Enable if you want the ship to fly toward the mouse cursor position
+            myShip.SetDestinationInput(mouseInput);
+            myShip.SetKeyboardDestinationInput(keyboardInput);
+
             myShip.SetRotationInput(mouseInput);
             myShip.SetFireInput(Fire1);
             myShip.SetSecondaryInput(Fire2);

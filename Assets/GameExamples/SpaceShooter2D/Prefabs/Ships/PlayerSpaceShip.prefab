@@ -88,7 +88,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 148244}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .419999987, z: 0}
+  m_LocalPosition: {x: 0, y: 0.42, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 420584}
@@ -102,7 +102,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 10
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -136,13 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f8b4d3b35fab2498e9af24243983e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myShooter: {fileID: 11492260}
-  mySecondaryShooter: {fileID: 0}
-  MaxVolume: .5
+  MaxVolume: 0.5
   forwardAngleThreshold: 10
-  forcedPosition: 0
-  forcedPositionTime: 3
-  WeaponMomentum: .200000003
 --- !u!114 &11442008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -157,7 +152,7 @@ MonoBehaviour:
   detectionRange: 15
   attackRange: 8
   avoidRange: 4
-  detectionRate: .100000001
+  detectionRate: 0.1
   largestRange: 0
   AllyFactions: 00000000
   EnemyFactions: 01000000
@@ -197,6 +192,18 @@ MonoBehaviour:
   rotation: 10
   drift: 5
   bulletSpeed: 20
+  movementMagnitude: 0
+  horzAIAxis: 0
+  vertAIAxis: 0
+  inverseMovement: 0
+  forcedPositionTime: 3
+  WeaponMomentum: 0.2
+  UseKeyboardMovement: 1
+  ForceRotateTowardsTarget: 1
+  StrafeToDestination: 0
+  forcedPosition: 0
+  myShooter: {fileID: 0}
+  mySecondaryShooter: {fileID: 0}
 --- !u!114 &11485106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -208,26 +215,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0a9da11c92290844816b468c888e8fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Up: 0
-  Down: 0
-  Left: 0
-  Right: 0
   Fire1: 0
   Fire2: 0
-  Slot1: 0
-  Slot2: 0
-  Slot3: 0
-  Slot4: 0
-  Slot5: 0
-  Slot6: 0
-  Slot7: 0
-  Slot8: 0
-  Slot9: 0
-  vert: 0
-  horz: 0
-  shouldRespawn: 0
-  TEMPVec3: {x: 0, y: 0, z: 0}
+  vertical: 0
+  horizontal: 0
   mouseInput: {x: 0, y: 0}
+  keyboardInput: {x: 0, y: 0}
+  mouse3DInput: {x: 0, y: 0, z: 0}
   CameraDistance: 10
 --- !u!114 &11492260
 MonoBehaviour:
@@ -258,7 +252,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .379999995
+  m_Radius: 0.38
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!212 &21218438
 SpriteRenderer:
@@ -278,14 +272,18 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f5cb1ccc38839774c90fee9ebe1a7fe6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
