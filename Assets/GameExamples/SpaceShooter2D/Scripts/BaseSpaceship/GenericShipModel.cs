@@ -118,7 +118,7 @@ namespace SpaceShooter2D
         [SerializeField]
         protected FireProjectile mySecondaryShooter;
         protected Faction myFaction;
-        protected Detector myDetector;
+        protected SphereDetector myDetector;
 #endregion
 
         virtual protected void Start()
@@ -151,7 +151,7 @@ namespace SpaceShooter2D
             health = maxHealth;
             shields = maxShields;
 
-            myDetector = GetComponent<Detector>();
+            myDetector = GetComponent<SphereDetector>();
             myFaction = GetComponent<Faction>();
             if (myFaction != null)
             {
@@ -344,7 +344,7 @@ namespace SpaceShooter2D
         }
 
         #region Setters and Getters
-        virtual public Detector GetDetector()
+        virtual public SphereDetector GetDetector()
         {
             return myDetector;
         }

@@ -30,7 +30,7 @@ namespace SpaceShooter2D
     [RequireComponent(typeof(GenericShipModel))]
     [RequireComponent(typeof(GenericShipView))]
     [RequireComponent(typeof(BaseAIController))]
-    [RequireComponent(typeof(Detector))]
+    [RequireComponent(typeof(SphereDetector))]
     public class GenericShipAIController : MonoBehaviour
     {
         // Our ship model.
@@ -44,7 +44,7 @@ namespace SpaceShooter2D
 
         // Our detector.
         [SerializeField]
-        Detector myDetector;
+        SphereDetector myDetector;
 
         // Our AI behavior update rate. Increase this if you want the AI to stick to a behavior longer.
         [SerializeField]
@@ -55,7 +55,7 @@ namespace SpaceShooter2D
         {
             myShipModel = GetComponent<GenericShipModel>();
             myShipView = GetComponent<GenericShipView>();
-            myDetector = GetComponent<Detector>();
+            myDetector = GetComponent<SphereDetector>();
             myController = GetComponent<BaseAIController>();
 
             if (myDetector == null)

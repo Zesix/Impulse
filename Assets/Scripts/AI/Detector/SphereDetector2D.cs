@@ -20,26 +20,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// Generic Detector Script (Detects Generic Faction Objects)
+/// Generic Detector Script (Detects Generic Faction Objects) for 2D objects.
 /// </summary>
-public class Detector : MonoBehaviour
+public class SphereDetector2D : MonoBehaviour
 {
 
     // Detection parameters
-    [SerializeField]
     [Range(0, 1000)]
-    float detectionRange = 15.0f;
-    [SerializeField]
+    public float DetectionRange = 8.0f;
     [Range(0, 1000)]
-    float attackRange = 5.0f;
-    [SerializeField]
+    public float AttackRange = 5.0f;
     [Range(0, 1000)]
-    float avoidRange = 1.0f;
-    [SerializeField]
+    public float AvoidRange = 1.0f;
     [Range(0, 5)]
-    float detectionRate = 0.1f;
-    [SerializeField]
-    float largestRange = 0.0f;
+    public float DetectionRate = 0.1f;
+    float LargestRange = 0.0f;
 
     // Faction parameters
     [SerializeField]
@@ -66,11 +61,11 @@ public class Detector : MonoBehaviour
     void Start()
     {
         // Get largest search range
-        float[] ranges = new float[] { detectionRange, attackRange, avoidRange };
-        largestRange = Mathf.Max(ranges);
+        float[] ranges = new float[] { DetectionRange, AttackRange, AvoidRange };
+        LargestRange = Mathf.Max(ranges);
 
         // Start Automatic Faction Detection
-        InvokeRepeating("DetectFactionObjects", 0.0f, detectionRate);
+        InvokeRepeating("DetectFactionObjects", 0.0f, DetectionRate);
     }
 
     /// <summary>
@@ -84,25 +79,17 @@ public class Detector : MonoBehaviour
         DetectedNeutral.Clear();
 
         // Detect all characters in range
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, largestRange);
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, LargestRange);
         int i = 0;
         while (i < hitColliders.Length)
         {
-            //Ignore self object
-            if (hitColliders[i].gameObject == gameObject)
-			{
-	            // Move to the next object
-				i++;
-                continue;
-			}
-
-            //Check if the object has a faction
+            // Check if the object has a faction
             Faction currentObject = hitColliders[i].GetComponent<Faction>();
 
-            //Organize the detected factions
+            // Organize the detected factions
             if (currentObject != null)
             {
-				// Check if it is an ally
+                // Check if it is an akkt
                 if (AllyFactions.Contains(currentObject.FactionName))
                 {
                     DetectedAllies.Add(currentObject);
@@ -112,7 +99,7 @@ public class Detector : MonoBehaviour
                 {
                     DetectedEnemies.Add(currentObject);
                 }
-                //Otherwise, set it as a neutral object
+                // Otherwise, set it as a neutral object
                 else
                     DetectedNeutral.Add(currentObject);
             }
@@ -140,34 +127,11 @@ public class Detector : MonoBehaviour
             float distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= detectionRange && distance < currentMinDistance)
+            if (distance <= DetectionRange && distance < currentMinDistance)
                 closestEnemy = current.gameObject;
         }
 
         return closestEnemy;
-    }
-
-    /// <summary>
-    /// Returns closest ally game object within detection range.
-    /// </summary>
-    /// <returns></returns>
-    public GameObject ClosestAlly()
-    {
-        GameObject closestAlly = null;
-        float currentMinDistance = Mathf.Infinity;
-
-        // Analize all detected enemies
-        foreach (Faction current in DetectedAllies)
-        {
-            // Get distance to the enemy
-            float distance = Vector3.Distance(transform.position, current.transform.position);
-
-            // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= detectionRange && distance < currentMinDistance)
-                closestAlly = current.gameObject;
-        }
-
-        return closestAlly;
     }
 
     /// <summary>
@@ -190,7 +154,7 @@ public class Detector : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, current.transform.position);
 
                 // First check the enemy is in the detection range and is the closest distance found until now
-                if (distance <= detectionRange && distance < currentMinDistance)
+                if (distance <= DetectionRange && distance < currentMinDistance)
                     closestEnemy = current.gameObject;
             }
         }
@@ -214,7 +178,7 @@ public class Detector : MonoBehaviour
             float distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= detectionRange)
+            if (distance <= DetectionRange)
                 possibleEnemies.Add(current);
         }
 
@@ -243,7 +207,7 @@ public class Detector : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, current.transform.position);
 
                 // First check the enemy is in the detection range and is the closest distance found until now
-                if (distance <= detectionRange)
+                if (distance <= DetectionRange)
                     possibleEnemies.Add(current);
             }
         }
@@ -268,49 +232,22 @@ public class Detector : MonoBehaviour
         if (DisplayDetectionRange)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, detectionRange);
+            Gizmos.DrawWireSphere(transform.position, DetectionRange);
         }
 
         // Shows the attack range in editor
         if (DisplayAttackRange)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
+            Gizmos.DrawWireSphere(transform.position, AttackRange);
         }
 
         // Shows the avoid range in editor
         if (DisplayAvoidRange)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, avoidRange);
+            Gizmos.DrawWireSphere(transform.position, AvoidRange);
         }
-    }
-
-    #endregion
-
-    #region Properties
-    public float DetectionRange
-    {
-        get { return detectionRange; }
-        private set { detectionRange = value; }
-    }
-
-    public float AttackRange
-    {
-        get { return attackRange; }
-        private set { attackRange = value; }
-    }
-
-    public float AvoidRange
-    {
-        get { return avoidRange; }
-        private set { avoidRange = value; }
-    }
-
-    public float DetectionRate
-    {
-        get { return detectionRate; }
-        private set { detectionRate = value; }
     }
 
     #endregion
