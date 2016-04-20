@@ -191,6 +191,7 @@ MonoBehaviour:
   maxAcceleration: 6
   rotation: 10
   drift: 5
+  deceleration: 1
   bulletSpeed: 20
   movementMagnitude: 0
   horzAIAxis: 0
@@ -198,9 +199,6 @@ MonoBehaviour:
   inverseMovement: 0
   forcedPositionTime: 3
   WeaponMomentum: 0.2
-  UseKeyboardMovement: 1
-  ForceRotateTowardsTarget: 1
-  StrafeToDestination: 0
   forcedPosition: 0
   myShooter: {fileID: 0}
   mySecondaryShooter: {fileID: 0}
@@ -219,6 +217,7 @@ MonoBehaviour:
   Fire2: 0
   vertical: 0
   horizontal: 0
+  UseKeyboard: 1
   mouseInput: {x: 0, y: 0}
   keyboardInput: {x: 0, y: 0}
   mouse3DInput: {x: 0, y: 0, z: 0}

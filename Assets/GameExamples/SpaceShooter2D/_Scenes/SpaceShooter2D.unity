@@ -4912,14 +4912,6 @@ Prefab:
       propertyPath: ProjectilesParent
       value: 
       objectReference: {fileID: 983159302}
-    - target: {fileID: 11474606, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
-      propertyPath: UseKeyboardMovement
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11474606, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
-      propertyPath: ForceRotateTowardsTarget
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
   m_IsPrefabParent: 0

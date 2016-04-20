@@ -40,7 +40,8 @@ namespace SpaceShooter2D
         protected float rotation = 70;
         [SerializeField]
         protected float drift = 1.0f;
-
+        [SerializeField]
+        protected float deceleration= 5.0f;
         [SerializeField]
         protected float bulletSpeed = 10f;
         
@@ -224,9 +225,20 @@ namespace SpaceShooter2D
                 currentMovementDirection = Vector3.Lerp(currentMovementDirection, targetKeyboardDirection, drift * Time.fixedDeltaTime);
             }
 
-            // Execute movement
-            currentVelocity = Vector3.ClampMagnitude(currentVelocity + currentMovementDirection * acceleration * Time.fixedDeltaTime,
-                         MaxAcceleration);
+            // Execute movement (acceleration)
+            if ((this.useKeyboardMovement && keyboardDestinationInput.magnitude > 0 )||
+                !this.useKeyboardMovement)
+            {
+                currentVelocity =
+                    Vector3.ClampMagnitude(currentVelocity + currentMovementDirection*acceleration*Time.fixedDeltaTime,
+                        MaxAcceleration);
+            }
+            // Execute movement (deceleration) (only for keyboardmovement)
+            else
+            {
+                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration*Time.fixedDeltaTime);
+
+            }
             transform.Translate(currentVelocity * Time.fixedDeltaTime, Space.World);
 
 
