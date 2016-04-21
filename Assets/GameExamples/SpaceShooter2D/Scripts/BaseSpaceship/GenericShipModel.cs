@@ -128,10 +128,12 @@ namespace SpaceShooter2D
         /// </summary>
         virtual protected void FixedUpdate()
         {
-            if (!AIControlled)
+            //if (!AIControlled)
                 ExecuteMovement();
+            /* So far this method isn't required
             if (AIControlled)
                 ExecuteAIMovement();
+            */
         }
 
         virtual protected void Update()
@@ -159,7 +161,7 @@ namespace SpaceShooter2D
             }
 
             // Set the current position as the desired destination
-            destinationInput = transform.position;
+            //SetDestinationInput(transform.position);
         }
 
         /// <summary>
@@ -197,7 +199,6 @@ namespace SpaceShooter2D
         {
             // Set desired destination
             Vector3 destination = destinationInput;
-
             // Get movement direction
             Vector3 targetLookDirection = destination - new Vector3(transform.position.x,
                                                                 transform.position.y,
@@ -264,9 +265,7 @@ namespace SpaceShooter2D
             if (!strafeToDestination)
             {
                 // Rotate towards proper orientation
-                Quaternion destinationAngle = Quaternion.AngleAxis(absoluteAngle, Vector3.forward);
-                transform.rotation = Quaternion.Lerp(transform.rotation, destinationAngle,
-                    rotation * Time.fixedDeltaTime);
+                transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z,absoluteAngle,rotation * Time.fixedDeltaTime));
             }
 
         }
@@ -274,6 +273,7 @@ namespace SpaceShooter2D
         /// <summary>
         /// Moves the ship according to AI.
         /// </summary>
+        /*
         virtual protected void ExecuteAIMovement()
         {
             Vector3 MoveDirection = transform.up * movementMagnitude;
@@ -296,6 +296,7 @@ namespace SpaceShooter2D
             // Execute rotation
             transform.rotation = Quaternion.Lerp(transform.rotation, destinationAngle, rotation * Time.fixedDeltaTime);
         }
+        */
 
         /// <summary>
         /// Executes firing of weapons.

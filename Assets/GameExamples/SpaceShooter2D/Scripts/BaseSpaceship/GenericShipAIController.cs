@@ -39,6 +39,7 @@ namespace SpaceShooter2D
 
         // Forward distance threshold. Used when generating a random point in front of the ship during square formation patrolling.
         [SerializeField]
+        [Range(1,100)]
         float forwardPatrolDistance = 6f;
 
         // Random forward point. This is the travel destination that is randomly generated during square formation patrolling.
@@ -148,8 +149,7 @@ namespace SpaceShooter2D
 
         Vector3 GetRandomForwardPosition()
         {
-            Vector3 randomForwardPosition = transform.position + (Vector3.up * Random.Range(0, forwardPatrolDistance));
-            Debug.Log(randomForwardPosition);
+            Vector3 randomForwardPosition = transform.position + (Vector3.up * Random.Range(1, forwardPatrolDistance));
             return randomForwardPosition;
         }
         
@@ -160,7 +160,6 @@ namespace SpaceShooter2D
                 // Get random forward position and set it as destination.
                 forwardSquarePatrolPoint = GetRandomForwardPosition();
                 model.SetDestinationInput(forwardSquarePatrolPoint);
-
                 while (transform.position != forwardSquarePatrolPoint)
                 {
                     yield return new WaitForSeconds(behaviorChangeRate);
