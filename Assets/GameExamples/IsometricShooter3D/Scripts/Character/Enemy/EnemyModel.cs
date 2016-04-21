@@ -129,7 +129,7 @@ namespace IsometricShooter3D
 
         IEnumerator UpdatePath()
         {
-            while (target != null && target != null)
+            while (target != null)
             {
                 if (currentState == EnemyState.Chasing)
                 {

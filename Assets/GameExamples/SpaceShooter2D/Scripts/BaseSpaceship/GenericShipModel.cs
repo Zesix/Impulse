@@ -90,8 +90,6 @@ namespace SpaceShooter2D
         }
 
         // Control parameters
-        [Range(0, 10)]
-        public float forcedPositionTime = 3.0f;
         protected Vector3 currentLookDirection = Vector3.zero;
         protected Vector3 currentMovementDirection = Vector3.zero;
         protected Vector3 currentVelocity = Vector3.zero;
@@ -109,7 +107,6 @@ namespace SpaceShooter2D
         protected bool strafeToDestination = false;
         protected bool fireInput = false;
         protected bool secondaryInput = false;
-        public bool forcedPosition = false;
         protected Vector3 offsetFromTarget = Vector3.zero;
 
         // Components.
@@ -210,7 +207,7 @@ namespace SpaceShooter2D
             currentLookDirection = Vector3.Lerp(currentLookDirection, targetLookDirection, drift * Time.fixedDeltaTime);
 
             // Mouse based movement
-            if(!this.useKeyboardMovement && !forcedPosition)
+            if(!this.useKeyboardMovement)
             {
                 // Get movement direction
                 currentMovementDirection = currentLookDirection;
@@ -362,31 +359,6 @@ namespace SpaceShooter2D
         virtual public void SetRotationInput (Vector3 input)
         {
             rotationInput = input;
-        }
-
-        virtual public void SetTemporaryForcedPosition()
-        {
-            forcedPosition = true;
-            StopCoroutine("removeForcedPositionDelayed");
-            StartCoroutine("removeForcedPositionDelayed");
-        }
-
-        virtual public void RemoveTemporaryForcedPosition()
-        {
-            forcedPosition = false;
-            StopCoroutine("removeForcedPositionDelayed");
-        }
-
-        IEnumerator RemoveForcedPositionDelayed()
-        {
-            yield return new WaitForSeconds(forcedPositionTime * Random.value);
-            forcedPosition = false;
-        }
-
-        virtual public void RemoveForcedPosition()
-        {
-            forcedPosition = false;
-            StopCoroutine("removeForcedPositionDelayed");
         }
 
         virtual public void SetFireInput(bool input)

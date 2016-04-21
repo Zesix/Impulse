@@ -1,21 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,23 +7,23 @@ namespace SpaceShooter2D
 {
 
     /// <summary>
-    /// A generic AI controller that will make a ship seek out and attack members of an enemy faction
+    /// A generic AI controller that will make a ship patrol and chase members of an enemy faction
     /// that are within detection range.
     /// </summary>
     [RequireComponent(typeof(GenericShipModel))]
-    [RequireComponent(typeof(GenericShipView))]
-    [RequireComponent(typeof(BaseAIController))]
     [RequireComponent(typeof(SphereDetector))]
+    [RequireComponent(typeof(SphereCollider))]
     public class GenericShipAIController : MonoBehaviour
     {
+        #region Variables
         // Our ship model.
-        protected GenericShipModel myShipModel;
+        protected GenericShipModel model;
 
         // Our ship view.
-        protected GenericShipView myShipView;
+        protected GenericShipView view;
 
-        // Our AI controller.
-        protected BaseAIController myController;
+        // Collider
+        SphereCollider collider;
 
         // Our detector.
         [SerializeField]
@@ -50,26 +33,57 @@ namespace SpaceShooter2D
         [SerializeField]
         float behaviorChangeRate = 1.0f;
 
+        // Our waypoint manager. If this is not assigned, then the ship will automatically patrol in a square formation.
+        [SerializeField]
+        WaypointPathManager waypointManager;
+
+        // Forward distance threshold. Used when generating a random point in front of the ship during square formation patrolling.
+        [SerializeField]
+        float forwardPatrolDistance = 6f;
+
+        // Random forward point. This is the travel destination that is randomly generated during square formation patrolling.
+        Vector3 forwardSquarePatrolPoint;
+
+        // States.
+        [SerializeField]
+        GenericShipAIState startState;
+
+        [SerializeField]
+        GenericShipAIState currentState;
+
+        enum GenericShipAIState
+        {
+            Idle,
+            WaypointPatrolling,
+            SquarePatrolling,
+            Chasing
+        }
+        #endregion
+
         // Use this for initialization
         protected virtual void Start()
         {
-            myShipModel = GetComponent<GenericShipModel>();
-            myShipView = GetComponent<GenericShipView>();
+            model = GetComponent<GenericShipModel>();
+            view = GetComponent<GenericShipView>();
             myDetector = GetComponent<SphereDetector>();
-            myController = GetComponent<BaseAIController>();
 
             if (myDetector == null)
             {
                 Debug.LogError("No Detector attached to " + gameObject + "!");
             }
 
-            if (myController == null)
-            {
-                Debug.LogError("No AI Controller attached to " + gameObject + "!");
-            }
+            model.SetAIControlled(true);
 
-            myController.SetAIControl(true);
-            myShipModel.SetAIControlled(true);
+            // Check if initial state is specified. If not, and there is no waypoint manager, then begin in square patrol mode.
+            // Otherwise, begin in waypoint patrol mode.
+            if (startState == GenericShipAIState.Idle && waypointManager == null)
+                currentState = GenericShipAIState.SquarePatrolling;
+            if (startState == GenericShipAIState.Idle && waypointManager != null)
+                currentState = GenericShipAIState.WaypointPatrolling;
+
+            // If we are patrolling and have no waypoints, then begin patrolling in square formation.
+            if (currentState == GenericShipAIState.SquarePatrolling)
+                StartCoroutine(SquareFormationPatrol());
 
             // Begin custom update loop for AI.
             InvokeRepeating("UpdateAIController", 0.0f, behaviorChangeRate);
@@ -78,29 +92,33 @@ namespace SpaceShooter2D
         // Updates the AI controller.
         private void UpdateAIController()
         {
-            // Set AI controller parameters based on model parameters.
-            myController.patrolSpeed = myShipModel.Acceleration;
-            myController.patrolTurnSpeed = myShipModel.Rotation;
-            myController.moveSpeed = myShipModel.Acceleration;
-            myController.wallAvoidDistance = myDetector.AvoidRange;
-            myController.waypointDistance = myDetector.AvoidRange;
-            myController.minChaseDistance = myDetector.AvoidRange;
-            myController.maxChaseDistance = myDetector.AttackRange;
-
-            GameObject closestEnemy = myDetector.ClosestEnemy();
-
-            // If an enemy is close, set it as our chase target.
-            if (closestEnemy != null)
+            if (currentState == GenericShipAIState.SquarePatrolling)
             {
-                myController.SetChaseTarget(closestEnemy.transform);
-                AttackTarget(closestEnemy);
-                myShipModel.SetAILookDirection(closestEnemy.transform.position);
+                // If we are in square formation patrol and have reached our current forward point, then turn left and generate a new forward point.
+                if (transform.position == forwardSquarePatrolPoint)
+                {
+                    // Turn some number of degrees left.
+                    transform.Rotate(new Vector3(0,0,Random.Range(0, 90)));
+
+                    StartCoroutine(SquareFormationPatrol());
+                }
             }
 
-            myShipModel.horzAIAxis = myController.GetHorizontal();
-            myShipModel.vertAIAxis = myController.GetVertical();
-            myShipModel.inverseMovement = myController.GetInverseMovement();
-            myShipModel.movementMagnitude = myController.GetMagnitude();
+            // Check if there is an enemy within range.
+            GameObject closestEnemy = myDetector.ClosestEnemy();
+
+            // If we have an enemy, then chase and attack it. Otherwise, resume patrolling.
+            if (closestEnemy != null)
+            {
+                currentState = GenericShipAIState.Chasing;
+                StartCoroutine(ChaseAttackEnemy(closestEnemy));
+            }
+            else
+            {
+                if (waypointManager != null)
+                    currentState = GenericShipAIState.WaypointPatrolling;
+                currentState = GenericShipAIState.SquarePatrolling;
+            }
 
         }
 
@@ -109,11 +127,11 @@ namespace SpaceShooter2D
             // While facing the enemy, shoot.
             if (isFacingTarget(enemy))
             {
-                myShipModel.SetFireInput(true);
+                model.SetFireInput(true);
             }
             if (!isFacingTarget(enemy))
             {
-                myShipModel.SetFireInput(false);
+                model.SetFireInput(false);
             }
         }
 
@@ -127,6 +145,42 @@ namespace SpaceShooter2D
             // Note: this is for 2D only (XY plane). If you're going to use 3D, replace transform.up with transform.forward
             return AngleThreshold >= Vector3.Angle((target.transform.position - transform.position).normalized, transform.up);
         }
-            
+
+        Vector3 GetRandomForwardPosition()
+        {
+            Vector3 randomForwardPosition = transform.position + (Vector3.up * Random.Range(0, forwardPatrolDistance));
+            Debug.Log(randomForwardPosition);
+            return randomForwardPosition;
+        }
+        
+        IEnumerator SquareFormationPatrol()
+        {
+            if (currentState == GenericShipAIState.SquarePatrolling)
+            {
+                // Get random forward position and set it as destination.
+                forwardSquarePatrolPoint = GetRandomForwardPosition();
+                model.SetDestinationInput(forwardSquarePatrolPoint);
+
+                while (transform.position != forwardSquarePatrolPoint)
+                {
+                    yield return new WaitForSeconds(behaviorChangeRate);
+                }
+            }
+        }
+
+        IEnumerator ChaseAttackEnemy(GameObject enemy)
+        {
+            while (currentState == GenericShipAIState.Chasing)
+            {
+                // Fly toward enemy.
+                model.SetDestinationInput(enemy.transform.position);
+                model.SetAILookDirection(enemy.transform.position);
+
+                // Shoot enemy.
+                AttackTarget(enemy);
+
+                yield return new WaitForSeconds(behaviorChangeRate);
+            }
+        }
     }
 }

@@ -159,7 +159,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!212 &5573555
 SpriteRenderer:
@@ -174,8 +174,8 @@ SpriteRenderer:
   - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 1
-  m_ReflectionProbeUsage: 1
+  m_UseLightProbes: 0
+  m_ReflectionProbeUsage: 0
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
@@ -5002,6 +5002,22 @@ Prefab:
       propertyPath: forcedPosition
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11474606, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
+      propertyPath: myShooter
+      value: 
+      objectReference: {fileID: 652892588}
+    - target: {fileID: 11474606, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
+      propertyPath: mySecondaryShooter
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 420584, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 420584, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1c72683ffac61d84cb066e339143fe6a, type: 2}
   m_IsPrefabParent: 0
@@ -6457,6 +6473,12 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!114 &652892588 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11492260, guid: 1c72683ffac61d84cb066e339143fe6a,
+    type: 2}
+  m_PrefabInternal: {fileID: 516200030}
+  m_Script: {fileID: 11500000, guid: 8d3364969483193428df0969ca484264, type: 3}
 --- !u!1 &654719474
 GameObject:
   m_ObjectHideFlags: 0
@@ -14041,7 +14063,20 @@ Prefab:
       propertyPath: avoidRange
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 11408596, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
+      propertyPath: myShooter
+      value: 
+      objectReference: {fileID: 1995311822}
+    - target: {fileID: 11450346, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
+      propertyPath: myDetector
+      value: 
+      objectReference: {fileID: 1995311823}
+    - target: {fileID: 11434620, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 11434620, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 87586d5a394b0dc468269225fee1ef49, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1308663051
@@ -21230,6 +21265,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 50
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1995311822 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11448852, guid: 87586d5a394b0dc468269225fee1ef49,
+    type: 2}
+  m_PrefabInternal: {fileID: 1305745788}
+  m_Script: {fileID: 11500000, guid: 8d3364969483193428df0969ca484264, type: 3}
+--- !u!114 &1995311823 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11402140, guid: 87586d5a394b0dc468269225fee1ef49,
+    type: 2}
+  m_PrefabInternal: {fileID: 1305745788}
+  m_Script: {fileID: 11500000, guid: 6cf8a7d70e358974696a8c41dbcf1f9f, type: 3}
 --- !u!1 &2003740533
 GameObject:
   m_ObjectHideFlags: 0
