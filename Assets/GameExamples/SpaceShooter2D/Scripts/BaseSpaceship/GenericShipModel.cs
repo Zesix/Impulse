@@ -37,6 +37,8 @@ namespace SpaceShooter2D
         [SerializeField]
         protected float maxAcceleration = 20;
         [SerializeField]
+        protected float driftMaxAcceleration = 3;
+        [SerializeField]
         protected float rotation = 70;
         [SerializeField]
         protected float chaseRotation = 140;
@@ -232,7 +234,7 @@ namespace SpaceShooter2D
             {
                 currentVelocity =
                     Vector3.ClampMagnitude(currentVelocity + currentMovementDirection*acceleration*Time.fixedDeltaTime,
-                        MaxAcceleration);
+                        !forceAILookDirection ? MaxAcceleration : driftMaxAcceleration);
             }
             // Execute movement (deceleration) (only for keyboardmovement)
             else
