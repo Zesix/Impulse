@@ -39,6 +39,8 @@ namespace SpaceShooter2D
         [SerializeField]
         protected float rotation = 70;
         [SerializeField]
+        protected float chaseRotation = 140;
+        [SerializeField]
         protected float drift = 1.0f;
         [SerializeField]
         protected float deceleration= 5.0f;
@@ -98,6 +100,7 @@ namespace SpaceShooter2D
 
         bool AIControlled = false;
         Vector3 AILookDirection = Vector3.zero;
+        bool forceAILookDirection = false; // used during chases
 
         // Player or AI Inputs
         protected Vector3 destinationInput = Vector3.zero;
@@ -241,7 +244,7 @@ namespace SpaceShooter2D
 
 
             // Execute Rotation Towards Mouse Input (keyboard movement)
-            float absoluteAngle;
+            float absoluteAngle = 0;
             if (useKeyboardMovement)
             {
                 absoluteAngle = Vector3.Angle(Vector2.up, targetLookDirection.normalized);
@@ -249,9 +252,12 @@ namespace SpaceShooter2D
                 // Get absolute angle sign
                 Vector3 absoluteCross = Vector3.Cross(Vector2.up, targetLookDirection.normalized);
                 if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+
+                // Rotate towards proper orientation
+                transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z, absoluteAngle, rotation * Time.fixedDeltaTime));
             }
             // Execute Rotation Towards Movement Direction
-            else
+            else if(!forceAILookDirection)
             {
                 // Get absolute angle
                 absoluteAngle = Vector3.Angle(Vector2.up, currentLookDirection.normalized);
@@ -259,13 +265,22 @@ namespace SpaceShooter2D
                 // Get absolute angle sign
                 Vector3 absoluteCross = Vector3.Cross(Vector2.up, currentLookDirection.normalized);
                 if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
-            }
 
-            // If we are strafing, we do not rotate toward the target.
-            if (!strafeToDestination)
-            {
                 // Rotate towards proper orientation
-                transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z,absoluteAngle,rotation * Time.fixedDeltaTime));
+                transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z, absoluteAngle, rotation * Time.fixedDeltaTime));
+            }
+            // Execute Rotation Towards Target
+            else if (forceAILookDirection)
+            {
+                // Get absolute angle
+                absoluteAngle = Vector3.Angle(Vector2.up, AILookDirection.normalized);
+
+                // Get absolute angle sign
+                Vector3 absoluteCross = Vector3.Cross(Vector2.up, AILookDirection.normalized);
+                if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
+
+                // Rotate towards proper orientation
+                transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z, absoluteAngle, chaseRotation * Time.fixedDeltaTime));
             }
 
         }
@@ -392,8 +407,9 @@ namespace SpaceShooter2D
             useKeyboardMovement = value;
         }
 
-        virtual public void SetAILookDirection(Vector3 direction)
+        virtual public void SetAILookDirection(Vector3 direction,bool enable = true)
         {
+            forceAILookDirection = enable;
             AILookDirection = direction;
         }
 

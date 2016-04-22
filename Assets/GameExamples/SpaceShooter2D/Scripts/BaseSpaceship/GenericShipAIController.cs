@@ -45,6 +45,25 @@ namespace SpaceShooter2D
         // Random forward point. This is the travel destination that is randomly generated during square formation patrolling.
         Vector3 forwardSquarePatrolPoint;
 
+        // Chase parameters
+        [SerializeField]
+        float chaseLockDuration = 3.0f;
+        [SerializeField]
+        bool strafeAroundTarget = true;
+        [SerializeField]
+        [Range(1, 100)]
+        float strafeDistanceFromTarget = 6f;
+        [SerializeField]
+        [Range(1, 100)]
+        float distanceFromTargetVariance = 2.0f;
+        [SerializeField]
+        [Range(1, 100)]
+        float varianceInterval = 2.0f;
+        float finalDistanceFromTarget = 0;
+        float currentStrafeAngle = 0;
+        float currentStrafeSign = 1;
+        bool lockedInChase = false;
+
         // States.
         [SerializeField]
         GenericShipAIState startState;
@@ -109,12 +128,16 @@ namespace SpaceShooter2D
             GameObject closestEnemy = myDetector.ClosestEnemy();
 
             // If we have an enemy, then chase and attack it. Otherwise, resume patrolling.
-            if (closestEnemy != null)
+            // Don't execute this if we're in lock chase 
+            if (closestEnemy != null && !lockedInChase)
             {
                 currentState = GenericShipAIState.Chasing;
+
+                StartCoroutine(LockChase());
+                StartCoroutine(ChaseAttackEnemyVariance());
                 StartCoroutine(ChaseAttackEnemy(closestEnemy));
             }
-            else
+            else if(closestEnemy == null)
             {
                 if (waypointManager != null)
                     currentState = GenericShipAIState.WaypointPatrolling;
@@ -171,15 +194,64 @@ namespace SpaceShooter2D
         {
             while (currentState == GenericShipAIState.Chasing)
             {
+                // Strafe toward enemy.
+                if (strafeAroundTarget)
+                {
+                    // Get current target angle
+                    currentStrafeAngle = (currentStrafeAngle + model.MaxAcceleration*currentStrafeSign*Time.fixedDeltaTime)%360.0f;
+
+                    // Get position around target
+                    Vector3 targetPosition = enemy.transform.position +
+                                             Quaternion.Euler(0, 0, currentStrafeAngle)*Vector3.up*
+                                             finalDistanceFromTarget;
+
+                    // Execute movement
+                    model.SetDestinationInput(targetPosition);
+                    model.SetAILookDirection((enemy.transform.position - transform.position).normalized);
+                }
                 // Fly toward enemy.
-                model.SetDestinationInput(enemy.transform.position);
-                model.SetAILookDirection(enemy.transform.position);
+                else
+                {
+                    model.SetDestinationInput(enemy.transform.position);
+                    model.SetAILookDirection((enemy.transform.position - transform.position).normalized);
+                }
 
                 // Shoot enemy.
                 AttackTarget(enemy);
 
-                yield return new WaitForSeconds(behaviorChangeRate);
+                yield return new WaitForFixedUpdate();
+            }
+
+            // Remove strafe behaviour
+            model.SetAILookDirection(Vector3.zero,false);
+        }
+
+        IEnumerator ChaseAttackEnemyVariance()
+        {
+            while (currentState == GenericShipAIState.Chasing)
+            {
+                // Get current distance from target
+                finalDistanceFromTarget = Random.Range(strafeDistanceFromTarget - distanceFromTargetVariance,
+                    strafeDistanceFromTarget + distanceFromTargetVariance);
+
+                // Get current rotation sign
+                currentStrafeSign = Random.value > 0.5f ? 1 : -1;
+
+                yield return new WaitForSeconds(varianceInterval);
             }
         }
+
+        IEnumerator LockChase()
+        {
+            // Start chase lock
+            lockedInChase = true;
+
+            yield return new WaitForSeconds(chaseLockDuration);
+
+            // Stop chase lock
+            lockedInChase = false;
+
+        }
+
     }
 }
