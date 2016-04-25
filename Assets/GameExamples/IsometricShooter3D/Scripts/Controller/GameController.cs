@@ -8,6 +8,22 @@ namespace IsometricShooter3D
     {
 
         #region Properties
+        // Map generator.
+        [SerializeField]
+        SquareTileMapGenerator mapGenerator;
+        public SquareTileMapGenerator MapGenerator
+        {
+            get { return mapGenerator; }
+        }
+
+        // Interface Manager.
+        [SerializeField]
+        InterfaceManager hudManager;
+        public InterfaceManager HUDManager
+        {
+            get { return hudManager; }
+        }
+
         // Reference to our player.
         [SerializeField]
         PlayerModel player;
@@ -78,11 +94,23 @@ namespace IsometricShooter3D
         void OnGameOverNotification(object sender, object args)
         {
             gamePlaying = false;
+
+            // Show game over screen.
+            hudManager.ChangeScreen(hudManager.GameOverUI);
         }
 
         void OnNextWaveNotification (object sender, object args)
         {
-            gamePlaying = true;
+            // Show gameplay UI at the start of the first wave.
+            if (gamePlaying == false)
+            {
+                gamePlaying = true;
+                // Show gameplay UI.
+                hudManager.ChangeScreen(hudManager.GameplayUI);
+            }
+
+            // Reset player transform.
+            player.transform.position = new Vector3(0,1,0);
         }
 
         void Update()

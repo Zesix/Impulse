@@ -14,8 +14,12 @@ namespace IsometricShooter3D
 
         IEnumerator Init()
         {
-            // Initial setup here.
+            // Hide UI screens.
+            controller.HUDManager.ClearScreen();
+
+            // Set initial enemy count to zero and then generate the map.
             controller.ModifyEnemyCount(0);
+            controller.MapGenerator.GenerateMap();
 
             yield return null;
 

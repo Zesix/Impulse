@@ -29,6 +29,9 @@ namespace IsometricShooter3D
             get { return health; }
         }
 
+        // Damage event.
+        public const string CharacterDamagedNotification = "CharacterModel.DamageNotification";
+
         // Death event.
         public const string CharacterDeathNotification = "CharacterModel.DeathNotification";
         #endregion
@@ -50,6 +53,10 @@ namespace IsometricShooter3D
             if (health <= 0 && !dead)
             {
                 Die();
+            }
+            else
+            {
+                this.PostNotification(CharacterDamagedNotification);
             }
         }
 

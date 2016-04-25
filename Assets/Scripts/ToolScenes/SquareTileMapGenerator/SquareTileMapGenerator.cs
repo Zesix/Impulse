@@ -298,12 +298,16 @@ public class SquareTileMapGenerator : MonoBehaviour
 
         // Generate navmesh floor masks.
         Transform maskLeft = Instantiate(navmeshMaskPrefab, Vector3.left * (minMapSize.x + maxMapSize.x) / 4f * tileSize, Quaternion.identity) as Transform;
+        maskLeft.gameObject.AddComponent<BoxCollider>();
         maskLeft.parent = navmeshMasksParent;
         Transform maskRight = Instantiate(navmeshMaskPrefab, Vector3.right * (minMapSize.x + maxMapSize.x) / 4f * tileSize, Quaternion.identity) as Transform;
+        maskRight.gameObject.AddComponent<BoxCollider>();
         maskRight.parent = navmeshMasksParent;
         Transform maskTop = Instantiate(navmeshMaskPrefab, Vector3.forward * (minMapSize.y + maxMapSize.y) / 4f * tileSize, Quaternion.identity) as Transform;
+        maskTop.gameObject.AddComponent<BoxCollider>();
         maskTop.parent = navmeshMasksParent;
         Transform maskBottom = Instantiate(navmeshMaskPrefab, Vector3.back * (minMapSize.y + maxMapSize.y) / 4f * tileSize, Quaternion.identity) as Transform;
+        maskBottom.gameObject.AddComponent<BoxCollider>();
         maskBottom.parent = navmeshMasksParent;
 
         maskLeft.localScale = new Vector3((maxMapSize.x - minMapSize.x) / 2f, 1, minMapSize.y) * tileSize;
@@ -474,7 +478,5 @@ public class SquareTileMapGenerator : MonoBehaviour
     {
         if (tilesParent == null)
             tilesParent = transform;
-
-        GenerateMap();
     }
 }
