@@ -118,7 +118,7 @@ public class GameSceneManager : MonoBehaviour
 
     public IEnumerator LoadNextLevelFadeIn()
     {
-        yield return StartCoroutine(LoadLevelFadeIn(+1, true));
+        yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true));
     }
 
     public void SetCanvasEnabled(bool enabled)
