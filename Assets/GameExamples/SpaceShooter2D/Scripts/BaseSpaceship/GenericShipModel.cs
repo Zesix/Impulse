@@ -45,10 +45,10 @@ namespace SpaceShooter2D
         [SerializeField]
         protected float drift = 1.0f;
         [SerializeField]
-        protected float deceleration= 5.0f;
+        protected float deceleration = 5.0f;
         [SerializeField]
         protected float bulletSpeed = 10f;
-        
+
         // Used by the AI for moving along axes.
         public float movementMagnitude = 0;
         public float horzAIAxis;
@@ -100,7 +100,6 @@ namespace SpaceShooter2D
         [Range(0, 1)]
         public float WeaponMomentum = 0.2f;
 
-        bool AIControlled = false;
         Vector3 AILookDirection = Vector3.zero;
         bool forceAILookDirection = false; // used during chases
 
@@ -121,7 +120,7 @@ namespace SpaceShooter2D
         protected FireProjectile mySecondaryShooter;
         protected Faction myFaction;
         protected SphereDetector myDetector;
-#endregion
+        #endregion
 
         virtual protected void Start()
         {
@@ -133,18 +132,12 @@ namespace SpaceShooter2D
         /// </summary>
         virtual protected void FixedUpdate()
         {
-            //if (!AIControlled)
-                ExecuteMovement();
-            /* So far this method isn't required
-            if (AIControlled)
-                ExecuteAIMovement();
-            */
+            ExecuteMovement();
         }
 
         virtual protected void Update()
         {
             ExecuteWeapons();
-            ExecuteMovement();
         }
 
         /// <summary>
@@ -213,7 +206,7 @@ namespace SpaceShooter2D
             currentLookDirection = Vector3.Lerp(currentLookDirection, targetLookDirection, drift * Time.fixedDeltaTime);
 
             // Mouse based movement
-            if(!this.useKeyboardMovement)
+            if (!this.useKeyboardMovement)
             {
                 // Get movement direction
                 currentMovementDirection = currentLookDirection;
@@ -229,17 +222,17 @@ namespace SpaceShooter2D
             }
 
             // Execute movement (acceleration)
-            if ((this.useKeyboardMovement && keyboardDestinationInput.magnitude > 0 )||
+            if ((this.useKeyboardMovement && keyboardDestinationInput.magnitude > 0) ||
                 !this.useKeyboardMovement)
             {
                 currentVelocity =
-                    Vector3.ClampMagnitude(currentVelocity + currentMovementDirection*acceleration*Time.fixedDeltaTime,
+                    Vector3.ClampMagnitude(currentVelocity + currentMovementDirection * acceleration * Time.fixedDeltaTime,
                         !forceAILookDirection ? MaxAcceleration : strafeMaxAcceleration);
             }
             // Execute movement (deceleration) (only for keyboardmovement)
             else
             {
-                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration*Time.fixedDeltaTime);
+                currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.fixedDeltaTime);
 
             }
             transform.Translate(currentVelocity * Time.fixedDeltaTime, Space.World);
@@ -259,7 +252,7 @@ namespace SpaceShooter2D
                 transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z, absoluteAngle, rotation * Time.fixedDeltaTime));
             }
             // Execute Rotation Towards Movement Direction
-            else if(!forceAILookDirection)
+            else if (!forceAILookDirection)
             {
                 // Get absolute angle
                 absoluteAngle = Vector3.Angle(Vector2.up, currentLookDirection.normalized);
@@ -374,7 +367,7 @@ namespace SpaceShooter2D
             keyboardDestinationInput = input;
         }
 
-        virtual public void SetRotationInput (Vector3 input)
+        virtual public void SetRotationInput(Vector3 input)
         {
             rotationInput = input;
         }
@@ -399,17 +392,12 @@ namespace SpaceShooter2D
             return offsetFromTarget;
         }
 
-        virtual public void SetAIControlled(bool value)
-        {
-            AIControlled = value;
-        }
-
         virtual public void SetKeyboardMovement(bool value)
         {
             useKeyboardMovement = value;
         }
 
-        virtual public void SetAILookDirection(Vector3 direction,bool enable = true)
+        virtual public void SetAILookDirection(Vector3 direction, bool enable = true)
         {
             forceAILookDirection = enable;
             AILookDirection = direction;

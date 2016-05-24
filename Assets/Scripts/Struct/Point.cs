@@ -20,7 +20,7 @@ using UnityEngine;
 using System.Collections;
 
 [System.Serializable]
-// A Point consists of x,y coordinates that are actually represented in x,z space.
+// A Point consists of x,y coordinates that are usually represented in x,z space.
 public struct Point : IEquatable<Point>
 {
     // Point components.
@@ -32,6 +32,47 @@ public struct Point : IEquatable<Point>
     {
         this.x = x;
         this.y = y;
+    }
+
+    // Neighbors.
+    public Point Right()
+    {
+        return new Point(x + 1, y);
+    }
+
+    public Point Left()
+    {
+        return new Point(x - 1, y);
+    }
+
+    public Point Up()
+    {
+        return new Point(x, y + 1);
+    }
+
+    public Point Down()
+    {
+        return new Point(x, y - 1);
+    }
+
+    public Point UpRight()
+    {
+        return new Point(x + 1, y + 1);
+    }
+
+    public Point UpLeft()
+    {
+        return new Point(x - 1, y + 1);
+    }
+
+    public Point DownRight()
+    {
+        return new Point(x + 1, y - 1);
+    }
+
+    public Point DownLeft()
+    {
+        return new Point(x - 1, y - 1);
     }
 
     // Operators
@@ -72,12 +113,17 @@ public struct Point : IEquatable<Point>
 
     public override int GetHashCode()
     {
-        return x ^ y;
+        return x.GetHashCode() ^ y.GetHashCode();
     }
 
     // Override ToString() to make it easier for debugging.
     public override string ToString()
     {
         return string.Format("({0},{1})", x, y);
+    }
+
+    public static explicit operator Point(Vector2 v)
+    {
+        return new Point((int)v.x, (int)v.y);
     }
 }

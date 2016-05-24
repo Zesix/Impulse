@@ -24,10 +24,6 @@ public class MouseInputController : BaseInputController
     // Reference to the model. Replace with your own specific model during implementation.
     BaseObjectModel myModel;
 
-    // 2D mouse position on screen.
-    [SerializeField]
-    Vector2 mouseInput;
-
     // Mouse position in world space, from screen to world point.
     Vector3 mouse3DInput;
 
@@ -44,7 +40,7 @@ public class MouseInputController : BaseInputController
 
         if (myModel == null)
             Debug.LogError(gameObject.name + " is missing a View!");
-        
+
         // By default, set our click position to our current position.
         clickPosition = transform.position;
     }
@@ -54,7 +50,6 @@ public class MouseInputController : BaseInputController
         // Get mouse position
         mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(CrossPlatformInputManager.mousePosition.x, CrossPlatformInputManager.mousePosition.y,
                                                                         cameraDistance));
-        mouseInput = new Vector2(mouse3DInput.x, mouse3DInput.y);
 
         // get fire / action buttons
         Fire1 = CrossPlatformInputManager.GetButton("Fire1");

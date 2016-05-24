@@ -23,7 +23,7 @@ namespace SpaceShooter2D
         protected GenericShipView view;
 
         // Collider
-        SphereCollider collider;
+        SphereCollider sphereCollider;
 
         // Our detector.
         [SerializeField]
@@ -39,7 +39,7 @@ namespace SpaceShooter2D
 
         // Forward distance threshold. Used when generating a random point in front of the ship during square formation patrolling.
         [SerializeField]
-        [Range(1,100)]
+        [Range(1, 100)]
         float forwardPatrolDistance = 6f;
 
         // Random forward point. This is the travel destination that is randomly generated during square formation patrolling.
@@ -92,8 +92,6 @@ namespace SpaceShooter2D
                 Debug.LogError("No Detector attached to " + gameObject + "!");
             }
 
-            model.SetAIControlled(true);
-
             // Check if initial state is specified. If not, and there is no waypoint manager, then begin in square patrol mode.
             // Otherwise, begin in waypoint patrol mode.
             if (startState == GenericShipAIState.Idle && waypointManager == null)
@@ -118,7 +116,7 @@ namespace SpaceShooter2D
                 if (transform.position == forwardSquarePatrolPoint)
                 {
                     // Turn some number of degrees left.
-                    transform.Rotate(new Vector3(0,0,Random.Range(0, 90)));
+                    transform.Rotate(new Vector3(0, 0, Random.Range(0, 90)));
 
                     StartCoroutine(SquareFormationPatrol());
                 }
@@ -137,7 +135,7 @@ namespace SpaceShooter2D
                 StartCoroutine(ChaseAttackEnemyVariance());
                 StartCoroutine(ChaseAttackEnemy(closestEnemy));
             }
-            else if(closestEnemy == null)
+            else if (closestEnemy == null)
             {
                 if (waypointManager != null)
                     currentState = GenericShipAIState.WaypointPatrolling;
@@ -175,7 +173,7 @@ namespace SpaceShooter2D
             Vector3 randomForwardPosition = transform.position + (Vector3.up * Random.Range(1, forwardPatrolDistance));
             return randomForwardPosition;
         }
-        
+
         IEnumerator SquareFormationPatrol()
         {
             if (currentState == GenericShipAIState.SquarePatrolling)
@@ -198,11 +196,11 @@ namespace SpaceShooter2D
                 if (strafeAroundTarget)
                 {
                     // Get current target angle
-                    currentStrafeAngle = (currentStrafeAngle + model.MaxAcceleration*currentStrafeSign*Time.fixedDeltaTime)%360.0f;
+                    currentStrafeAngle = (currentStrafeAngle + model.MaxAcceleration * currentStrafeSign * Time.fixedDeltaTime) % 360.0f;
 
                     // Get position around target
                     Vector3 targetPosition = enemy.transform.position +
-                                             Quaternion.Euler(0, 0, currentStrafeAngle)*Vector3.up*
+                                             Quaternion.Euler(0, 0, currentStrafeAngle) * Vector3.up *
                                              finalDistanceFromTarget;
 
                     // Execute movement
@@ -223,7 +221,7 @@ namespace SpaceShooter2D
             }
 
             // Remove strafe behaviour
-            model.SetAILookDirection(Vector3.zero,false);
+            model.SetAILookDirection(Vector3.zero, false);
         }
 
         IEnumerator ChaseAttackEnemyVariance()
