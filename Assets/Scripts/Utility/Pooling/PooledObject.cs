@@ -23,6 +23,11 @@ public class PooledObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get an instance of this object from the pool. If one does not exist, it is created and added to this pool.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public T GetPooledInstance<T>() where T : PooledObject
     {
         if (!_poolInstanceForPrefab)
