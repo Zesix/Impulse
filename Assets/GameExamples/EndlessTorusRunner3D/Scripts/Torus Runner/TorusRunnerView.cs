@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace EndlessTorusRunner3D
 {
@@ -8,35 +7,34 @@ namespace EndlessTorusRunner3D
     {
         #region Properties
         // References
-        [SerializeField]
-        ParticleSystem shape;
-        [SerializeField]
-        ParticleSystem trail;
-        [SerializeField]
-        ParticleSystem burst;
-        [SerializeField]
-        Transform burstPosition;
-        [SerializeField]
-        GameObject runnerObject;
+        [SerializeField] private ParticleSystem _shape;
+        [SerializeField] private ParticleSystem _trail;
+        [SerializeField] private ParticleSystem _burst;
+        [SerializeField] private Transform _burstPosition;
+        [SerializeField] private GameObject _runnerObject;
 
-        TorusRunnerModel model;
+        private TorusRunnerModel _model;
 
         // Death countdown time.
-        [SerializeField]
-        float deathCountdownTime = -1f;
+        [SerializeField] private float _deathCountdownTime = -1f;
 
-        ParticleSystem.EmissionModule shapeEmission;
-        ParticleSystem.EmissionModule trailEmission;
+        private ParticleSystem.EmissionModule _shapeEmission;
+        private ParticleSystem.EmissionModule _trailEmission;
+
+        public TorusRunnerView(ParticleSystem trail)
+        {
+            _trail = trail;
+        }
 
         // Death notification.
         public const string TorusRunnerDeathNotification = "TorusRunnerModel.DeathNotification";
         #endregion
 
-        void Awake()
+        private void Awake()
         {
-            model = GetComponent<TorusRunnerModel>();
-            shapeEmission = shape.emission;
-            trailEmission = trail.emission;
+            _model = GetComponent<TorusRunnerModel>();
+            _shapeEmission = _shape.emission;
+            _trailEmission = _trail.emission;
         }
 
         /// <summary>
@@ -45,39 +43,39 @@ namespace EndlessTorusRunner3D
         /// <param name="setting">A bool value.</param>
         public void ToggleRunnerObject(bool setting)
         {
-            runnerObject.SetActive(setting);
+            _runnerObject.SetActive(setting);
         }
 
-        void OnTriggerEnter (Collider collider)
+        private void OnTriggerEnter ()
         {
             // Prevent the player from moving the object after we start death animation.
-            model.Movable = false;
+            _model.Movable = false;
 
             // Begin death animation.
-            if (deathCountdownTime < 0f)
+            if (_deathCountdownTime < 0f)
             {
-                shapeEmission.enabled = false;
-                trailEmission.enabled = false;
-                burst.transform.position = burstPosition.position;
-                burst.Emit(burst.maxParticles);
-                deathCountdownTime = burst.startLifetime;
+                _shapeEmission.enabled = false;
+                _trailEmission.enabled = false;
+                _burst.transform.position = _burstPosition.position;
+                _burst.Emit(_burst.main.maxParticles);
+                _deathCountdownTime = _burst.main.duration;
             }
         }
 
-        void Update()
+        private void Update()
         {
             // Check whether a death countdown is active, and if so, then progress.
             // Once time has run out, restore the particle systems' settings and call Die() method.
-            if (deathCountdownTime >= 0f)
+            if (_deathCountdownTime >= 0f)
             {
-                deathCountdownTime -= Time.deltaTime;
-                if (deathCountdownTime <= 0f)
+                _deathCountdownTime -= Time.deltaTime;
+                if (_deathCountdownTime <= 0f)
                 {
-                    deathCountdownTime = -1f;
-                    shapeEmission.enabled = true;
-                    trailEmission.enabled = true;
+                    _deathCountdownTime = -1f;
+                    _shapeEmission.enabled = true;
+                    _trailEmission.enabled = true;
                     ToggleRunnerObject(false);
-                    model.Die();
+                    _model.Die();
                     // Post death event.
                     this.PostNotification(TorusRunnerDeathNotification);
                 }

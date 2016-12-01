@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace IsometricShooter3D
 {
-    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
     public class EnemyModel : CharacterModel
     {
 
@@ -27,7 +27,7 @@ namespace IsometricShooter3D
         float targetCollisionRadius;
 
         // Used for pathfinding.
-        NavMeshAgent pathfinder;
+        UnityEngine.AI.NavMeshAgent pathfinder;
 
         // How often the enemy updates the player's position during pathfinding.
         [SerializeField]
@@ -87,7 +87,7 @@ namespace IsometricShooter3D
         protected override void Start()
         {
             base.Start();
-            pathfinder = GetComponent<NavMeshAgent>();
+            pathfinder = GetComponent<UnityEngine.AI.NavMeshAgent>();
             skinMaterial = GetComponent<Renderer>().material;
             normalColor = skinMaterial.color;
 

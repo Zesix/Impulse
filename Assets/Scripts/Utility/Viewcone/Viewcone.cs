@@ -134,7 +134,7 @@ public class Viewcone : MonoBehaviour
 		GetComponent<Renderer> ().sharedMaterial.color = Color.yellow;
 		mesh.RecalculateNormals ();
 		mesh.RecalculateBounds ();
-		mesh.Optimize ();
+		;
 
 		ourCollider = GetComponent<MeshCollider> ();
 		if (ourCollider != null) {
