@@ -4,8 +4,8 @@ using UnityEditor;
 class MyAllPostprocessor : AssetPostprocessor
 {
     // Config location
-    public const string CsvItemExtractorPath = "Assets/Resources/Prefabs/CSV Item Extractor.prefab";
-    public const string JsonItemExtractorPath = "Assets/Resources/Prefabs/JSON Item Extractor.prefab";
+    public const string CsvItemExtractorPath = "Assets/Resources/InventoryDemo/Prefabs/CSV Item Extractor.prefab";
+    public const string JsonItemExtractorPath = "Assets/Resources/InventoryDemo/Prefabs/JSON Item Extractor.prefab";
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
