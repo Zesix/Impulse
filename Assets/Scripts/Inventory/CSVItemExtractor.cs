@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -16,12 +15,12 @@ public class CSVItemExtractor : MonoBehaviour
 
     public void ExtractItemsFromCSVFile()
     {
-        List<Dictionary<string, object>> data = CSVReader.Read(this.FileLocation + "/" + this.FileName);
+        List<Dictionary<string, object>> data = CSVReader.Read(this.FileLocation+"/"+this.FileName);
 
         // Error check
         if (data == null)
         {
-            Debug.LogError(this.FileLocation + "/ Folder wasn't found");
+            Debug.LogError(this.FileLocation+"/ Folder wasn't found");
             return;
         }
 
@@ -42,12 +41,12 @@ public class CSVItemExtractor : MonoBehaviour
     {
         // Create .asset file
         ItemAssetData itemAsset = ScriptableObject.CreateInstance<ItemAssetData>();
-        itemAsset.Name = (string)data[i]["NAME"];
-        itemAsset.Attack = (int)data[i]["ATTACK"];
-        itemAsset.Range = (int)data[i]["RANGE"];
-        itemAsset.Defense = (int)data[i]["DEFENSE"];
-        itemAsset.Durability = (int)data[i]["DURABILITY"];
-        itemAsset.Cost = (int)data[i]["COST"];
+        itemAsset.Name = (string) data[i]["NAME"];
+        itemAsset.Range = (int) data[i]["RANGE"];
+        itemAsset.Attack = (int) data[i]["ATTACK"];
+        itemAsset.Defense = (int) data[i]["DEFENSE"];
+        itemAsset.Durability = (int) data[i]["DURABILITY"];
+        itemAsset.Cost = (int) data[i]["COST"];
 
         AssetDatabase.CreateAsset(itemAsset, "Assets/Resources/" + this.OutputFolder + itemAsset.Name + ".asset");
         AssetDatabase.SaveAssets();
@@ -56,7 +55,7 @@ public class CSVItemExtractor : MonoBehaviour
         var gameobject = new GameObject();
         gameobject.transform.name = itemAsset.Name;
         ItemPrefabData itemPrefab = gameobject.AddComponent<ItemPrefabData>();
-        itemPrefab.Initialize(itemAsset.Name, itemAsset.Attack, itemAsset.Range, itemAsset.Defense,
+        itemPrefab.Initialize(itemAsset.Name, itemAsset.Range, itemAsset.Attack, itemAsset.Defense,
             itemAsset.Durability, itemAsset.Cost);
 
 #pragma warning disable 618
@@ -75,4 +74,3 @@ public class CSVItemExtractor : MonoBehaviour
         }
     }
 }
-#endif
