@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine.UI;
@@ -7,7 +6,7 @@ using UnityEngine.UI;
 public class ItemScrollerController : MonoBehaviour
 {
     // Config location
-    public const string CsvItemExtractorPath = "Assets/Resources/Prefabs/CSV Item Extractor.prefab";
+    public const string JsonItemExtractorPath = "Assets/Prefabs/Inventory/JSON Item Extractor.prefab";
 
     // UI display
     private List<ItemData> _data;
@@ -21,7 +20,7 @@ public class ItemScrollerController : MonoBehaviour
         this._data = new List<ItemData>();
 
         // Get item data extractor
-        CSVItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<CSVItemExtractor>(CsvItemExtractorPath);
+        JsonItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JsonItemExtractor>(JsonItemExtractorPath);
         if (itemExtractor != null)
         {
             // Get items' prefabs
@@ -30,22 +29,22 @@ public class ItemScrollerController : MonoBehaviour
             foreach (var itemObject in itemPrefabs)
             {
                 var item = itemObject as ItemAssetData;
-                if(item != null)
-                    this._data.Add(new ItemData(item.Name,item.Range,item.Attack,item.Defense,item.Durability,item.Cost));
+                if (item != null)
+                    this._data.Add(new ItemData(item.Name, item.Range, item.Attack, item.Defense, item.Durability, item.Cost));
             }
         }
         else
         {
-            Debug.LogError("A CSVItemExtractor prefab wasn't found in " + CsvItemExtractorPath +". Please fix this by adding this prefab there or changing the path in CsvItemExtractorPath in the ItemScrollerController class");
+            Debug.LogError("A JsonItemExtractor prefab wasn't found in " + JsonItemExtractorPath + ". Please fix this by adding this prefab there or changing the path in JsonItemExtractorPath in the ItemScrollerController class");
         }
 
-       this.RefreshScroll();
+        this.RefreshScroll();
     }
 
     private void RefreshScroll()
     {
         // Erase previous childrens
-        for(int i = 0; i < this.MyScroller.content.childCount;i++)
+        for (int i = 0; i < this.MyScroller.content.childCount; i++)
             Destroy(this.MyScroller.content.GetChild(i).gameObject);
 
         // Update scroll list

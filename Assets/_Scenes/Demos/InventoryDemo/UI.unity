@@ -953,8 +953,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e34fe272efcd5941b41d2cd10d13c30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExtractorPrefab: {fileID: 119676, guid: 8d350a041bfc53a42b815c4184137d87, type: 2}
-  CsvItemExtractorPath: 
   MyScroller: {fileID: 1953771683}
   ItemCellViewPrefab: {fileID: 11416128, guid: c77e9fb3a0722cc4f9298ce1734e35e6, type: 2}
   CellSize: 50

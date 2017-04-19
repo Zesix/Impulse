@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class JSONItemExtractor : MonoBehaviour {
+public class JsonItemExtractor : MonoBehaviour
+{
     // Resource file location
     public string FileLocation = "Text";
     public string FileName = "Items";
@@ -14,22 +14,22 @@ public class JSONItemExtractor : MonoBehaviour {
 
     public void ExtractItemsFromJsonFile()
     {
-        List<Dictionary<string, object>> data = JSONReader.Read(this.FileLocation + "/" + this.FileName);
+        List<Dictionary<string, object>> data = JsonReader.Read(FileLocation + "/" + FileName);
 
         // Error check
         if (data == null)
         {
-            Debug.LogError(this.FileLocation + "/ Folder wasn't found");
+            Debug.LogError(FileLocation + "/ Folder wasn't found");
             return;
         }
 
         // Delete all previouly created assets
-        this.ClearAllData();
+        ClearAllData();
 
         // Extract the data per read item
         for (var i = 0; i < data.Count; i++)
         {
-            this.CreateAssetsAndPrefabs(data, i);
+            CreateAssetsAndPrefabs(data, i);
         }
 
         // Update item data message
@@ -47,7 +47,7 @@ public class JSONItemExtractor : MonoBehaviour {
         itemAsset.Durability = (int)data[i]["DURABILITY"];
         itemAsset.Cost = (int)data[i]["COST"];
 
-        AssetDatabase.CreateAsset(itemAsset, "Assets/Resources/" + this.OutputFolder + itemAsset.Name + ".asset");
+        AssetDatabase.CreateAsset(itemAsset, "Assets/Resources/" + OutputFolder + itemAsset.Name + ".asset");
         AssetDatabase.SaveAssets();
 
         // Create .prefab files
@@ -58,7 +58,7 @@ public class JSONItemExtractor : MonoBehaviour {
             itemAsset.Durability, itemAsset.Cost);
 
 #pragma warning disable 618
-        Object prefab = EditorUtility.CreateEmptyPrefab("Assets/Resources/" + this.OutputFolder + itemAsset.Name + ".prefab");
+        Object prefab = EditorUtility.CreateEmptyPrefab("Assets/Resources/" + OutputFolder + itemAsset.Name + ".prefab");
         EditorUtility.ReplacePrefab(gameobject, prefab, ReplacePrefabOptions.ConnectToPrefab);
 #pragma warning restore 618
         DestroyImmediate(gameobject);
@@ -66,7 +66,7 @@ public class JSONItemExtractor : MonoBehaviour {
 
     public void ClearAllData()
     {
-        var previousAssets = Resources.LoadAll(this.OutputFolder);
+        var previousAssets = Resources.LoadAll(OutputFolder);
         foreach (var asset in previousAssets)
         {
             AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(asset));
