@@ -1,1 +1,28 @@
-[ { "NAME": "JSONSword", "RANGE": 1, "ATTACK": 5, "DEFENSE": 3, "DURABILITY": 6, "COST": 20 }, { "NAME": "JSONShield", "RANGE": 1, "ATTACK": 2, "DEFENSE": 5, "DURABILITY": 8, "COST": 10 }, { "NAME": "JSONSpear", "RANGE": 3, "ATTACK": 6, "DEFENSE": 2, "DURABILITY": 3, "COST": 10 }, { "NAME": "JSONBow", "RANGE": 5, "ATTACK": 3, "DEFENSE": 1, "DURABILITY": 5, "COST": 10 }, { "NAME": "JSONAxe", "RANGE": 5, "ATTACK": 3, "DEFENSE": 1, "DURABILITY": 5, "COST": 10 }, { "NAME": "JSONCrossbow ", "RANGE": 5, "ATTACK": 3, "DEFENSE": 1, "DURABILITY": 2, "COST": 3 } ]
+{
+    "items": [
+        {
+        "NAME": "JSONSword",
+        "RANGE": 1,
+        "ATTACK": 5,
+        "DEFENSE": 3,
+        "DURABILITY": 6,
+        "COST": 20
+        },
+        {
+        "NAME": "JSONAxe",
+        "RANGE": 1,
+        "ATTACK": 5,
+        "DEFENSE": 3,
+        "DURABILITY": 6,
+        "COST": 20
+        },
+        {
+        "NAME": "JSONHammer",
+        "RANGE": 1,
+        "ATTACK": 5,
+        "DEFENSE": 3,
+        "DURABILITY": 6,
+        "COST": 20
+        }
+    ]
+}

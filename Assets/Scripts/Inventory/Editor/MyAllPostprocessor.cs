@@ -13,7 +13,7 @@ class MyAllPostprocessor : AssetPostprocessor
             // Check if it was a json file
             if (str.Contains(".json"))
             {
-                JsonItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JsonItemExtractor>(JsonItemExtractorPath);
+                JSONItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JSONItemExtractor>(JsonItemExtractorPath);
                 if (itemExtractor != null)
                 {
                     // Update Items' Data

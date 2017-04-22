@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(JsonItemExtractor))]
+[CustomEditor(typeof(JSONItemExtractor))]
 [CanEditMultipleObjects]
 
 public class JSONItemExtractorEditor : Editor
@@ -14,7 +14,7 @@ public class JSONItemExtractorEditor : Editor
     public override void OnInspectorGUI()
     {
         // Get component reference
-        JsonItemExtractor myTarget = (JsonItemExtractor)target;
+        JSONItemExtractor myTarget = (JSONItemExtractor)target;
 
         // Display input parameters
         GUILayout.Label("Input", EditorStyles.boldLabel);

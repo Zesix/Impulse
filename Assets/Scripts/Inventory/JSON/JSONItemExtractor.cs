@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-public class JsonItemExtractor : MonoBehaviour
+public class JSONItemExtractor : MonoBehaviour
 {
     // Resource file location
     public string FileLocation = "Text";
@@ -19,7 +19,7 @@ public class JsonItemExtractor : MonoBehaviour
         // Error check
         if (data == null)
         {
-            Debug.LogError(FileLocation + "/ Folder wasn't found");
+            Debug.LogError(FileLocation + "/" + FileName + " Folder wasn't found");
             return;
         }
 

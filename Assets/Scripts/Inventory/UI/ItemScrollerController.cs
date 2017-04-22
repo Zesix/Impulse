@@ -20,7 +20,7 @@ public class ItemScrollerController : MonoBehaviour
         this._data = new List<ItemData>();
 
         // Get item data extractor
-        JsonItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JsonItemExtractor>(JsonItemExtractorPath);
+        JSONItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JSONItemExtractor>(JsonItemExtractorPath);
         if (itemExtractor != null)
         {
             // Get items' prefabs
