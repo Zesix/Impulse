@@ -6,131 +6,118 @@ namespace IsometricShooter3D
 
     public class Spawner : MonoBehaviour
     {
-        #region Properties
         // Enemy to spawn.
-        [SerializeField]
-        EnemyModel enemyToSpawn;
-        public EnemyModel EnemyToSpawn
-        {
-            get { return enemyToSpawn; }
-        }
+        [SerializeField] private EnemyModel _enemyToSpawn;
+        public EnemyModel EnemyToSpawn => _enemyToSpawn;
 
         // Parent transform for spawned enemies.
-        [SerializeField]
-        Transform enemySpawnParent;
+        [SerializeField] private Transform _enemySpawnParent;
 
         // Number of enemies remaining to spawn.
-        [SerializeField]
-        int enemiesRemainingToSpawn;
+        [SerializeField] private int _enemiesRemainingToSpawn;
 
         // Time until we spawn the next enemy.
-        float nextSpawnTime;
+        private float _nextSpawnTime;
 
         // The current wave.
-        Wave currentWave;
-        [SerializeField]
-        int currentWaveNumber;
+        private Wave _currentWave;
+        [SerializeField] private int _currentWaveNumber;
 
         // Array of Waves to spawn.
-        [SerializeField]
-        Wave[] waves;
+        [SerializeField] private Wave[] _waves;
 
         // The color a tile flashes when we spawn an enemy on that tile.
-        [SerializeField]
-        Color spawningFlashColor = Color.red;
+        [SerializeField] private Color _spawningFlashColor = Color.red;
 
         // How long a tile flashes before the enemy is spawned.
-        [SerializeField]
-        float spawnDelay = 1f;
+        [SerializeField] private float _spawnDelay = 1f;
 
         // How many times per second a tile flashes when an enemy is being spawned on it.
-        [SerializeField]
-        float spawningFlashSpeed = 4f;
+        [SerializeField] private float _spawningFlashSpeed = 4f;
 
         // Ref to map generator. Used to determine where we can spawn.
-        SquareTileMapGenerator generator;
+        private SquareTileMapGenerator _generator;
 
         // Ref to GameController.
-        GameController gameController;
-        #endregion
+        private GameController _gameController;
 
-        void OnEnable()
+        private void OnEnable()
         {
             this.AddObserver(OnNextWaveNotification, GameplayState.NextWaveNotification);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             this.RemoveObserver(OnNextWaveNotification, GameplayState.NextWaveNotification);
         }
 
-        void Awake()
+        private void Awake()
         {
-            gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-            generator = FindObjectOfType<SquareTileMapGenerator>();
+            _gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+            _generator = FindObjectOfType<SquareTileMapGenerator>();
         }
 
         public void OnNextWaveNotification(object sender, object args)
         {
-            if (enemySpawnParent == null)
-                enemySpawnParent = new GameObject("Enemy Spawn Parent").transform;
+            if (_enemySpawnParent == null)
+                _enemySpawnParent = new GameObject("Enemy Spawn Parent").transform;
 
             NextWave();
         }
 
-        void Update()
+        private void Update()
         {
             SpawnEnemy();
         }
 
-        void SpawnEnemy()
+        private void SpawnEnemy()
         {
-            if (enemiesRemainingToSpawn > 0 && Time.time > nextSpawnTime)
+            if (_enemiesRemainingToSpawn > 0 && Time.time > _nextSpawnTime)
             {
-                enemiesRemainingToSpawn--;
-                nextSpawnTime = Time.time + currentWave.TimeBetweenSpawns;
+                _enemiesRemainingToSpawn--;
+                _nextSpawnTime = Time.time + _currentWave.TimeBetweenSpawns;
 
                 StartCoroutine(SpawnEnemyUnit());
             }
         }
 
-        void NextWave()
+        private void NextWave()
         {
-            currentWaveNumber++;
-            if (currentWaveNumber - 1 < waves.Length)
+            _currentWaveNumber++;
+            if (_currentWaveNumber - 1 < _waves.Length)
             {
-                currentWave = waves[currentWaveNumber - 1];
+                _currentWave = _waves[_currentWaveNumber - 1];
 
-                enemiesRemainingToSpawn = currentWave.EnemyCountToSpawn;
+                _enemiesRemainingToSpawn = _currentWave.EnemyCountToSpawn;
             }
         }
 
-        IEnumerator SpawnEnemyUnit()
+        private IEnumerator SpawnEnemyUnit()
         {
-            Transform spawnTile = generator.GetRandomUnoccupiedTile();
+            var spawnTile = _generator.GetRandomUnoccupiedTile();
 
             // If player is camping, spawn on top of the player instead of a random tile.
-            if (gameController.PlayerIsCamping)
+            if (_gameController.PlayerIsCamping)
             {
-                spawnTile = generator.GetTransformFromPosition(gameController.Player.transform.position);
+                spawnTile = _generator.GetTransformFromPosition(_gameController.Player.transform.position);
             }
 
-            Material tileMat = spawnTile.GetComponent<Renderer>().material;
-            Color originalColor = tileMat.color;
-            float spawnTimer = 0f;
+            var tileMat = spawnTile.GetComponent<Renderer>().material;
+            var originalColor = tileMat.color;
+            var spawnTimer = 0f;
 
             // Make the spawning tile flash.
-            while (spawnTimer < spawnDelay)
+            while (spawnTimer < _spawnDelay)
             {
-                tileMat.color = Color.Lerp(originalColor, spawningFlashColor, Mathf.PingPong(spawnTimer * spawningFlashSpeed, 1f));
+                tileMat.color = Color.Lerp(originalColor, _spawningFlashColor, Mathf.PingPong(spawnTimer * _spawningFlashSpeed, 1f));
                 spawnTimer += Time.deltaTime;
                 yield return null;
             }
 
-            EnemyModel spawnedEnemy = Instantiate(enemyToSpawn, spawnTile.position + Vector3.up, Quaternion.identity) as EnemyModel;
-            spawnedEnemy.transform.parent = enemySpawnParent;
+            var spawnedEnemy = Instantiate(_enemyToSpawn, spawnTile.position + Vector3.up, Quaternion.identity);
+            spawnedEnemy.transform.parent = _enemySpawnParent;
 
-            gameController.ModifyEnemyCount(1);
+            _gameController.ModifyEnemyCount(1);
         }
     }
 }

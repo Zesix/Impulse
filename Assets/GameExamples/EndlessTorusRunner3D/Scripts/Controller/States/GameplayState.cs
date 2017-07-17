@@ -17,12 +17,7 @@ namespace EndlessTorusRunner3D
             StartCoroutine(InitGameplay());
         }
 
-        public override void Exit()
-        {
-            base.Exit();
-        }
-
-        IEnumerator InitGameplay()
+        private IEnumerator InitGameplay()
         {
             controller.GameOver = false;
 
@@ -36,13 +31,13 @@ namespace EndlessTorusRunner3D
             controller.ScreenManager.ClearScreen();
 
             // Show gameplay UI.
-            controller.ScreenManager.ChangeScreenAndFade(controller.ScreenManager.GameplayUI);
+            controller.ScreenManager.ChangeScreenAndFade(controller.ScreenManager.GameplayUi);
 
             // Hide the menu.
             controller.MenuSystem.gameObject.SetActive(false);
 
             // Wait for fading out to complete before respawning pipe system.
-            while (GameSceneManager.Instance.transitionPercent <= 0.5f)
+            while (GameSceneManager.Instance.TransitionPercent <= 0.5f)
             {
                 yield return null;
             }

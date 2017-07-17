@@ -18,7 +18,7 @@ public class PointUtil
         for (int i = 0; i < input.Length; i++)
         {
             Point pos = input[i];
-            retval[i] = new Point(offset.x + pos.x, offset.y + pos.y);
+            retval[i] = new Point(offset.X + pos.X, offset.Y + pos.Y);
         }
 
         return retval;
@@ -64,9 +64,9 @@ public class PointUtil
         for (int i = 0; i < input.Length; i++)
         {
             Point pos = input[i];
-            int x = pos.x * xRot.x + pos.y * xRot.y;
-            int y = pos.x * yRot.x + pos.y * yRot.y;
-            retval[i] = new Point(x + offset.x, y + offset.y);
+            int x = pos.X * xRot.X + pos.Y * xRot.Y;
+            int y = pos.X * yRot.X + pos.Y * yRot.Y;
+            retval[i] = new Point(x + offset.X, y + offset.Y);
         }
 
         return retval;

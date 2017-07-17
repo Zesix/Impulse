@@ -1,24 +1,5 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System.Collections;
 
 /// <summary>
@@ -33,75 +14,75 @@ public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance;		// Singleton
 
-    public string[] levelNames;                 // Scenes to progressively load, in descending array order.
-    public int gameLevelNum = 0;
-    public GameObject splashObj;           		// Put a canvas here (with image child object) for splash screen loading.
+    public string[] LevelNames;                 // Scenes to progressively load, in descending array order.
+    public int GameLevelNum;
+    public GameObject SplashObj;           		// Put a canvas here (with image child object) for splash screen loading.
     public AnimationCurve Interpolation;		// Interpolates the splash screen with the curve.
-    public float initialSplashDuration = 3f;    // The duration of the initial splash screen overlay.
-    public float duration = 2f;					// The duration of the animation in seconds.
-    private CanvasGroup splashCanvasGroup;		// Used to grab the alpha of the canvas group.
-    public bool inTransition;                   // Are we in the middle of a fade transition?
-    public float transitionPercent;             // How far are we in a transition?
+    public float InitialSplashDuration = 3f;    // The duration of the initial splash screen overlay.
+    public float Duration = 2f;					// The duration of the animation in seconds.
+    private CanvasGroup _splashCanvasGroup;		// Used to grab the alpha of the canvas group.
+    public bool InTransition;                   // Are we in the middle of a fade transition?
+    public float TransitionPercent;             // How far are we in a transition?
 
-    public CanvasGroup blackOverlay;			//Canvas for black overlay
+    public CanvasGroup BlackOverlay;			//Canvas for black overlay
 
-    private GameObject canvasObj;				// The canvas game object.
+    private GameObject _canvasObj;				// The canvas game object.
 
 #if UNITY_EDITOR
-    bool SkipSplash;
-    string FirstScene;
+    private bool _skipSplash;
+    private string _firstScene;
 #endif
 
-    void Start()
+    private void Start()
     {
         // If there is no instance of this class, set it.
         if (Instance == null)
         {
             DontDestroyOnLoad(gameObject); // Don't destroy this object
             Instance = this;
-            if (splashObj != null)
+            if (SplashObj != null)
             {
-                canvasObj = (GameObject)Instantiate(splashObj);
-                canvasObj.transform.SetParent(transform);
-                canvasObj.transform.position = Vector3.zero;
-                splashCanvasGroup = canvasObj.GetComponent<CanvasGroup>();
-                canvasObj.GetComponent<Canvas>().sortingOrder = 999;
-                DontDestroyOnLoad(splashObj);
+                _canvasObj = Instantiate(SplashObj);
+                _canvasObj.transform.SetParent(transform);
+                _canvasObj.transform.position = Vector3.zero;
+                _splashCanvasGroup = _canvasObj.GetComponent<CanvasGroup>();
+                _canvasObj.GetComponent<Canvas>().sortingOrder = 999;
+                DontDestroyOnLoad(SplashObj);
             }
-            blackOverlay.GetComponent<Canvas>().sortingOrder = 998;
+            BlackOverlay.GetComponent<Canvas>().sortingOrder = 998;
             Instance.StartCoroutine(LoadNextLevelFadeIn());
         }
         else
         {
             Debug.LogError("There is already a GameSceneManager in the scene.");
-            GameObject.Destroy(this);
+            Destroy(this);
         }
     }
 
     public IEnumerator PlayFadeAnimation(float start, float end, CanvasGroup target)
     {
         // Start a lerp value from zero
-        float lerpValue = 0f;
-        inTransition = true;
+        var lerpValue = 0f;
+        InTransition = true;
         while (lerpValue <= 1f)
         {
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
                 //Increment the value each frame
-                lerpValue += Time.deltaTime / initialSplashDuration;
-                transitionPercent = lerpValue / initialSplashDuration;
+                lerpValue += Time.deltaTime / InitialSplashDuration;
+                TransitionPercent = lerpValue / InitialSplashDuration;
             }
             else
             {
                 //Increment the value each frame
-                lerpValue += Time.deltaTime / duration;
-                transitionPercent = lerpValue / duration;
+                lerpValue += Time.deltaTime / Duration;
+                TransitionPercent = lerpValue / Duration;
             }
             //Set the alpha by the interpolated lerp value
             target.alpha = Mathf.Lerp(start, end, Interpolation.Evaluate(lerpValue));
             yield return null;
         }
-        inTransition = false;
+        InTransition = false;
     }
 
     private IEnumerator PlayFadeAnimation(bool forward, CanvasGroup target)
@@ -121,13 +102,13 @@ public class GameSceneManager : MonoBehaviour
         yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true));
     }
 
-    public void SetCanvasEnabled(bool enabled)
+    public void SetCanvasEnabled(bool isCanvasActive)
     {
-        blackOverlay.gameObject.SetActive(enabled);
-        if (splashCanvasGroup != null)
+        BlackOverlay.gameObject.SetActive(isCanvasActive);
+        if (_splashCanvasGroup != null)
         {
-            canvasObj.gameObject.SetActive(enabled);
-            splashCanvasGroup.gameObject.SetActive(enabled);
+            _canvasObj.gameObject.SetActive(isCanvasActive);
+            _splashCanvasGroup.gameObject.SetActive(isCanvasActive);
         }
     }
 
@@ -139,42 +120,42 @@ public class GameSceneManager : MonoBehaviour
             SceneManager.LoadScene(index);
     }
 
-    public void LoadLevelFadeInDelegate(string name, bool animate = true)
+    public void LoadLevelFadeInDelegate(string sceneName, bool animate = true)
     {
         if (animate)
-            Instance.StartCoroutine(LoadLevelFadeIn(name));
+            Instance.StartCoroutine(LoadLevelFadeIn(sceneName));
         else
-            SceneManager.LoadScene(name);
+            SceneManager.LoadScene(sceneName);
     }
 
     public IEnumerator LoadLevelFadeIn(int index, bool showSplash = false)
     {
         SetCanvasEnabled(true);
-        yield return Instance.StartCoroutine(PlayFadeAnimation(true, blackOverlay));
-        if (showSplash && splashCanvasGroup != null)
-            yield return Instance.StartCoroutine(PlayFadeAnimation(true, splashCanvasGroup));
-        AsyncOperation async = SceneManager.LoadSceneAsync(index);
+        yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
+        if (showSplash && _splashCanvasGroup != null)
+            yield return Instance.StartCoroutine(PlayFadeAnimation(true, _splashCanvasGroup));
+        var async = SceneManager.LoadSceneAsync(index);
         yield return async; // Wait for the async operation and animation to complete.
-        if (showSplash && splashCanvasGroup != null)
-            yield return Instance.StartCoroutine(PlayFadeAnimation(false, splashCanvasGroup)); // remove overlay
-        yield return Instance.StartCoroutine(PlayFadeAnimation(false, blackOverlay));
+        if (showSplash && _splashCanvasGroup != null)
+            yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
+        yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
         SetCanvasEnabled(false);
     }
 
     public IEnumerator LoadLevelFadeIn(string sceneName)
     {
         SetCanvasEnabled(true);
-        yield return Instance.StartCoroutine(PlayFadeAnimation(true, blackOverlay));
-        AsyncOperation async = SceneManager.LoadSceneAsync(sceneName);
+        yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
+        var async = SceneManager.LoadSceneAsync(sceneName);
         yield return async; // Wait for the async operation and animation to complete.
-        yield return Instance.StartCoroutine(PlayFadeAnimation(false, blackOverlay));
+        yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
         SetCanvasEnabled(false);
     }
 
     public void ResetGame()
     {
         // reset the level index counter
-        gameLevelNum = 0;
+        GameLevelNum = 0;
     }
 
     public void QuitGame()

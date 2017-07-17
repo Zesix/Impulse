@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class ItemPrefabData : MonoBehaviour {
     // Item parameters
@@ -10,13 +9,13 @@ public class ItemPrefabData : MonoBehaviour {
     public int Durability;
     public int Cost;
 
-    public void Initialize(string name, int range, int attack, int defense, int durability, int cost)
+    public void Initialize(string itemName, int range, int attack, int defense, int durability, int cost)
     {
-        this.Name = name;
-        this.Range = range;
-        this.Attack = attack;
-        this.Defense = defense;
-        this.Durability = durability;
-        this.Cost = cost;
+        Name = itemName;
+        Range = range;
+        Attack = attack;
+        Defense = defense;
+        Durability = durability;
+        Cost = cost;
     }
 }

@@ -1,43 +1,25 @@
-/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
 using UnityEngine;
-using System.Collections;
 
 public class TopDownFollow_Camera : MonoBehaviour {
 
-	public Transform followTarget;
-	public Vector3 targetOffset;
-	public float moveSpeed = 2f;
+	public Transform FollowTarget;
+	public Vector3 TargetOffset;
+	public float MoveSpeed = 2f;
 	
-	private Transform myTransform;
-	
-	void Start () {
+	private Transform _myTransform;
+
+	private void Start () {
 		// Cache camera transform
-		myTransform = transform;	
+		_myTransform = transform;	
 	}
 	
 	public void SetTarget ( Transform aTransform ) {
-		followTarget = aTransform;	
+		FollowTarget = aTransform;	
 	}
-	
-	void LateUpdate () {
-		if(followTarget != null)
-			myTransform.position = Vector3.Lerp( myTransform.position, followTarget.position + targetOffset, moveSpeed * Time.deltaTime );
+
+	private void LateUpdate () {
+		if(FollowTarget != null)
+			_myTransform.position = Vector3.Lerp( _myTransform.position, FollowTarget.position + TargetOffset, MoveSpeed * Time.deltaTime );
 	}
 
 }

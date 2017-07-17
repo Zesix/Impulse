@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace EndlessTorusRunner3D
 {
@@ -8,22 +7,19 @@ namespace EndlessTorusRunner3D
     /// </summary>
     public class PipeItemRandomSpiralSpawner : PipeItemGenerator
     {
-        #region Properties
         // Items to spawn.
-        [SerializeField]
-        PipeItem[] itemPrefabs;
-        #endregion
+        [SerializeField] private PipeItem[] _itemPrefabs;
 
         public override void GenerateItems(Pipe pipe)
         {
-            float start = (Random.Range(0, pipe.PipeSegmentCount) + 0.5f);
-            float direction = Random.value < 0.5f ? 1f : -1f;
+            var start = (Random.Range(0, pipe.PipeSegmentCount) + 0.5f);
+            var direction = Random.value < 0.5f ? 1f : -1f;
 
-            float angleStep = pipe.CurveAngle / pipe.CurveSegmentCount;
-            for (int i = 0; i < pipe.CurveSegmentCount; i++)
+            var angleStep = pipe.CurveAngle / pipe.CurveSegmentCount;
+            for (var i = 0; i < pipe.CurveSegmentCount; i++)
             {
-                PipeItem item = Instantiate<PipeItem>(itemPrefabs[Random.Range(0, itemPrefabs.Length)]);
-                float pipeRotation = (start + i * direction) * 360f / pipe.PipeSegmentCount;
+                var item = Instantiate(_itemPrefabs[Random.Range(0, _itemPrefabs.Length)]);
+                var pipeRotation = (start + i * direction) * 360f / pipe.PipeSegmentCount;
                 item.Position(pipe, i * angleStep, pipeRotation);
             }
         }

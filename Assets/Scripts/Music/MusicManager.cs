@@ -1,21 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
@@ -23,19 +6,18 @@ public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance;	        // Singleton
     [SerializeField]
-    private float
-        volume;
+    private float _volume;
 
     public float Volume
     {
         get
         {
-            return source.volume;
+            return _source.volume;
         }
         set
         {
-            volume = value;
-            source.volume = value;
+            _volume = value;
+            _source.volume = value;
         }
     }
 
@@ -44,9 +26,9 @@ public class MusicManager : MonoBehaviour
     public RepeatMode Repeat;
     public float FadeDuration;
     public bool PlayOnAwake;
-    private AudioSource source;
+    private AudioSource _source;
 
-    void Start()
+    private void Start()
     {
         // If there is no instance of this class, set it.
         if (Instance == null)
@@ -57,20 +39,20 @@ public class MusicManager : MonoBehaviour
         else
         {
             Debug.LogError("There is already a Music Manager in the scene.");
-            GameObject.Destroy(this);
+            Destroy(this);
         }
 
         // grab audio source
-        source = GetComponent<AudioSource>();
-        source.playOnAwake = false;
+        _source = GetComponent<AudioSource>();
+        _source.playOnAwake = false;
         if (FadeDuration > 0)
-            source.volume = 0f;
+            _source.volume = 0f;
         else
-            Volume = volume;
+            Volume = _volume;
         if (Playlist == null)
             return;
         if (Playlist.MusicList.Length > 0)
-            source.clip = Playlist.MusicList[0];
+            _source.clip = Playlist.MusicList[0];
         else
             Debug.LogError("There are no music in the list");
 
@@ -92,12 +74,12 @@ public class MusicManager : MonoBehaviour
         if (fade)
             StartCoroutine(StopWithFade());
         else
-            source.Stop();
+            _source.Stop();
     }
 
     public void Next()
     {
-        source.Stop();
+        _source.Stop();
     }
 
     public void ChangePlaylist(MusicPlaylist list)
@@ -110,7 +92,7 @@ public class MusicManager : MonoBehaviour
 
     private IEnumerator ChangePlaylistE()
     {
-        if (source.isPlaying)
+        if (_source.isPlaying)
             yield return StartCoroutine(StopWithFade());
         StartCoroutine(PlayMusicList());
     }
@@ -123,11 +105,11 @@ public class MusicManager : MonoBehaviour
             while (lerpValue < 1f)
             {
                 lerpValue += Time.deltaTime / FadeDuration;
-                source.volume = Mathf.Lerp(volume, 0f, lerpValue);
+                _source.volume = Mathf.Lerp(_volume, 0f, lerpValue);
                 yield return null;
             }
         }
-        source.Stop();
+        _source.Stop();
     }
 
     public void PlaySong(AudioClip song)
@@ -137,13 +119,13 @@ public class MusicManager : MonoBehaviour
 
     private IEnumerator PlaySongE(AudioClip clip)
     {
-        source.Stop();
-        source.clip = clip;
-        source.Play();
+        _source.Stop();
+        _source.clip = clip;
+        _source.Play();
         StartCoroutine(FadeIn());
-        while (source.isPlaying)
+        while (_source.isPlaying)
         {
-            if (source.clip.length - source.time <= FadeDuration)
+            if (_source.clip.length - _source.time <= FadeDuration)
             {
                 yield return StartCoroutine(FadeOut());
             }
@@ -151,7 +133,7 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    private int _counter = 0;
+    private int _counter;
 
     private IEnumerator PlayMusicList()
     {
@@ -192,19 +174,15 @@ public class MusicManager : MonoBehaviour
     {
         if (FadeDuration > 0f)
         {
-            float startTime = source.clip.length - FadeDuration;
+            float startTime = _source.clip.length - FadeDuration;
             float lerpValue = 0f;
-            while (lerpValue < 1f && source.isPlaying)
+            while (lerpValue < 1f && _source.isPlaying)
             {
-                lerpValue = Mathf.InverseLerp(startTime, source.clip.length, source.time);
-                source.volume = Mathf.Lerp(volume, 0f, lerpValue);
+                lerpValue = Mathf.InverseLerp(startTime, _source.clip.length, _source.time);
+                _source.volume = Mathf.Lerp(_volume, 0f, lerpValue);
                 yield return null;
             }
-            source.volume = 0f;
-        }
-        else
-        {
-            yield break;
+            _source.volume = 0f;
         }
     }
 
@@ -212,18 +190,14 @@ public class MusicManager : MonoBehaviour
     {
         if (FadeDuration > 0f)
         {
-            float lerpValue = 0f;
-            while (lerpValue < 1f && source.isPlaying)
+            var lerpValue = 0f;
+            while (lerpValue < 1f && _source.isPlaying)
             {
-                lerpValue = Mathf.InverseLerp(0f, FadeDuration, source.time);
-                source.volume = Mathf.Lerp(0f, volume, lerpValue);
+                lerpValue = Mathf.InverseLerp(0f, FadeDuration, _source.time);
+                _source.volume = Mathf.Lerp(0f, _volume, lerpValue);
                 yield return null;
             }
-            source.volume = volume;
-        }
-        else
-        {
-            yield break;
+            _source.volume = _volume;
         }
     }
 

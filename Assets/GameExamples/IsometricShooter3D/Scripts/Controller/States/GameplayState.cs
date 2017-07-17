@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace IsometricShooter3D
 {
@@ -13,17 +12,17 @@ namespace IsometricShooter3D
         public const string GameOverNotification = "GameplayState.GameOverNotification";
         #endregion
 
-        void OnEnable()
+        private void OnEnable()
         {
             this.AddObserver(OnCharacterDeath, CharacterModel.CharacterDeathNotification);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             this.RemoveObserver(OnCharacterDeath, CharacterModel.CharacterDeathNotification);
         }
 
-        void OnCharacterDeath(object sender, object args)
+        private void OnCharacterDeath(object sender, object args)
         {
             if (sender is EnemyModel)
             {
@@ -46,16 +45,6 @@ namespace IsometricShooter3D
             this.PostNotification(NextWaveNotification);
             controller.NextCampCheckTime = controller.TimeBetweenCampingChecks + Time.time;
             controller.CampPositionOld = controller.Player.transform.position;
-        }
-
-        void Update()
-        {
-
-        }
-
-        public override void Exit()
-        {
-            base.Exit();
         }
     }
 }

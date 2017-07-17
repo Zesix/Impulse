@@ -9,8 +9,8 @@ public abstract class BasePooler : MonoBehaviour
 
     // Fields / Properties
     public string Key = string.Empty;
-    public GameObject Prefab = null;
-    public int PrepopulateAmt = 0;
+    public GameObject Prefab;
+    public int PrepopulateAmt;
     public int MaxCount = int.MaxValue;
     public bool AutoRegister = true;
     public bool AutoClear = true;
@@ -50,36 +50,34 @@ public abstract class BasePooler : MonoBehaviour
 
     public virtual void Enqueue(Poolable item)
     {
-        if (WillEnqueue != null)
-            WillEnqueue(item);
+        WillEnqueue?.Invoke(item);
         GameObjectPoolController.Enqueue(item);
     }
 
     public virtual void EnqueueObject(GameObject obj)
     {
-        Poolable item = obj.GetComponent<Poolable>();
+        var item = obj.GetComponent<Poolable>();
         if (item != null)
             Enqueue(item);
     }
 
     public virtual void EnqueueScript(MonoBehaviour script)
     {
-        Poolable item = script.GetComponent<Poolable>();
+        var item = script.GetComponent<Poolable>();
         if (item != null)
             Enqueue(item);
     }
 
     public virtual Poolable Dequeue()
     {
-        Poolable item = GameObjectPoolController.Dequeue(Key);
-        if (DidDequeue != null)
-            DidDequeue(item);
+        var item = GameObjectPoolController.Dequeue(Key);
+        DidDequeue?.Invoke(item);
         return item;
     }
 
     public virtual U DequeueScript<U>() where U : MonoBehaviour
     {
-        Poolable item = Dequeue();
+        var item = Dequeue();
         return item.GetComponent<U>();
     }
 

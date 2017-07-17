@@ -1,65 +1,60 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace IsometricShooter3D
 {
     public class GunController : BaseInputController
     {
-        #region Properties
         // The weapon slot.
-        [SerializeField]
-        private Transform weaponSlot;
+        [SerializeField] private Transform _weaponSlot;
         public Transform WeaponSlot
         {
-            get { return weaponSlot; }
-            set { weaponSlot = value; }
+            get { return _weaponSlot; }
+            set { _weaponSlot = value; }
         }
 
         // Starting gun. Used only if assigned.
-        [SerializeField]
-        private GunModel startingGun;
+        [SerializeField] private GunModel _startingGun;
         public GunModel StartingGun
         {
-            get { return startingGun; }
-            set { startingGun = value; }
+            get { return _startingGun; }
+            set { _startingGun = value; }
         }
 
         // The currently equipped gun.
-        GunModel equippedGun;
-        #endregion
+        private GunModel _equippedGun;
 
-        void OnEnable()
+        private void OnEnable()
         {
-            fireEvent += OnFireEvent;
+            FireEvent += OnFireEvent;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
-            fireEvent -= OnFireEvent;
+            FireEvent -= OnFireEvent;
         }
 
-        void OnFireEvent(object sender, InfoEventArgs<int> e)
+        private void OnFireEvent(object sender, InfoEventArgs<int> e)
         {
-            if (e.info == 0)
+            if (e.Info == 0)
             {
-                equippedGun.Shoot();
+                _equippedGun.Shoot();
             }
         }
 
-        void Start()
+        private void Start()
         {
-            if (startingGun != null)
-                EquipGun(startingGun);
+            if (_startingGun != null)
+                EquipGun(_startingGun);
         }
 
         public void EquipGun (GunModel gunToEquip)
         {
             // If there already is an equipped gun, then destroy it.
-            if (equippedGun != null)
-                Destroy(equippedGun.gameObject);
+            if (_equippedGun != null)
+                Destroy(_equippedGun.gameObject);
 
-            equippedGun = Instantiate(gunToEquip, weaponSlot.position, weaponSlot.rotation) as GunModel;
-            equippedGun.transform.parent = weaponSlot;
+            _equippedGun = Instantiate(gunToEquip, _weaponSlot.position, _weaponSlot.rotation);
+            _equippedGun.transform.parent = _weaponSlot;
         }
     }
 }

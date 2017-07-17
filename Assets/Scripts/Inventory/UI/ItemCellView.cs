@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class ItemCellView : MonoBehaviour
@@ -14,13 +13,13 @@ public class ItemCellView : MonoBehaviour
 
     public void SetData(ItemData data)
     {
-        this.gameObject.name = data.Name;
+        gameObject.name = data.Name;
 
-        this.Name.text = data.Name;
-        this.Range.text = data.Range.ToString();
-        this.Attack.text = data.Attack.ToString();
-        this.Defense.text = data.Defense.ToString();
-        this.Durability.text = data.Durability.ToString();
-        this.Cost.text = data.Cost.ToString();
+        Name.text = data.Name;
+        Range.text = data.Range.ToString();
+        Attack.text = data.Attack.ToString();
+        Defense.text = data.Defense.ToString();
+        Durability.text = data.Durability.ToString();
+        Cost.text = data.Cost.ToString();
     }
 }

@@ -7,16 +7,13 @@ public class MouseInputController : BaseInputController
     BaseObjectModel _myModel;
 
     // Mouse position in world space, from screen to world point.
-    Vector3 _mouse3DInput;
 
-    [SerializeField]
-    float _cameraDistance = 10.0f;
+    [SerializeField] private float _cameraDistance = 10.0f;
 
     // Where the mouse has clicked, in 3D coordinates.
-    [SerializeField]
-    Vector3 _clickPosition;
+    [SerializeField] private Vector3 _clickPosition;
 
-    void Awake()
+    private void Awake()
     {
         _myModel = GetComponent<BaseObjectModel>();
 
@@ -30,8 +27,8 @@ public class MouseInputController : BaseInputController
     public override void CheckInput()
     {
         // Get mouse position
-        _mouse3DInput = Camera.main.ScreenToWorldPoint(new Vector3(CrossPlatformInputManager.mousePosition.x, CrossPlatformInputManager.mousePosition.y,
-                                                                        _cameraDistance));
+        Camera.main.ScreenToWorldPoint(new Vector3(CrossPlatformInputManager.mousePosition.x, CrossPlatformInputManager.mousePosition.y,
+            _cameraDistance));
 
         // get fire / action buttons
         Fire1 = CrossPlatformInputManager.GetButton("Fire1");
@@ -45,7 +42,7 @@ public class MouseInputController : BaseInputController
         }
     }
 
-    void Update()
+    private void Update()
     {
         CheckInput();
     }
@@ -53,11 +50,11 @@ public class MouseInputController : BaseInputController
     /// <summary>
     /// Sets the click position.
     /// </summary>
-    void SetClickPosition()
+    private void SetClickPosition()
     {
-        Plane clickPlane = new Plane(Vector3.up, transform.position);
-        Ray clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        var rayPoint = 0f;
+        var clickPlane = new Plane(Vector3.up, transform.position);
+        var clickRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float rayPoint;
 
         if (clickPlane.Raycast(clickRay, out rayPoint))
             _clickPosition = clickRay.GetPoint(rayPoint);

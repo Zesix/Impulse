@@ -1,39 +1,28 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SquareTile : MonoBehaviour
 {
-    #region Properties
     // The (x,y) point of this square tile.
-    [SerializeField]
-    Point pos;
-    public Point Pos
-    {
-        get { return pos; }
-    }
+    [SerializeField] private Point _pos;
+    public Point Pos => _pos;
 
     // The height of this tile.
-    [SerializeField]
-    float height = 0;
+    [SerializeField] private float _height;
     public float Height
     {
-        get { return height; }
-        set { height = value; }
+        get { return _height; }
+        set { _height = value; }
     }
 
     // The center of this tile.
-    public Vector3 center
-    {
-        get { return new Vector3(pos.x, height, pos.y); }
-    }
-    #endregion
+    public Vector3 Center => new Vector3(_pos.X, _height, _pos.Y);
 
     /// <summary>
     /// Updates this tile's transform based on point position.
     /// </summary>
     public void UpdateTile()
     {
-        transform.localPosition = new Vector3(pos.x, height, pos.y);
+        transform.localPosition = new Vector3(_pos.X, _height, _pos.Y);
     }
 
     /// <summary>
@@ -43,7 +32,7 @@ public class SquareTile : MonoBehaviour
     /// <param name="y">Y Point coordinate.</param>
     public void SetPos (int x, int y)
     {
-        pos.x = x;
-        pos.y = y;
+        _pos.X = x;
+        _pos.Y = y;
     }
 }

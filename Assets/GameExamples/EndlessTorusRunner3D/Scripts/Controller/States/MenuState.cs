@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace EndlessTorusRunner3D
+﻿namespace EndlessTorusRunner3D
 {
     public class MenuState : ExtendedState
     {
@@ -25,11 +22,6 @@ namespace EndlessTorusRunner3D
             controller.CurrentPipe = controller.PipeSystem.SetupFirstPipe();
             // Set up current pipe.
             controller.PipeSystem.OrientWorld(controller.CurrentPipe);
-        }
-
-        public override void Exit()
-        {
-            base.Exit();
         }
     }
 }

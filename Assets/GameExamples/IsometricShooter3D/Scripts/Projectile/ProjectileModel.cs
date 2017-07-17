@@ -1,39 +1,25 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace IsometricShooter3D
 {
     public class ProjectileModel : MonoBehaviour
     {
-        #region Properties
-
         // Amount of damage this projectile does.
-        [SerializeField]
-        float damage = 1f;
-        public float Damage
-        {
-            get { return damage; }
-        }
+        [SerializeField] private float _damage = 1f;
+        public float Damage => _damage;
 
         // The speed this projectile moves forward.
-        [SerializeField]
-        float speed = 10f;
-        public float Speed
-        {
-            get { return speed; }
-        }
+        [SerializeField] private float _speed = 10f;
+        public float Speed => _speed;
 
         // The distance this projectile has moved.
-        [SerializeField]
-        float moveDistance;
+        [SerializeField] private float _moveDistance;
 
         // Collision mask. Used in collision detection.
-        [SerializeField]
-        LayerMask collisionMask;
+        [SerializeField] private LayerMask _collisionMask;
 
         // A generic short distance used to fix edge cases where collisions may not be detected.
-        float skinWidth = 0.1f;
-        #endregion
+        private const float SkinWidth = 0.1f;
 
         /// <summary>
         /// Sets the speed the projectile flies forward.
@@ -41,13 +27,13 @@ namespace IsometricShooter3D
         /// <param name="amount">The speed as a float.</param>
         public void SetSpeed(float amount)
         {
-            speed = amount;
+            _speed = amount;
         }
 
-        void Start()
+        private void Start()
         {
             // Check for initial collisions. This allows us to register a hit even if we start inside another object.
-            Collider[] initialCollisions = Physics.OverlapSphere(transform.position, skinWidth, collisionMask);
+            var initialCollisions = Physics.OverlapSphere(transform.position, SkinWidth, _collisionMask);
 
             if (initialCollisions.Length > 0)
             {
@@ -55,45 +41,43 @@ namespace IsometricShooter3D
             }
         }
 
-        void Update()
+        private void Update()
         {
             MoveForward();
-            CheckCollisions(moveDistance);
+            CheckCollisions(_moveDistance);
         }
 
-        void MoveForward()
+        private void MoveForward()
         {
-            moveDistance = speed * Time.deltaTime;
-            transform.Translate(Vector3.forward * moveDistance);
+            _moveDistance = _speed * Time.deltaTime;
+            transform.Translate(Vector3.forward * _moveDistance);
         }
 
-        void CheckCollisions(float moveDistance)
+        private void CheckCollisions(float moveDistance)
         {
-            Ray ray = new Ray(transform.position, transform.forward);
+            var ray = new Ray(transform.position, transform.forward);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, moveDistance + skinWidth, collisionMask, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(ray, out hit, moveDistance + SkinWidth, _collisionMask, QueryTriggerInteraction.Collide))
             {
                 OnHitObject(hit);
             }
         }
 
-        void OnHitObject(RaycastHit hit)
+        private void OnHitObject(RaycastHit hit)
         {
-            IDamageable damageableObject = hit.collider.GetComponent <IDamageable>();
-            if (damageableObject != null)
-                damageableObject.TakeHit(damage, hit);
+            var damageableObject = hit.collider.GetComponent <IDamageable>();
+            damageableObject?.TakeHit(_damage, hit);
 
-            GameObject.Destroy(gameObject);
+            Destroy(gameObject);
         }
 
-        void OnHitObject(Collider c)
+        private void OnHitObject(Component c)
         {
-            IDamageable damageableObject = c.GetComponent<IDamageable>();
-            if (damageableObject != null)
-                damageableObject.TakeDamage(damage);
+            var damageableObject = c.GetComponent<IDamageable>();
+            damageableObject?.TakeDamage(_damage);
 
-            GameObject.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

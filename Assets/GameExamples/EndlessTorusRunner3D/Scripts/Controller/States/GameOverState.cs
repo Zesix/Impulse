@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace EndlessTorusRunner3D
 {
@@ -15,15 +14,10 @@ namespace EndlessTorusRunner3D
             controller.MainCamera.gameObject.SetActive(true);
 
             // Show game over menu.
-            controller.ScreenManager.ChangeScreen(controller.ScreenManager.GameOverUI);
+            controller.ScreenManager.ChangeScreen(controller.ScreenManager.GameOverUi);
 
             // Show mouse cursor.
             Cursor.visible = true;
-        }
-
-        public override void Exit()
-        {
-            base.Exit();
         }
     }
 }

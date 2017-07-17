@@ -1,44 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class JsonReader : MonoBehaviour
 {
     [System.Serializable]
-    public class itemsData
+    public class ItemsData
     {
-        public List<itemStruct> items;
+        public List<ItemStruct> Items;
     }
 
     [System.Serializable]
-    public struct itemStruct
+    public struct ItemStruct
     {
-        public string NAME;
-        public int RANGE;
-        public int ATTACK;
-        public int DEFENSE;
-        public int DURABILITY;
-        public int COST;
+        public string Name;
+        public int Range;
+        public int Attack;
+        public int Defense;
+        public int Durability;
+        public int Cost;
     }
 
     public static List<Dictionary<string, object>> Read(string file)
     {
         var list = new List<Dictionary<string, object>>();
-        TextAsset data = Resources.Load(file) as TextAsset;
+        var data = Resources.Load(file) as TextAsset;
 
         if (data == null) return null;
-        itemsData parsedJason = JsonUtility.FromJson<itemsData>(data.text);
+        var parsedJason = JsonUtility.FromJson<ItemsData>(data.text);
 
-        foreach (itemStruct info in parsedJason.items)
+        foreach (ItemStruct info in parsedJason.Items)
         {
-            Dictionary<string, object> entry = new Dictionary<string, object>
+            var entry = new Dictionary<string, object>
             {
-                { "NAME", info.NAME },
-                { "RANGE", info.RANGE },
-                { "ATTACK", info.ATTACK },
-                { "DEFENSE", info.DEFENSE },
-                { "DURABILITY", info.DURABILITY },
-                { "COST", info.COST }
+                { "NAME", info.Name },
+                { "RANGE", info.Range },
+                { "ATTACK", info.Attack },
+                { "DEFENSE", info.Defense },
+                { "DURABILITY", info.Durability },
+                { "COST", info.Cost }
             };
             list.Add(entry);
         }

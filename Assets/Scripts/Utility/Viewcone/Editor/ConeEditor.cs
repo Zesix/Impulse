@@ -1,30 +1,27 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 [CustomEditor (typeof (Viewcone))] 
 public class ConeEditor : Editor {
         [MenuItem ("GameObject/Create Other/Cone")]
-        static void Create(){
-                GameObject gameObject = new GameObject("Viewcone");
-                Viewcone s = gameObject.AddComponent<Viewcone>();
-                MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
+        private static void Create(){
+                var gameObject = new GameObject("Viewcone");
+                var s = gameObject.AddComponent<Viewcone>();
+                var meshFilter = gameObject.GetComponent<MeshFilter>();
                 meshFilter.mesh = new Mesh();
                 s.Rebuild();
         }
         
         public override void OnInspectorGUI ()
         {
-                Viewcone obj;
-
-                obj = target as Viewcone;
+                var obj = target as Viewcone;
 
                 if (obj == null)
                 {
                         return;
                 }
         
-                base.DrawDefaultInspector();
+                DrawDefaultInspector();
                 EditorGUILayout.BeginHorizontal ();
                 
                 // Rebuild mesh when user click the Rebuild button

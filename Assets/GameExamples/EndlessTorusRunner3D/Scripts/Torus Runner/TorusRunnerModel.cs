@@ -1,110 +1,93 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace EndlessTorusRunner3D
 {
     public class TorusRunnerModel : MonoBehaviour
     {
-        #region Properties
-        [SerializeField]
-        float forwardVelocity;
-        public float ForwardVelocity
-        {
-            get { return forwardVelocity; }
-        }
+        [SerializeField] private float _forwardVelocity;
+        public float ForwardVelocity => _forwardVelocity;
 
-        [SerializeField]
-        float rotationVelocity;
+        [SerializeField] private float _rotationVelocity;
         public float RotationVelocity
         {
-            get { return rotationVelocity; }
-            set { rotationVelocity = value; }
+            get { return _rotationVelocity; }
+            set { _rotationVelocity = value; }
         }
 
-        [SerializeField]
-        Transform rotater;
-        float avatarRotation;
+        [SerializeField] private Transform _rotater;
+        private float _avatarRotation;
 
         // Distance the runner has traveled.
-        [SerializeField]
-        float distanceTraveled;
-        public float DistanceTraveled
-        {
-            get { return distanceTraveled; }
-        }
+        [SerializeField] private float _distanceTraveled;
+        public float DistanceTraveled => _distanceTraveled;
 
         // References.
-        GameController controller;
-        TorusRunnerView view;
+        private GameController _controller;
+
+        private TorusRunnerView _view;
 
         // Is the model movable? This prevents the player from moving the model after the death animation begins.
-        bool movable = true;
-        public bool Movable
-        {
-            get { return movable; }
-            set { movable = value; }
-        }
-        #endregion
+        public bool Movable { get; set; } = true;
 
         // Listeners
-        void OnEnable()
+        private void OnEnable()
         {
             this.AddObserver(OnGameplayStartedNotification, GameplayState.GameplayStateStartedNotification);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             this.RemoveObserver(OnGameplayStartedNotification, GameplayState.GameplayStateStartedNotification);
         }
 
-        void Awake()
+        private void Awake()
         {
-            view = GetComponent<TorusRunnerView>();
+            _view = GetComponent<TorusRunnerView>();
         }
 
         // This is basically our Start() function since we don't want to do anything until the game has started.
-        void OnGameplayStartedNotification(object sender, object args)
+        private void OnGameplayStartedNotification(object sender, object args)
         {
-            GameplayState gameplayState = sender as GameplayState;
-            controller = gameplayState.GetComponent<GameController>();
+            var gameplayState = sender as GameplayState;
+            _controller = gameplayState.GetComponent<GameController>();
 
             // Reset our distance traveled.
-            distanceTraveled = 0f;
+            _distanceTraveled = 0f;
 
             // Show our runner object.
-            view.ToggleRunnerObject(true);
+            _view.ToggleRunnerObject(true);
 
             // Make the runner movable again.
-            movable = true;
+            Movable = true;
         }
 
-        void Update()
+        private void Update()
         {
             // Gameplay has not started if controller has not been assigned.
-            if (controller != null)
+            if (_controller != null)
             {
                 // Update distance traveled every second unless the game is paused or the game is over.
-                if (controller.GameplayMode == true && controller.Paused == false && controller.GameOver == false)
+                if (_controller.GameplayMode && _controller.Paused == false && _controller.GameOver == false)
                 {
-                    distanceTraveled += forwardVelocity * Time.deltaTime;
+                    _distanceTraveled += _forwardVelocity * Time.deltaTime;
                 }
             }
         }
 
         public void RotateAvatar(float rotation)
         {
-            if (movable)
+            if (Movable)
             {
-                avatarRotation += rotationVelocity * Time.deltaTime * rotation;
-                if (avatarRotation < 0f)
+                _avatarRotation += _rotationVelocity * Time.deltaTime * rotation;
+                if (_avatarRotation < 0f)
                 {
-                    avatarRotation += 360f;
+                    _avatarRotation += 360f;
                 }
-                else if (avatarRotation >= 360f)
+                else if (_avatarRotation >= 360f)
                 {
-                    avatarRotation -= 360f;
+                    _avatarRotation -= 360f;
                 }
-                rotater.localRotation = Quaternion.Euler(avatarRotation, 0f, 0f);
+                _rotater.localRotation = Quaternion.Euler(_avatarRotation, 0f, 0f);
             }
         }
 

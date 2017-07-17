@@ -23,21 +23,20 @@ public abstract class KeyedPooler<T> : BasePooler
         return null;
     }
 
-    public U GetScript<U>(T key) where U : MonoBehaviour
+    public TU GetScript<TU>(T key) where TU : MonoBehaviour
     {
-        Poolable item = GetItem(key);
+        var item = GetItem(key);
         if (item != null)
-            return item.GetComponent<U>();
+            return item.GetComponent<TU>();
         return null;
     }
 
     public virtual void EnqueueByKey(T key)
     {
-        Poolable item = GetItem(key);
+        var item = GetItem(key);
         if (item != null)
         {
-            if (WillEnqueueForKey != null)
-                WillEnqueueForKey(item, key);
+            WillEnqueueForKey?.Invoke(item, key);
             Enqueue(item);
             Collection.Remove(key);
         }
@@ -48,24 +47,23 @@ public abstract class KeyedPooler<T> : BasePooler
         if (Collection.ContainsKey(key))
             return Collection[key];
 
-        Poolable item = Dequeue();
+        var item = Dequeue();
         Collection.Add(key, item);
-        if (DidDequeueForKey != null)
-            DidDequeueForKey(item, key);
+        DidDequeueForKey?.Invoke(item, key);
         return item;
     }
 
-    public virtual U DequeueScriptByKey<U>(T key) where U : MonoBehaviour
+    public virtual TU DequeueScriptByKey<TU>(T key) where TU : MonoBehaviour
     {
-        Poolable item = DequeueByKey(key);
-        return item.GetComponent<U>();
+        var item = DequeueByKey(key);
+        return item.GetComponent<TU>();
     }
 
     public override void EnqueueAll()
     {
-        T[] keys = new T[Collection.Count];
+        var keys = new T[Collection.Count];
         Collection.Keys.CopyTo(keys, 0);
-        for (int i = 0; i < keys.Length; ++i)
-            EnqueueByKey(keys[i]);
+        foreach (var t in keys)
+            EnqueueByKey(t);
     }
 }

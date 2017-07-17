@@ -1,29 +1,10 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
+﻿using System;
 using UnityEngine;
-using System.Collections;
-using UnityEngine.Sprites;
 
 namespace SpaceShooter2D
 {
     public class GenericShipModel : MonoBehaviour
     {
-        #region Properties
         // Ship properties
         protected float health;
         [SerializeField]
@@ -50,48 +31,27 @@ namespace SpaceShooter2D
         protected float bulletSpeed = 10f;
 
         // Used by the AI for moving along axes.
-        public float movementMagnitude = 0;
-        public float horzAIAxis;
-        public float vertAIAxis;
-        public bool inverseMovement = false;
+        public float MovementMagnitude;
+        public float HorzAiAxis;
+        public float VertAiAxis;
+        public bool InverseMovement;
 
         protected Rigidbody myRigidbody;
 
         // Getters and setters
-        public float Acceleration
-        {
-            get { return acceleration; }
-            private set { acceleration = value; }
-        }
-        public float Drift
-        {
-            get { return drift; }
-            private set { drift = value; }
-        }
-        public float MaxAcceleration
-        {
-            get { return maxAcceleration; }
-            private set { maxAcceleration = value; }
-        }
-        public float Rotation
-        {
-            get { return rotation; }
-            private set { rotation = value; }
-        }
-        public float BulletSpeed
-        {
-            get { return bulletSpeed; }
-            private set { bulletSpeed = value; }
-        }
+        public float Acceleration => acceleration;
 
-        public float Shields
-        {
-            get { return shields; }
-        }
-        public float Health
-        {
-            get { return health; }
-        }
+        public float Drift => drift;
+
+        public float MaxAcceleration => maxAcceleration;
+
+        public float Rotation => rotation;
+
+        public float BulletSpeed => bulletSpeed;
+
+        public float Shields => shields;
+
+        public float Health => health;
 
         // Control parameters
         protected Vector3 currentLookDirection = Vector3.zero;
@@ -100,17 +60,17 @@ namespace SpaceShooter2D
         [Range(0, 1)]
         public float WeaponMomentum = 0.2f;
 
-        Vector3 AILookDirection = Vector3.zero;
-        bool forceAILookDirection = false; // used during chases
+        private Vector3 _aiLookDirection = Vector3.zero;
+        private bool _forceAiLookDirection; // used during chases
 
         // Player or AI Inputs
         protected Vector3 destinationInput = Vector3.zero;
         protected Vector3 keyboardDestinationInput = Vector3.zero;
         protected Vector3 rotationInput = Vector3.zero;
-        protected bool useKeyboardMovement = false;
+        protected bool useKeyboardMovement;
         protected bool strafeToDestination = false;
-        protected bool fireInput = false;
-        protected bool secondaryInput = false;
+        protected bool fireInput;
+        protected bool secondaryInput;
         protected Vector3 offsetFromTarget = Vector3.zero;
 
         // Components.
@@ -120,9 +80,8 @@ namespace SpaceShooter2D
         protected FireProjectile mySecondaryShooter;
         protected Faction myFaction;
         protected SphereDetector myDetector;
-        #endregion
 
-        virtual protected void Start()
+        protected virtual void Start()
         {
             Init();
         }
@@ -130,12 +89,12 @@ namespace SpaceShooter2D
         /// <summary>
         /// Execute the fixed Update
         /// </summary>
-        virtual protected void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
             ExecuteMovement();
         }
 
-        virtual protected void Update()
+        protected virtual void Update()
         {
             ExecuteWeapons();
         }
@@ -143,7 +102,7 @@ namespace SpaceShooter2D
         /// <summary>
         /// Sets up the player ship data.
         /// </summary>
-        virtual protected void Init()
+        protected virtual void Init()
         {
             health = maxHealth;
             shields = maxShields;
@@ -165,40 +124,40 @@ namespace SpaceShooter2D
         /// <summary>
         /// Deals damage to the player
         /// </summary>
-        /// <param name="Damage"></param>
-        virtual public void DealDamage(float Damage)
+        /// <param name="damage"></param>
+        public virtual void DealDamage(float damage)
         {
             // Get current shields, pre-damage
-            float currentShields = shields;
+            var currentShields = shields;
 
             // Deal damage to the shields
-            shields = Mathf.Max(shields - Damage, 0);
+            shields = Mathf.Max(shields - damage, 0);
 
             // Reduce remaining damage by the pre-damage shields
-            Damage = Mathf.Max(Damage - currentShields, 0);
+            damage = Mathf.Max(damage - currentShields, 0);
 
             // Check if there is enough damage to do health damage
-            if (Damage > 0)
+            if (damage > 0)
             {
                 // Deal remaining health damage
-                health = Mathf.Max(health - Damage, 0);
+                health = Mathf.Max(health - damage, 0);
 
                 // To display an animation upon taking damage, call the appropriate function here.
             }
 
             // Debug
-            Debug.Log(gameObject + " received: " + Damage + " Points of damage. Current Shields: " + shields);
+            Debug.Log(gameObject + " received: " + damage + " Points of damage. Current Shields: " + shields);
         }
 
         /// <summary>
         /// Executes the movement.
         /// </summary>
-        virtual protected void ExecuteMovement()
+        protected virtual void ExecuteMovement()
         {
             // Set desired destination
-            Vector3 destination = destinationInput;
+            var destination = destinationInput;
             // Get movement direction
-            Vector3 targetLookDirection = destination - new Vector3(transform.position.x,
+            var targetLookDirection = destination - new Vector3(transform.position.x,
                                                                 transform.position.y,
                                                                 transform.position.z);
 
@@ -206,7 +165,7 @@ namespace SpaceShooter2D
             currentLookDirection = Vector3.Lerp(currentLookDirection, targetLookDirection, drift * Time.fixedDeltaTime);
 
             // Mouse based movement
-            if (!this.useKeyboardMovement)
+            if (!useKeyboardMovement)
             {
                 // Get movement direction
                 currentMovementDirection = currentLookDirection;
@@ -215,19 +174,19 @@ namespace SpaceShooter2D
             else
             {
                 // Get relative direction
-                Vector3 targetKeyboardDirection = this.transform.TransformDirection(keyboardDestinationInput);
+                var targetKeyboardDirection = transform.TransformDirection(keyboardDestinationInput);
 
                 // Get movement direction
                 currentMovementDirection = Vector3.Lerp(currentMovementDirection, targetKeyboardDirection, drift * Time.fixedDeltaTime);
             }
 
             // Execute movement (acceleration)
-            if ((this.useKeyboardMovement && keyboardDestinationInput.magnitude > 0) ||
-                !this.useKeyboardMovement)
+            if (useKeyboardMovement && keyboardDestinationInput.magnitude > 0 ||
+                !useKeyboardMovement)
             {
                 currentVelocity =
                     Vector3.ClampMagnitude(currentVelocity + currentMovementDirection * acceleration * Time.fixedDeltaTime,
-                        !forceAILookDirection ? MaxAcceleration : strafeMaxAcceleration);
+                        !_forceAiLookDirection ? MaxAcceleration : strafeMaxAcceleration);
             }
             // Execute movement (deceleration) (only for keyboardmovement)
             else
@@ -239,39 +198,39 @@ namespace SpaceShooter2D
 
 
             // Execute Rotation Towards Mouse Input (keyboard movement)
-            float absoluteAngle = 0;
+            float absoluteAngle;
             if (useKeyboardMovement)
             {
                 absoluteAngle = Vector3.Angle(Vector2.up, targetLookDirection.normalized);
 
                 // Get absolute angle sign
-                Vector3 absoluteCross = Vector3.Cross(Vector2.up, targetLookDirection.normalized);
+                var absoluteCross = Vector3.Cross(Vector2.up, targetLookDirection.normalized);
                 if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
 
                 // Rotate towards proper orientation
                 transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z, absoluteAngle, rotation * Time.fixedDeltaTime));
             }
             // Execute Rotation Towards Movement Direction
-            else if (!forceAILookDirection)
+            else if (!_forceAiLookDirection)
             {
                 // Get absolute angle
                 absoluteAngle = Vector3.Angle(Vector2.up, currentLookDirection.normalized);
 
                 // Get absolute angle sign
-                Vector3 absoluteCross = Vector3.Cross(Vector2.up, currentLookDirection.normalized);
+                var absoluteCross = Vector3.Cross(Vector2.up, currentLookDirection.normalized);
                 if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
 
                 // Rotate towards proper orientation
                 transform.eulerAngles = new Vector3(0, 0, Mathf.LerpAngle(transform.eulerAngles.z, absoluteAngle, rotation * Time.fixedDeltaTime));
             }
             // Execute Rotation Towards Target
-            else if (forceAILookDirection)
+            else if (_forceAiLookDirection)
             {
                 // Get absolute angle
-                absoluteAngle = Vector3.Angle(Vector2.up, AILookDirection.normalized);
+                absoluteAngle = Vector3.Angle(Vector2.up, _aiLookDirection.normalized);
 
                 // Get absolute angle sign
-                Vector3 absoluteCross = Vector3.Cross(Vector2.up, AILookDirection.normalized);
+                var absoluteCross = Vector3.Cross(Vector2.up, _aiLookDirection.normalized);
                 if (absoluteCross.z < 0) absoluteAngle = -absoluteAngle;
 
                 // Rotate towards proper orientation
@@ -311,7 +270,7 @@ namespace SpaceShooter2D
         /// <summary>
         /// Executes firing of weapons.
         /// </summary>
-        virtual protected void ExecuteWeapons()
+        protected virtual void ExecuteWeapons()
         {
             if (fireInput)
                 ExecuteSpecificWeapon(myShooter);
@@ -319,99 +278,98 @@ namespace SpaceShooter2D
                 ExecuteSpecificWeapon(mySecondaryShooter);
         }
 
-        virtual protected void ExecuteSpecificWeapon(FireProjectile shooter)
+        protected virtual void ExecuteSpecificWeapon(FireProjectile shooter)
         {
             // Check if the shooter exist
             if (shooter == null || shooter.firing) return;
 
             // Single shoot mode
-            if (shooter.fireMode == FireProjectile.FiringMode.Single)
+            switch (shooter.fireMode)
             {
-                // Fire the main weapon and send the current ship's velocity as momentum
-                shooter.Fire(bulletSpeed, currentVelocity * WeaponMomentum);
-            }
-            // Continuous shoot mode
-            else if (shooter.fireMode == FireProjectile.FiringMode.Continuous)
-            {
-                // Shoot as long as burst beam duration allows it
-                shooter.Fire(bulletSpeed, currentVelocity * WeaponMomentum);
+                case FireProjectile.FiringMode.Single:
+                    // Fire the main weapon and send the current ship's velocity as momentum
+                    shooter.Fire(bulletSpeed, currentVelocity * WeaponMomentum);
+                    break;
+                case FireProjectile.FiringMode.Continuous:
+                    // Shoot as long as burst beam duration allows it
+                    shooter.Fire(bulletSpeed, currentVelocity * WeaponMomentum);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
         /// <summary>
         /// Collsion Detection
         /// </summary>
-        virtual protected void OnTriggerEnter(Collider coll)
+        protected virtual void OnTriggerEnter(Collider coll)
         {
-            Projectile incomingProjectile = coll.gameObject.GetComponent<Projectile>();
+            var incomingProjectile = coll.gameObject.GetComponent<Projectile>();
             if (incomingProjectile != null && myFaction.FactionName != incomingProjectile.Faction)
             {
                 DealDamage(incomingProjectile.Damage);
                 incomingProjectile.Deactivate();
             }
         }
-
-        #region Setters and Getters
-        virtual public SphereDetector GetDetector()
+        public virtual SphereDetector GetDetector()
         {
             return myDetector;
         }
 
-        virtual public void SetDestinationInput(Vector3 input)
+        public virtual void SetDestinationInput(Vector3 input)
         {
             destinationInput = input;
         }
 
-        virtual public void SetKeyboardDestinationInput(Vector3 input)
+        public virtual void SetKeyboardDestinationInput(Vector3 input)
         {
             keyboardDestinationInput = input;
         }
 
-        virtual public void SetRotationInput(Vector3 input)
+        public virtual void SetRotationInput(Vector3 input)
         {
             rotationInput = input;
         }
 
-        virtual public void SetFireInput(bool input)
+        public virtual void SetFireInput(bool input)
         {
             fireInput = input;
         }
 
-        virtual public void SetSecondaryInput(bool input)
+        public virtual void SetSecondaryInput(bool input)
         {
             secondaryInput = input;
         }
 
-        virtual public void SetOffsetFromTarget(Vector3 offset)
+        public virtual void SetOffsetFromTarget(Vector3 offset)
         {
             offsetFromTarget = offset;
         }
 
-        virtual public Vector3 GetOffsetFromTarget()
+        public virtual Vector3 GetOffsetFromTarget()
         {
             return offsetFromTarget;
         }
 
-        virtual public void SetKeyboardMovement(bool value)
+        public virtual void SetKeyboardMovement(bool value)
         {
             useKeyboardMovement = value;
         }
 
-        virtual public void SetAILookDirection(Vector3 direction, bool enable = true)
+        public virtual void SetAiLookDirection(Vector3 direction, bool enable = true)
         {
-            forceAILookDirection = enable;
-            AILookDirection = direction;
+            _forceAiLookDirection = enable;
+            _aiLookDirection = direction;
         }
 
-        virtual public Vector3 GetCurrentLookDirection()
+        public virtual Vector3 GetCurrentLookDirection()
         {
             return currentLookDirection;
         }
 
-        virtual public Vector3 GetCurrentDirection()
+        public virtual Vector3 GetCurrentDirection()
         {
             return currentMovementDirection;
         }
-        #endregion
     }
 }

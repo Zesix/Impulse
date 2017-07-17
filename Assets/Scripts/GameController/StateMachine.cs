@@ -1,19 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class StateMachine : MonoBehaviour
 {
     public virtual State CurrentState
     {
-        get { return _currentState; }
+        get { return currentState; }
         set { Transition(value); }
     }
-    protected State _currentState;
-    protected bool _inTransition;
+    protected State currentState;
+    protected bool inTransition;
 
     public virtual T GetState<T>() where T : State
     {
-        T target = GetComponent<T>();
+        var target = GetComponent<T>();
         if (target == null)
             target = gameObject.AddComponent<T>();
         return target;
@@ -26,19 +25,19 @@ public class StateMachine : MonoBehaviour
 
     protected virtual void Transition(State value)
     {
-        if (_currentState == value || _inTransition)
+        if (currentState == value || inTransition)
             return;
 
-        _inTransition = true;
+        inTransition = true;
 
-        if (_currentState != null)
-            _currentState.Exit();
+        if (currentState != null)
+            currentState.Exit();
 
-        _currentState = value;
+        currentState = value;
 
-        if (_currentState != null)
-            _currentState.Enter();
+        if (currentState != null)
+            currentState.Enter();
 
-        _inTransition = false;
+        inTransition = false;
     }
 }

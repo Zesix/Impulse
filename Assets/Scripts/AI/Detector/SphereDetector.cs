@@ -1,22 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
@@ -27,25 +9,26 @@ public class SphereDetector : MonoBehaviour
 
     // Detection parameters
     [SerializeField]
-    [Range(0, 1000)]
-    float detectionRange = 15.0f;
+    [Range(0, 1000)] private float _detectionRange = 15.0f;
+    public float DetectionRange => _detectionRange;
+    
     [SerializeField]
-    [Range(0, 1000)]
-    float attackRange = 5.0f;
+    [Range(0, 1000)] private float _attackRange = 5.0f;
+    public float AttackRange => _attackRange;
+    
     [SerializeField]
-    [Range(0, 1000)]
-    float avoidRange = 1.0f;
+    [Range(0, 1000)] private float _avoidRange = 1.0f;
+    public float AvoidRange => _avoidRange;
+    
     [SerializeField]
-    [Range(0, 5)]
-    float detectionRate = 0.1f;
-    [SerializeField]
-    float largestRange = 0.0f;
+    [Range(0, 5)] private float _detectionRate = 0.1f;
+    public float DetectionRate => _detectionRate;
+    
+    [SerializeField] private float _largestRange;
 
     // Faction parameters
-    [SerializeField]
-    List<Faction.Factions> AllyFactions = new List<Faction.Factions>();
-    [SerializeField]
-    List<Faction.Factions> EnemyFactions = new List<Faction.Factions>();
+    [SerializeField] private List<Faction.Factions> _allyFactions = new List<Faction.Factions>();
+    [SerializeField] private List<Faction.Factions> _enemyFactions = new List<Faction.Factions>();
 
     // Detected Objects
     public List<Faction> DetectedEnemies = new List<Faction>();
@@ -53,24 +36,18 @@ public class SphereDetector : MonoBehaviour
     public List<Faction> DetectedNeutral = new List<Faction>();
 
     // Debug
-    [SerializeField]
-    bool DisplayDetectionRange = true;
-    [SerializeField]
-    bool DisplayAttackRange = true;
-    [SerializeField]
-    bool DisplayAvoidRange = true;
+    [SerializeField] private bool _displayDetectionRange = true;
+    [SerializeField] private bool _displayAttackRange = true;
+    [SerializeField] private bool _displayAvoidRange = true;
 
-    #region Gameplay
-
-    // Use this for initialization
-    void Start()
+    private void Start()
     {
         // Get largest search range
-        float[] ranges = new float[] { detectionRange, attackRange, avoidRange };
-        largestRange = Mathf.Max(ranges);
+        var ranges = new[] { _detectionRange, _attackRange, _avoidRange };
+        _largestRange = Mathf.Max(ranges);
 
         // Start Automatic Faction Detection
-        InvokeRepeating("DetectFactionObjects", 0.0f, detectionRate);
+        InvokeRepeating(nameof(DetectFactionObjects), 0.0f, _detectionRate);
     }
 
     /// <summary>
@@ -84,8 +61,8 @@ public class SphereDetector : MonoBehaviour
         DetectedNeutral.Clear();
 
         // Detect all characters in range
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, largestRange);
-        int i = 0;
+        var hitColliders = Physics.OverlapSphere(transform.position, _largestRange);
+        var i = 0;
         while (i < hitColliders.Length)
         {
             //Ignore self object
@@ -97,18 +74,18 @@ public class SphereDetector : MonoBehaviour
 			}
 
             //Check if the object has a faction
-            Faction currentObject = hitColliders[i].GetComponent<Faction>();
+            var currentObject = hitColliders[i].GetComponent<Faction>();
 
             //Organize the detected factions
             if (currentObject != null)
             {
 				// Check if it is an ally
-                if (AllyFactions.Contains(currentObject.FactionName))
+                if (_allyFactions.Contains(currentObject.FactionName))
                 {
                     DetectedAllies.Add(currentObject);
                 }
                 // Check if it is an enemy
-                else if (EnemyFactions.Contains(currentObject.FactionName))
+                else if (_enemyFactions.Contains(currentObject.FactionName))
                 {
                     DetectedEnemies.Add(currentObject);
                 }
@@ -121,9 +98,7 @@ public class SphereDetector : MonoBehaviour
             i++;
         }
     }
-    #endregion
 
-    #region Utilities
     /// <summary>
     /// Returns closest enemy game object within detection range.
     /// </summary>
@@ -131,16 +106,16 @@ public class SphereDetector : MonoBehaviour
     public GameObject ClosestEnemy()
     {
         GameObject closestEnemy = null;
-        float currentMinDistance = Mathf.Infinity;
+        const float currentMinDistance = Mathf.Infinity;
 
         // Analize all detected enemies
-        foreach (Faction current in DetectedEnemies)
+        foreach (var current in DetectedEnemies)
         {
             // Get distance to the enemy
-            float distance = Vector3.Distance(transform.position, current.transform.position);
+            var distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= detectionRange && distance < currentMinDistance)
+            if (distance <= _detectionRange && distance < currentMinDistance)
                 closestEnemy = current.gameObject;
         }
 
@@ -154,16 +129,16 @@ public class SphereDetector : MonoBehaviour
     public GameObject ClosestAlly()
     {
         GameObject closestAlly = null;
-        float currentMinDistance = Mathf.Infinity;
+        const float currentMinDistance = Mathf.Infinity;
 
         // Analize all detected enemies
-        foreach (Faction current in DetectedAllies)
+        foreach (var current in DetectedAllies)
         {
             // Get distance to the enemy
-            float distance = Vector3.Distance(transform.position, current.transform.position);
+            var distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= detectionRange && distance < currentMinDistance)
+            if (distance <= _detectionRange && distance < currentMinDistance)
                 closestAlly = current.gameObject;
         }
 
@@ -178,19 +153,19 @@ public class SphereDetector : MonoBehaviour
     public GameObject ClosestFactionType(Faction type)
     {
         GameObject closestEnemy = null;
-        float currentMinDistance = Mathf.Infinity;
+        const float currentMinDistance = Mathf.Infinity;
 
         // Analize all detected enemies
-        foreach (Faction current in DetectedEnemies)
+        foreach (var current in DetectedEnemies)
         {
             // Check if the current faction object belongs to the desired faction
             if (current.FactionName == type.FactionName)
             {
                 // Get distance to the enemy
-                float distance = Vector3.Distance(transform.position, current.transform.position);
+                var distance = Vector3.Distance(transform.position, current.transform.position);
 
                 // First check the enemy is in the detection range and is the closest distance found until now
-                if (distance <= detectionRange && distance < currentMinDistance)
+                if (distance <= _detectionRange && distance < currentMinDistance)
                     closestEnemy = current.gameObject;
             }
         }
@@ -207,14 +182,14 @@ public class SphereDetector : MonoBehaviour
         GameObject randomEnemy = null;
 
         // Analize all detected enemies
-        List<Faction> possibleEnemies = new List<Faction>();
-        foreach (Faction current in DetectedEnemies)
+        var possibleEnemies = new List<Faction>();
+        foreach (var current in DetectedEnemies)
         {
             // Get distance to the enemy
-            float distance = Vector3.Distance(transform.position, current.transform.position);
+            var distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= detectionRange)
+            if (distance <= _detectionRange)
                 possibleEnemies.Add(current);
         }
 
@@ -233,17 +208,17 @@ public class SphereDetector : MonoBehaviour
         GameObject randomEnemy = null;
 
         // Analize all detected enemies
-        List<Faction> possibleEnemies = new List<Faction>();
-        foreach (Faction current in DetectedEnemies)
+        var possibleEnemies = new List<Faction>();
+        foreach (var current in DetectedEnemies)
         {
             // Check if the current faction object belongs to the desired faction
             if (current.FactionName == type.FactionName)
             {
                 // Get distance to the enemy
-                float distance = Vector3.Distance(transform.position, current.transform.position);
+                var distance = Vector3.Distance(transform.position, current.transform.position);
 
                 // First check the enemy is in the detection range and is the closest distance found until now
-                if (distance <= detectionRange)
+                if (distance <= _detectionRange)
                     possibleEnemies.Add(current);
             }
         }
@@ -255,63 +230,30 @@ public class SphereDetector : MonoBehaviour
         return randomEnemy;
     }
 
-    #endregion
-
-    #region Debug
-
     /// <summary>
     /// Executed on the draw gizmos event
     /// </summary>
-    void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
         // Shows the detection range in editor
-        if (DisplayDetectionRange)
+        if (_displayDetectionRange)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, detectionRange);
+            Gizmos.DrawWireSphere(transform.position, _detectionRange);
         }
 
         // Shows the attack range in editor
-        if (DisplayAttackRange)
+        if (_displayAttackRange)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
+            Gizmos.DrawWireSphere(transform.position, _attackRange);
         }
 
         // Shows the avoid range in editor
-        if (DisplayAvoidRange)
+        if (_displayAvoidRange)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, avoidRange);
+            Gizmos.DrawWireSphere(transform.position, _avoidRange);
         }
     }
-
-    #endregion
-
-    #region Properties
-    public float DetectionRange
-    {
-        get { return detectionRange; }
-        private set { detectionRange = value; }
-    }
-
-    public float AttackRange
-    {
-        get { return attackRange; }
-        private set { attackRange = value; }
-    }
-
-    public float AvoidRange
-    {
-        get { return avoidRange; }
-        private set { avoidRange = value; }
-    }
-
-    public float DetectionRate
-    {
-        get { return detectionRate; }
-        private set { detectionRate = value; }
-    }
-
-    #endregion
 }

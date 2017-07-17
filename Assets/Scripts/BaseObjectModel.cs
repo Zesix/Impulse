@@ -7,15 +7,11 @@ public class BaseObjectModel : MonoBehaviour
 {
 
     // Our movement destination.
-    [SerializeField]
-    Vector3 _destinationPosition;
+    [SerializeField] private Vector3 _destinationPosition;
 
     // The spped our object moves.
     [SerializeField]
     float _moveSpeed = 1.5f;
-
-    bool _isFiring = false;                 // Are we firing?
-    bool _isMoving = false;                  // Are we moving?
 
     protected virtual void Awake()
     {
@@ -40,10 +36,6 @@ public class BaseObjectModel : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, _destinationPosition, _moveSpeed * Time.deltaTime);
 
         // If we are at the desired position, then stop moving.
-        if (transform.position == _destinationPosition)
-            _isMoving = false;
-        else
-            _isMoving = true;
 
         // Draw a debug line to show where we are moving.
         Debug.DrawLine(transform.position, _destinationPosition, Color.red);
@@ -58,6 +50,5 @@ public class BaseObjectModel : MonoBehaviour
     // Sets whether we are firing or not. Used by our input controller.
     public virtual void SetFireInput(bool input)
     {
-        _isFiring = input;
     }
 }

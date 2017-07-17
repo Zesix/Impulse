@@ -12,7 +12,7 @@ public class ScrollBarIncrementer : MonoBehaviour
     {
         if (Target == null ) throw new Exception("Setup ScrollbarIncrementer first!");
 
-        float Step = 1.0f/ this.MyItemScrollerComponent.CurrentNumberElements() ;
+        var Step = 1.0f/ MyItemScrollerComponent.CurrentNumberElements() ;
 
         Target.value = Mathf.Clamp(Target.value + Step, 0, 1);
     }
@@ -21,7 +21,7 @@ public class ScrollBarIncrementer : MonoBehaviour
     {
         if (Target == null ) throw new Exception("Setup ScrollbarIncrementer first!");
 
-        float Step = 1.0f / this.MyItemScrollerComponent.CurrentNumberElements();
+        var Step = 1.0f / MyItemScrollerComponent.CurrentNumberElements();
 
         Target.value = Mathf.Clamp(Target.value - Step, 0, 1);
     }

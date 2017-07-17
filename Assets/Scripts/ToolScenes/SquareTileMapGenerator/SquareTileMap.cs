@@ -1,77 +1,45 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [System.Serializable]
 public class SquareTileMap : MonoBehaviour
 {
     // Sizes of this map, given in point format (X,Y).
-    [SerializeField]
-    Vector2 minMapSize;
-    public Vector2 MinMapSize
-    {
-        get { return minMapSize; }
-    }
+    [SerializeField] private Vector2 _minMapSize;
+    public Vector2 MinMapSize => _minMapSize;
 
     // Percentage of obstacles.
     [SerializeField]
-    [Range(0, 1)]
-    float obstaclePercent;
-    public float ObstaclePercent
-    {
-        get { return obstaclePercent; }
-    }
+    [Range(0, 1)] private float _obstaclePercent;
+    public float ObstaclePercent => _obstaclePercent;
 
     // Obstacle placement seed.
-    [SerializeField]
-    int obstaclePlaceSeed;
-    public int ObstaclePlaceSeed
-    {
-        get { return obstaclePlaceSeed; }
-    }
+    [SerializeField] private int _obstaclePlaceSeed;
+    public int ObstaclePlaceSeed => _obstaclePlaceSeed;
 
     // Obstacle heights.
-    [SerializeField]
-    float minObstacleHeight;
-    public float MinObstacleHeight
-    {
-        get { return minObstacleHeight; }
-    }
+    [SerializeField] private float _minObstacleHeight;
+    public float MinObstacleHeight => _minObstacleHeight;
 
-    [SerializeField]
-    float maxObstacleHeight;
-    public float MaxObstacleHeight
-    {
-        get { return maxObstacleHeight; }
-    }
+    [SerializeField] private float _maxObstacleHeight;
+    public float MaxObstacleHeight => _maxObstacleHeight;
 
     // Colors.
-    [SerializeField]
-    Color foregroundColor;
-    public Color ForegroundColor
-    {
-        get { return foregroundColor; }
-    }
+    [SerializeField] private Color _foregroundColor;
+    public Color ForegroundColor => _foregroundColor;
 
-    [SerializeField]
-    Color backgroundColor;
-    public Color BackgroundColor
-    {
-        get { return backgroundColor; }
-    }
+    [SerializeField] private Color _backgroundColor;
+    public Color BackgroundColor => _backgroundColor;
 
-    public Point MapCenter
-    {
-        get { return new Point((int)minMapSize.x / 2, (int)minMapSize.y / 2); }
-    }
+    public Point MapCenter => new Point((int)_minMapSize.x / 2, (int)_minMapSize.y / 2);
 
     public void Setup (Vector2 minMapSize, float obstaclePercent, int obstaclePlaceSeed, float minObstacleHeight, float maxObstacleHeight, Color foregroundColor, Color backgroundColor)
     {
-        this.minMapSize = minMapSize;
-        this.obstaclePercent = obstaclePercent;
-        this.obstaclePlaceSeed = obstaclePlaceSeed;
-        this.minObstacleHeight = minObstacleHeight;
-        this.maxObstacleHeight = maxObstacleHeight;
-        this.foregroundColor = foregroundColor;
-        this.backgroundColor = backgroundColor;
+        _minMapSize = minMapSize;
+        _obstaclePercent = obstaclePercent;
+        _obstaclePlaceSeed = obstaclePlaceSeed;
+        _minObstacleHeight = minObstacleHeight;
+        _maxObstacleHeight = maxObstacleHeight;
+        _foregroundColor = foregroundColor;
+        _backgroundColor = backgroundColor;
     }
 }

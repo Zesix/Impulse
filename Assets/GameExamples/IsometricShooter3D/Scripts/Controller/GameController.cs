@@ -1,139 +1,100 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace IsometricShooter3D
 {
 
     public class GameController : BaseGameController
     {
-
-        #region Properties
         // Map generator.
-        [SerializeField]
-        SquareTileMapGenerator mapGenerator;
-        public SquareTileMapGenerator MapGenerator
-        {
-            get { return mapGenerator; }
-        }
+        [SerializeField] private SquareTileMapGenerator _mapGenerator;
+        public SquareTileMapGenerator MapGenerator => _mapGenerator;
 
         // Interface Manager.
-        [SerializeField]
-        InterfaceManager hudManager;
-        public InterfaceManager HUDManager
-        {
-            get { return hudManager; }
-        }
+        [SerializeField] private InterfaceManager _hudManager;
+        public InterfaceManager HudManager => _hudManager;
 
         // Reference to our player.
-        [SerializeField]
-        PlayerModel player;
-        public PlayerModel Player
-        {
-            get { return player; }
-        }
+        [SerializeField] private PlayerModel _player;
+        public PlayerModel Player => _player;
 
         // Used to check if the player is camping in a spot.
-        [SerializeField]
-        float campingThresholdDistance = 1.5f;
-        public float CampingThresholdDistance
-        {
-            get { return campingThresholdDistance; }
-        }
-        [SerializeField]
-        float timeBetweenCampingChecks = 2f;
+        [SerializeField] private float _campingThresholdDistance = 1.5f;
+        public float CampingThresholdDistance => _campingThresholdDistance;
+
+        [SerializeField] private float _timeBetweenCampingChecks = 2f;
         public float TimeBetweenCampingChecks
         {
-            get { return timeBetweenCampingChecks; }
-            set { timeBetweenCampingChecks = value; }
+            get { return _timeBetweenCampingChecks; }
+            set { _timeBetweenCampingChecks = value; }
         }
 
-        float nextCampCheckTime;
-        public float NextCampCheckTime
-        {
-            get { return nextCampCheckTime; }
-            set { nextCampCheckTime = value; }
-        }
+        public float NextCampCheckTime { get; set; }
 
-        bool playerIsCamping;
-        public bool PlayerIsCamping
-        {
-            get { return playerIsCamping; }
-            set { playerIsCamping = value; }
-        }
+        public bool PlayerIsCamping { get; set; }
 
-        Vector3 campPositionOld;
-        public Vector3 CampPositionOld
-        {
-            get { return campPositionOld; }
-            set { campPositionOld = value; }
-        }
+        public Vector3 CampPositionOld { get; set; }
 
         // Number of enemies alive.
-        [SerializeField]
-        int enemiesAlive;
-        public int EnemiesAlive
-        {
-            get { return enemiesAlive; }
-        }
+        [SerializeField] private int _enemiesAlive;
+        public int EnemiesAlive => _enemiesAlive;
 
-        bool gamePlaying = false;
-        #endregion
+        private bool _gamePlaying;
 
-        void OnEnable()
+        private void OnEnable()
         {
             this.AddObserver(OnGameOverNotification, GameplayState.GameOverNotification);
             this.AddObserver(OnNextWaveNotification, GameplayState.NextWaveNotification);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             this.RemoveObserver(OnGameOverNotification, GameplayState.GameOverNotification);
             this.RemoveObserver(OnNextWaveNotification, GameplayState.NextWaveNotification);
         }
 
-        void OnGameOverNotification(object sender, object args)
+        private void OnGameOverNotification(object sender, object args)
         {
-            gamePlaying = false;
+            _gamePlaying = false;
 
             // Show game over screen.
-            hudManager.ChangeScreen(hudManager.GameOverUI);
+            _hudManager.ChangeScreen(_hudManager.GameOverUi);
         }
 
-        void OnNextWaveNotification (object sender, object args)
+        private void OnNextWaveNotification (object sender, object args)
         {
             // Show gameplay UI at the start of the first wave.
-            if (gamePlaying == false)
+            if (_gamePlaying == false)
             {
-                gamePlaying = true;
+                _gamePlaying = true;
                 // Show gameplay UI.
-                hudManager.ChangeScreen(hudManager.GameplayUI);
+                _hudManager.ChangeScreen(_hudManager.GameplayUi);
             }
 
             // Reset player transform.
-            player.transform.position = new Vector3(0,1,0);
+            _player.transform.position = new Vector3(0,1,0);
         }
 
-        void Update()
+        private void Update()
         {
-            if (gamePlaying)
+            if (_gamePlaying)
             {
-                if (Time.time > nextCampCheckTime)
+                if (Time.time > NextCampCheckTime)
                 {
-                    nextCampCheckTime = Time.time + timeBetweenCampingChecks;
-                    playerIsCamping = (Vector3.Distance(player.transform.position, campPositionOld) < campingThresholdDistance);
-                    campPositionOld = player.transform.position;
+                    NextCampCheckTime = Time.time + _timeBetweenCampingChecks;
+                    PlayerIsCamping = (Vector3.Distance(_player.transform.position, CampPositionOld) < _campingThresholdDistance);
+                    CampPositionOld = _player.transform.position;
                 }
             }
         }
 
-        public override void Start()
+        public virtual void Start()
         {
             ChangeState<InitState>();
         }
 
         public void ModifyEnemyCount(int amount)
         {
-            enemiesAlive += amount;
+            _enemiesAlive += amount;
         }
     }
 }

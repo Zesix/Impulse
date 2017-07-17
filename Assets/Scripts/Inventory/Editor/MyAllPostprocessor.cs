@@ -6,14 +6,14 @@ class MyAllPostprocessor : AssetPostprocessor
     // Config location
     public const string JsonItemExtractorPath = "Assets/Resources/InventoryDemo/Prefabs/JSON Item Extractor.prefab";
 
-    static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+    private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
         foreach (var str in importedAssets)
         {
             // Check if it was a json file
             if (str.Contains(".json"))
             {
-                JSONItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JSONItemExtractor>(JsonItemExtractorPath);
+                var itemExtractor = AssetDatabase.LoadAssetAtPath<JSONItemExtractor>(JsonItemExtractorPath);
                 if (itemExtractor != null)
                 {
                     // Update Items' Data

@@ -15,12 +15,12 @@ public class ItemScrollerController : MonoBehaviour
 
     public float CellSize = 50.0f;
 
-    void Start()
+    private void Start()
     {
-        this._data = new List<ItemData>();
+        _data = new List<ItemData>();
 
         // Get item data extractor
-        JSONItemExtractor itemExtractor = AssetDatabase.LoadAssetAtPath<JSONItemExtractor>(JsonItemExtractorPath);
+        var itemExtractor = AssetDatabase.LoadAssetAtPath<JSONItemExtractor>(JsonItemExtractorPath);
         if (itemExtractor != null)
         {
             // Get items' prefabs
@@ -30,7 +30,7 @@ public class ItemScrollerController : MonoBehaviour
             {
                 var item = itemObject as ItemAssetData;
                 if (item != null)
-                    this._data.Add(new ItemData(item.Name, item.Range, item.Attack, item.Defense, item.Durability, item.Cost));
+                    _data.Add(new ItemData(item.Name, item.Range, item.Attack, item.Defense, item.Durability, item.Cost));
             }
         }
         else
@@ -38,20 +38,20 @@ public class ItemScrollerController : MonoBehaviour
             Debug.LogError("A JsonItemExtractor prefab wasn't found in " + JsonItemExtractorPath + ". Please fix this by adding this prefab there or changing the path in JsonItemExtractorPath in the ItemScrollerController class");
         }
 
-        this.RefreshScroll();
+        RefreshScroll();
     }
 
     private void RefreshScroll()
     {
         // Erase previous childrens
-        for (int i = 0; i < this.MyScroller.content.childCount; i++)
-            Destroy(this.MyScroller.content.GetChild(i).gameObject);
+        for (var i = 0; i < MyScroller.content.childCount; i++)
+            Destroy(MyScroller.content.GetChild(i).gameObject);
 
         // Update scroll list
-        foreach (var item in this._data)
+        foreach (var item in _data)
         {
-            var newItemCell = Instantiate(ItemCellViewPrefab) as ItemCellView;
-            newItemCell.transform.SetParent(this.MyScroller.content);
+            var newItemCell = Instantiate(ItemCellViewPrefab);
+            newItemCell.transform.SetParent(MyScroller.content);
             newItemCell.transform.localPosition = Vector3.zero;
 
             newItemCell.SetData(item);
@@ -60,6 +60,6 @@ public class ItemScrollerController : MonoBehaviour
 
     public int CurrentNumberElements()
     {
-        return this._data.Count;
+        return _data.Count;
     }
 }

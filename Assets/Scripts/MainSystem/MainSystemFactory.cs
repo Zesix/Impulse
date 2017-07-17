@@ -1,22 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 /// <summary>
 ///     A Singleton Factory that creates the MainSystem and wires it up for use.
@@ -50,16 +32,16 @@ public class MainSystemFactory : MonoBehaviour
         }
 
         // Create main system
-        GameObject mainObject = Instantiate(_mainSystemPrefab);
+        var mainObject = Instantiate(_mainSystemPrefab);
         _mainSystem = mainObject.GetComponent<MainSystem>();
 
         // Create scene manager
-        GameObject sceneObject = Instantiate(_sceneManagerPrefab);
-        GameSceneManager sceneManager = sceneObject.GetComponent<GameSceneManager>();
+        var sceneObject = Instantiate(_sceneManagerPrefab);
+        var sceneManager = sceneObject.GetComponent<GameSceneManager>();
 
         // Create music manager
-        GameObject musicObject = Instantiate(_musicManagerPrefab);
-        MusicManager musicManager = musicObject.GetComponent<MusicManager>();
+        var musicObject = Instantiate(_musicManagerPrefab);
+        var musicManager = musicObject.GetComponent<MusicManager>();
 
         // Initialize main system
         _mainSystem.Initialize(sceneManager, musicManager);

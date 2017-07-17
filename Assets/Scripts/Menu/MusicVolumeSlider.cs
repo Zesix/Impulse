@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class MusicVolumeSlider : MonoBehaviour {
 	// Set slider value equal to music manager value.
-	void Awake () {
+	private void Awake () {
 		GetComponent<Slider>().value = MusicManager.Instance.Volume;
 	}
 

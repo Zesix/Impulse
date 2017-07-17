@@ -46,7 +46,7 @@ namespace EndlessTorusRunner3D
             _runnerObject.SetActive(setting);
         }
 
-        private void OnTriggerEnter ()
+        private void OnTriggerEnter (Collider colliderObject)
         {
             // Prevent the player from moving the object after we start death animation.
             _model.Movable = false;

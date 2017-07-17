@@ -1,22 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 /// <summary>
 /// Spawns objects randomly from a list.
@@ -26,69 +8,64 @@ using System.Collections;
 public class RandomObjectSpawner : MonoBehaviour
 {
     // Objects to spawn.
-    [SerializeField]
-    GameObject[] ObjectSpawnPrefabs;
+    [SerializeField] private GameObject[] _objectSpawnPrefabs;
 
     // Number of objects to spawn.
     [SerializeField]
-    [Range(1, 100)]
-    int NumberToSpawn = 10;
+    [Range(1, 100)] private int _numberToSpawn = 10;
 
     // The minimum distance between each spawned object.
     [SerializeField]
-    [Range(0, 10000)]
-    float minDistanceBetweenSpawnedObjects = 10.0f;
+    [Range(0, 10000)] private float _minDistanceBetweenSpawnedObjects = 10.0f;
 
     // The object that culling distance will be compared to. This object must have a Collider AND a Rigidbody.
     // Ex: If you want objects to be hidden until they are within a certain range of the player, set the player object here.
-    [SerializeField]
-    Collider CullingTarget;
+    [SerializeField] private Collider _cullingTarget;
 
     // The distance from the culling target in which further objects should be hidden.
     [SerializeField]
-    [Range(10, 10000)]
-    float hideSpawnedObjectDistance = 50.0f;
+    [Range(10, 10000)] private float _hideSpawnedObjectDistance = 50.0f;
 
     // The currently spawned game objects. For internal tracking.
     protected GameObject[] CurrentSpawnedObjects;
 
     // Our Box Collider.
-    BoxCollider Bounds;
+    private BoxCollider _bounds;
 
     /// <summary>
     /// Spawns random objects within the box collider bounds.
     /// </summary>
     public void SpawnObjects()
     {
-        CurrentSpawnedObjects = new GameObject[NumberToSpawn];
-        Bounds = GetComponent<BoxCollider>();
+        CurrentSpawnedObjects = new GameObject[_numberToSpawn];
+        _bounds = GetComponent<BoxCollider>();
 
-        for (int i = 0; i < NumberToSpawn; i++)
+        for (var i = 0; i < _numberToSpawn; i++)
         {
             // Get random position within this transform.
-            Vector3 rndPosWithin = new Vector3(Random.Range(-1f, 1f) * Bounds.size.x / 2,
-                                               Random.Range(-1f, 1f) * Bounds.size.x / 2,
-                                               Random.Range(-1f, 1f) * Bounds.size.z / 2);
+            var rndPosWithin = new Vector3(Random.Range(-1f, 1f) * _bounds.size.x / 2,
+                                               Random.Range(-1f, 1f) * _bounds.size.x / 2,
+                                               Random.Range(-1f, 1f) * _bounds.size.z / 2);
             rndPosWithin += transform.position;
 
-            if (!isObjectTooClose(rndPosWithin))
+            if (!IsObjectTooClose(rndPosWithin))
             {
-                GameObject spawnedObject = (GameObject)Instantiate(ObjectSpawnPrefabs[Random.Range(0, ObjectSpawnPrefabs.Length)], rndPosWithin, Quaternion.identity);
+                var spawnedObject = Instantiate(_objectSpawnPrefabs[Random.Range(0, _objectSpawnPrefabs.Length)], rndPosWithin, Quaternion.identity);
                 CurrentSpawnedObjects[i] = spawnedObject;
                 CurrentSpawnedObjects[i].transform.parent = transform;
 
                 // Create a child game object, which we will attach the culling sphere to.
-                GameObject cullingSphere = new GameObject("Culling Sphere");
+                var cullingSphere = new GameObject("Culling Sphere");
                 cullingSphere.transform.position = rndPosWithin;
                 cullingSphere.transform.parent = spawnedObject.transform;
 
                 // We use a sphere collider to determine whether the object should be rendered.
-                SphereCollider spawnCollider = cullingSphere.AddComponent<SphereCollider>();
-                spawnCollider.radius = hideSpawnedObjectDistance;
+                var spawnCollider = cullingSphere.AddComponent<SphereCollider>();
+                spawnCollider.radius = _hideSpawnedObjectDistance;
 
                 // The CullObject script determines whether to show or hide the object.
-                CullObject spawnCuller = cullingSphere.AddComponent<CullObject>();
-                spawnCuller.CullingTarget = CullingTarget;
+                var spawnCuller = cullingSphere.AddComponent<CullObject>();
+                spawnCuller.CullingTarget = _cullingTarget;
 
             }
         }
@@ -99,13 +76,13 @@ public class RandomObjectSpawner : MonoBehaviour
     /// </summary>
     /// <param name="targetPosition"></param>
     /// <returns></returns>
-    bool isObjectTooClose(Vector3 targetPosition)
+    private bool IsObjectTooClose(Vector3 targetPosition)
     {
-        for (int i = 0; i < CurrentSpawnedObjects.Length; i++)
+        foreach (var t in CurrentSpawnedObjects)
         {
-            if (CurrentSpawnedObjects[i] != null)
+            if (t != null)
             {
-                if (Vector3.Distance(targetPosition, CurrentSpawnedObjects[i].transform.position) <= minDistanceBetweenSpawnedObjects)
+                if (Vector3.Distance(targetPosition, t.transform.position) <= _minDistanceBetweenSpawnedObjects)
                 {
                     return true;
                 }

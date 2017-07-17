@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace IsometricShooter3D
 {
@@ -10,24 +9,17 @@ namespace IsometricShooter3D
         // Are we dead?
         [SerializeField]
         protected bool dead;
-        public bool Dead
-        {
-            get { return dead; }
-        }
+        public bool Dead => dead;
 
         // Starting health.
         [SerializeField]
         protected float startingHealth;
-        public float StartingHealth
-        { get { return startingHealth; } }
+        public float StartingHealth => startingHealth;
 
         // Current health.
         [SerializeField]
         protected float health;
-        public float Health
-        {
-            get { return health; }
-        }
+        public float Health => health;
 
         // Damage event.
         public const string CharacterDamagedNotification = "CharacterModel.DamageNotification";
@@ -67,7 +59,7 @@ namespace IsometricShooter3D
             // Publish death event.
             this.PostNotification(CharacterDeathNotification);
 
-            GameObject.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

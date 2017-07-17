@@ -1,56 +1,36 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
+﻿#pragma warning disable 1587
 /// <summary>
 /// XML data.
 /// IMPORTANT: FOR XML LOADING TO BE DONE
 /// THIS SCRIPT FUNCTIONS WITHOUT OTHER INPUT
 /// </summary>
+#pragma warning restore 1587
 
-using UnityEngine;
-using System.Collections;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
-using System.Text;
 
 public class XMLData
 {
-	static XmlWriterSettings settings = new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true };
+	private static readonly XmlWriterSettings Settings = new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true };
 	
 	public static void SaveObjects (string folderPath, string fileName, XMLExample[] obj)
 	{
-		XmlSerializerNamespaces ns = new XmlSerializerNamespaces ();
-		
-		XmlSerializer ourSerializer = new XmlSerializer (typeof(XMLExample[]));
-		
-		XmlWriter output;
-		
+		var ns = new XmlSerializerNamespaces ();
+
 		ns.Add ("", "");
 		
-		ourSerializer = new XmlSerializer (typeof(XMLExample[]));
+		var ourSerializer = new XmlSerializer (typeof(XMLExample[]));
 		
 		if (!Directory.Exists (folderPath)) {
 			Directory.CreateDirectory (folderPath);
 			
 		}
 		
-		using (Stream ourStream = File.OpenWrite (folderPath + "/" + fileName + ".xml")) {
-			using (output = XmlWriter.Create (ourStream, settings)) {
+		using (Stream ourStream = File.OpenWrite (folderPath + "/" + fileName + ".xml"))
+		{
+			XmlWriter output;
+			using (output = XmlWriter.Create (ourStream, Settings)) {
 				ourSerializer.Serialize (output, obj);
 				
 			}
@@ -59,20 +39,15 @@ public class XMLData
 	
 	public static XMLExample[] LoadObjects (string folderPath, string fileName)
 	{
+		var ourSerializer = new XmlSerializer (typeof(XMLExample[]));
+
+		if (!File.Exists(folderPath + "/" + fileName)) return null;
 		XMLExample[] objectsLoaded;
-		XmlSerializer ourSerializer = new XmlSerializer (typeof(XMLExample[]));
-		
-		if (File.Exists (folderPath + "/" + fileName)) {
-			using (Stream load = File.OpenRead (folderPath + "/" + fileName)) {
-				objectsLoaded = ourSerializer.Deserialize (load) as XMLExample[];
+		using (Stream load = File.OpenRead (folderPath + "/" + fileName)) {
+			objectsLoaded = ourSerializer.Deserialize (load) as XMLExample[];
 				
-			}
-			
-			return objectsLoaded;
-			
-		} else {
-			return null;
-			
 		}
+			
+		return objectsLoaded;
 	}
 }

@@ -4,18 +4,15 @@ using System.Collections;
 
 public class InterfaceManager : MonoBehaviour
 {
-    string InterfaceScreens;
-    public InterfaceScreen GameplayUI;
-    public InterfaceScreen GameOverUI;
+    private string _interfaceScreens;
+    public InterfaceScreen GameplayUi;
+    public InterfaceScreen GameOverUi;
     public InterfaceScreen ActiveScreen;
 
-    bool inTransition = false;
-    public bool InTransition
-    {
-        get { return inTransition; }
-    }
+    public bool InTransition { get; } = false;
+
     // Use this for initialization
-    void Awake()
+    private void Awake()
     {
 #if UNITY_EDITOR
         if (GameSceneManager.Instance == null)
@@ -38,19 +35,19 @@ public class InterfaceManager : MonoBehaviour
         GameSceneManager.Instance.LoadLevelFadeInDelegate(index, animate);
     }
 
-    public void LoadScene(string name, bool animate)
+    public void LoadScene(string sceneName, bool animate)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
-    public void LoadSceneFadeIn(string name)
+    public void LoadSceneFadeIn(string sceneName)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
-    public void LoadScene(string name)
+    public void LoadScene(string sceneName)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(name, false);
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName, false);
     }
 
     public void ClearScreen()
@@ -66,7 +63,7 @@ public class InterfaceManager : MonoBehaviour
         if (animate)
         {
             GameSceneManager.Instance.SetCanvasEnabled(true);
-            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.blackOverlay));
+            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.BlackOverlay));
         }
         if (ActiveScreen != null)
         {
@@ -76,7 +73,7 @@ public class InterfaceManager : MonoBehaviour
         ActiveScreen.gameObject.SetActive(true);
         if (animate)
         {
-            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.blackOverlay));
+            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.BlackOverlay));
             GameSceneManager.Instance.SetCanvasEnabled(false);
         }
     }

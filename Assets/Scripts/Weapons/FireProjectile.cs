@@ -1,21 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 
@@ -29,10 +12,10 @@ public class FireProjectile : MonoBehaviour
 
     // Shooter Parameters
     [Range(0, 100)]
-    public float WeaponColdown = 1.0f;
+    public float WeaponCooldown = 1.0f;
     [System.NonSerialized]
     public FiringMode fireMode;
-    public bool firing = false;
+    public bool firing;
 
     // Where the projectile should spawn from.
     [SerializeField]
@@ -47,24 +30,24 @@ public class FireProjectile : MonoBehaviour
 
     // Relative movement
     [SerializeField]
-    protected bool relativeMovement = false;
+    protected bool relativeMovement;
 
     // Debug variables
     [SerializeField]
-    protected bool debugRay = false;
+    protected bool debugRay;
 
-    virtual protected void Start()
+    protected virtual void Start()
     {
         myAudio = GetComponent<AudioSource>();
         fireMode = FiringMode.Single;
     }
 
-    virtual public void SetWeaponFaction(Faction.Factions faction)
+    public virtual void SetWeaponFaction(Faction.Factions faction)
     {
         Faction = faction;
     }
 
-    virtual public void StopFire()
+    public virtual void StopFire()
     {
         firing = false;
     }
@@ -72,30 +55,30 @@ public class FireProjectile : MonoBehaviour
     /// <summary>
     /// Fire projectile
     /// </summary>
-    virtual public void Fire(float speed, Vector3 direction)
+    public virtual void Fire(float speed, Vector3 direction)
     {
         // Fire a projecitle from each mount point
-        for (int i = 0; i < gunMounts.Length; i++)
+        for (var i = 0; i < gunMounts.Length; i++)
             FireMountPoint(gunMounts[i], speed, direction, i);
 
         // Execute weapon coldown
-        ExecuteWeaponColdown();
+        ExecuteWeaponCooldown();
     }
 
-    virtual protected void ExecuteWeaponColdown()
+    protected virtual void ExecuteWeaponCooldown()
     {
         // Execute coldown
-        StopCoroutine("StartWeaponColdown");
-        StartCoroutine("StartWeaponColdown");
+        StopCoroutine(nameof(StartWeaponCooldown));
+        StartCoroutine(nameof(StartWeaponCooldown));
     }
 
-    IEnumerator StartWeaponColdown()
+    private IEnumerator StartWeaponCooldown()
     {
-        // Set weapon coldown
+        // Set weapon cooldown
         firing = true;
 
         // Wait fire delay
-        yield return new WaitForSeconds(WeaponColdown);
+        yield return new WaitForSeconds(WeaponCooldown);
 
         // Stop firing and allow further fire
         StopFire();
@@ -104,22 +87,21 @@ public class FireProjectile : MonoBehaviour
     /// <summary>
     /// Fires a projectile from the selected mount point
     /// </summary>
-    virtual protected void FireMountPoint(Transform mountPoint, float speed, Vector3 direction, int MountPointIndex)
+    protected virtual void FireMountPoint(Transform mountPoint, float speed, Vector3 direction, int mountPointIndex)
     {
         // Create bullet
-        Rigidbody shot;
-        shot = ((GameObject)Instantiate(projectile, mountPoint.position, mountPoint.rotation)).GetComponent<Rigidbody>();
+        var shot = Instantiate(projectile, mountPoint.position, mountPoint.rotation).GetComponent<Rigidbody>();
 
         // Initialize bullet
-        Projectile proj = shot.GetComponent<Projectile>();
+        var proj = shot.GetComponent<Projectile>();
         if (proj != null)
         {
             // Set projectile faction
             proj.Faction = Faction;
 
             // Play projectile shoot effect if it is available
-            if (proj.shootFX != null)
-                proj.PlayShotFX();
+            if (proj.ShootFx != null)
+                proj.PlayShotFx();
         }
 
         // Fire bullet taking into consideration the firing speed (gunMount.up * speed) and 

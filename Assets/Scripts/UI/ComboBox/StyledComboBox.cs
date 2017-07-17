@@ -1,22 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
@@ -26,34 +8,34 @@ public class StyledComboBox : StyledItem
 	public delegate void SelectionChangedHandler(StyledItem item);
 	public SelectionChangedHandler OnSelectionChanged;
 
-	public StyledComboBoxPrefab 	containerPrefab;		// prefab for whole control
-	public StyledItem 				itemPrefab;				// prefab for item in drop down
-	public StyledItem 				itemMenuPrefab;		// prefab for item in menu
+	public StyledComboBoxPrefab 	ContainerPrefab;		// prefab for whole control
+	public StyledItem 				ItemPrefab;				// prefab for item in drop down
+	public StyledItem 				ItemMenuPrefab;		// prefab for item in menu
 
 	public float ScrollSensitivity = 1f;
 
 	[SerializeField]
 	[HideInInspector]
-	private StyledComboBoxPrefab 	root;
+	private StyledComboBoxPrefab 	_root;
 	
 	[SerializeField]
 	[HideInInspector]
-	private List<StyledItem> items = new List<StyledItem>();
+	private List<StyledItem> _items = new List<StyledItem>();
 
 	[SerializeField]
-	private int selectedIndex = 0;
+	private int _selectedIndex;
 	public int SelectedIndex
 	{
 		get 
 		{
-			return selectedIndex;
+			return _selectedIndex;
 		}
 		set
 		{
-			if (value >= 0 && value <= items.Count)
+			if (value >= 0 && value <= _items.Count)
 			{
-				selectedIndex = value;
-				CreateMenuButton(items[selectedIndex]);
+				_selectedIndex = value;
+				CreateMenuButton(_items[_selectedIndex]);
 			}
 
 		}
@@ -64,14 +46,14 @@ public class StyledComboBox : StyledItem
 	{
 		get
 		{
-			if (selectedIndex >= 0 && selectedIndex <= items.Count)
-				return items[selectedIndex];
+			if (_selectedIndex >= 0 && _selectedIndex <= _items.Count)
+				return _items[_selectedIndex];
 			return null;
 		}
 	}
 
 
-	void Awake()
+	private void Awake()
 	{
 		InitControl();
 	}
@@ -79,39 +61,39 @@ public class StyledComboBox : StyledItem
 
 	private void AddItem(object data)
 	{
-		if (itemPrefab != null)
+		if (ItemPrefab != null)
 		{
-			Vector3[] corners = new Vector3[4];
-			itemPrefab.GetComponent<RectTransform>().GetLocalCorners(corners);
-			Vector3 pos = corners[0];
-			float sizeY = pos.y - corners[2].y;
-			pos.y = items.Count * sizeY - 5f;
-			StyledItem styledItem = Instantiate(itemPrefab, pos, root.itemRoot.rotation) as StyledItem;
-			RectTransform trans = styledItem.GetComponent<RectTransform>();
+			var corners = new Vector3[4];
+			ItemPrefab.GetComponent<RectTransform>().GetLocalCorners(corners);
+			var pos = corners[0];
+			var sizeY = pos.y - corners[2].y;
+			pos.y = _items.Count * sizeY - 5f;
+			var styledItem = Instantiate(ItemPrefab, pos, _root.ItemRoot.rotation);
+			var trans = styledItem.GetComponent<RectTransform>();
 			styledItem.Populate(data);
-			trans.SetParent (root.itemRoot.transform, false);
+			trans.SetParent (_root.ItemRoot.transform, false);
 
 			trans.pivot = new Vector2(0,1);
 			trans.anchorMin = new Vector2(0,1);
 			trans.anchorMax = Vector2.one;
 			trans.anchoredPosition = new Vector2(0.0f, pos.y);
-			items.Add(styledItem);
+			_items.Add(styledItem);
 
 			trans.offsetMin = new Vector2(0, pos.y + sizeY);
 			trans.offsetMax = new Vector2(0, pos.y);
-			float offsetSize = (items.Count + 1) * sizeY;
-			if (-offsetSize > root.GetComponent<RectTransform> ().rect.height) 
+			var offsetSize = (_items.Count + 1) * sizeY;
+			if (-offsetSize > _root.GetComponent<RectTransform> ().rect.height) 
 			{
-				scrollControl.vertical = true;
-				scrollControl.verticalScrollbar.gameObject.SetActive (true);
+				_scrollControl.vertical = true;
+				_scrollControl.verticalScrollbar.gameObject.SetActive (true);
 			}
-			root.itemRoot.offsetMin = new Vector2(root.itemRoot.offsetMin.x, offsetSize);
+			_root.ItemRoot.offsetMin = new Vector2(_root.ItemRoot.offsetMin.x, offsetSize);
 
-			Button b = styledItem.GetButton();
-			int curIndex = items.Count - 1;
+			var b = styledItem.GetButton();
+			var curIndex = _items.Count - 1;
 			if (b != null)
 			{
-				b.onClick.AddListener(delegate() { OnItemClicked(styledItem, curIndex); });
+				b.onClick.AddListener(delegate { OnItemClicked(styledItem, curIndex); });
 			}
 		}
 	}
@@ -121,82 +103,79 @@ public class StyledComboBox : StyledItem
 		SelectedIndex = index;
 
 		TogglePanelState();	// close
-		if (OnSelectionChanged != null)
-		{
-			OnSelectionChanged(item);
-		}
+		OnSelectionChanged?.Invoke(item);
 	}
 
 	public void ClearItems()
 	{
-		for (int i = items.Count - 1; i >= 0; --i)
-			DestroyObject(items[i].gameObject);
+		for (var i = _items.Count - 1; i >= 0; --i)
+			DestroyObject(_items[i].gameObject);
 	}
 
 	public void AddItems(params object[] list)
 	{
 		ClearItems();
 
-		for (int i = 0; i < list.Length; ++i)
+		foreach (var t in list)
 		{
-			AddItem(list[i]);
+			AddItem(t);
 		}
 		SelectedIndex = 0;
 	}
 
-	ScrollRect scrollControl;
+	private ScrollRect _scrollControl;
 
 
 	public void InitControl()
 	{
-		if (root != null)
-			DestroyImmediate(root.gameObject);
+		if (_root != null)
+			DestroyImmediate(_root.gameObject);
 
-		if (containerPrefab != null)
+		if (ContainerPrefab != null)
 		{
 			// create 
-			RectTransform own = GetComponent<RectTransform>();
-			root = Instantiate(containerPrefab, own.position, own.rotation) as StyledComboBoxPrefab;
-			root.transform.SetParent(this.transform, false);
-			scrollControl = root.itemPanel.GetComponent<ScrollRect> ();
-			scrollControl.scrollSensitivity = ScrollSensitivity;
-			RectTransform rt = root.GetComponent<RectTransform>();
+			var own = GetComponent<RectTransform>();
+			_root = Instantiate(ContainerPrefab, own.position, own.rotation);
+			_root.transform.SetParent(transform, false);
+			_scrollControl = _root.ItemPanel.GetComponent<ScrollRect> ();
+			_scrollControl.scrollSensitivity = ScrollSensitivity;
+			var rt = _root.GetComponent<RectTransform>();
 			rt.pivot = new Vector2(0.5f, 0.5f);
 			//root.anchoredPosition = Vector2.zero;
 			rt.anchorMin = Vector2.zero;
 			rt.anchorMax = Vector2.one;
 			rt.offsetMax = Vector2.zero;
 			rt.offsetMin = Vector2.zero;
-			root.gameObject.hideFlags = HideFlags.HideInHierarchy; // should really be HideAndDontSave, but unity crashes
-			root.itemPanel.alpha = 0.0f;
+			_root.gameObject.hideFlags = HideFlags.HideInHierarchy; // should really be HideAndDontSave, but unity crashes
+			_root.ItemPanel.alpha = 0.0f;
 
 			// create menu item
-			StyledItem toCreate = itemMenuPrefab;
+			var toCreate = ItemMenuPrefab;
 			if (toCreate == null)
-				toCreate = itemPrefab;
+				toCreate = ItemPrefab;
 			CreateMenuButton(toCreate);
 		}
 	}
 
 	private void CreateMenuButton(StyledItem toCreate)
 	{
-		if (root.menuItem.transform.childCount > 0)
+		if (_root.MenuItem.transform.childCount > 0)
 		{
-			for (int i = root.menuItem.transform.childCount - 1; i >= 0; --i)
-				DestroyObject(root.menuItem.transform.GetChild(i).gameObject);
+			for (var i = _root.MenuItem.transform.childCount - 1; i >= 0; --i)
+				DestroyObject(_root.MenuItem.transform.GetChild(i).gameObject);
 		}
-		if (toCreate != null && root.menuItem != null)
+		if (toCreate != null && _root.MenuItem != null)
 		{
-			StyledItem menuItem = Instantiate(toCreate) as StyledItem;
-			menuItem.transform.SetParent(root.menuItem.transform,false);
-			RectTransform mt = menuItem.GetComponent<RectTransform>();
+			var menuItem = Instantiate(toCreate);
+			menuItem.transform.SetParent(_root.MenuItem.transform,false);
+			var mt = menuItem.GetComponent<RectTransform>();
 			mt.pivot = new Vector2(0.5f, 0.5f);
 			mt.anchorMin = Vector2.zero;
 			mt.anchorMax = Vector2.one;
 			mt.offsetMin = Vector2.zero;
 			mt.offsetMax = Vector2.zero;
-			root.gameObject.hideFlags = HideFlags.HideInHierarchy; // should really be HideAndDontSave, but unity crashes
-			Button b = menuItem.GetButton();
+			_root.gameObject.hideFlags = HideFlags.HideInHierarchy; // should really be HideAndDontSave, but unity crashes
+			var b = menuItem.GetButton();
 			if (b != null)
 			{
 				b.onClick.AddListener(TogglePanelState);
@@ -206,7 +185,7 @@ public class StyledComboBox : StyledItem
 	
 	public void TogglePanelState()
 	{
-		root.itemPanel.alpha = Mathf.Abs(root.itemPanel.alpha - 1.0f);
+		_root.ItemPanel.alpha = Mathf.Abs(_root.ItemPanel.alpha - 1.0f);
 	}
 
 

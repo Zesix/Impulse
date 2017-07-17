@@ -27,20 +27,20 @@ public class WaypointPathManager : MonoBehaviour
     private Transform pointT;
 
     [SerializeField]
-    bool closed = true;
+    bool _closed = true;
 
     // If this is set to true, the waypoint indexes will be reversed.
     [SerializeField]
-    bool shouldReverse;
+    bool _shouldReverse;
 
-    void Start()
+    private void Start()
     {
         // make sure that when this script starts (on the device) that
         // we have grabbed the transforms for each waypoint
         GetTransforms();
     }
 
-    void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
         // we only want to draw the waypoints when we're editing, not when we are playing the game
         if (Application.isPlaying)
@@ -73,7 +73,7 @@ public class WaypointPathManager : MonoBehaviour
         firstPoint = lastPos;
 
         // now we loop through all of the waypoints drawing lines between them
-        for (int i = 1; i < totalTransforms; i++)
+        for (var i = 1; i < totalTransforms; i++)
         {
             TEMPtrans = (Transform)transforms[i];
             if (TEMPtrans == null)
@@ -104,7 +104,7 @@ public class WaypointPathManager : MonoBehaviour
         }
 
         // close the path
-        if (closed)
+        if (_closed)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(currentPos, firstPoint);
@@ -126,7 +126,7 @@ public class WaypointPathManager : MonoBehaviour
             transforms.Add(t);
         }
 
-        totalTransforms = (int)transforms.Count;
+        totalTransforms = transforms.Count;
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public class WaypointPathManager : MonoBehaviour
     /// <param name="rev"></param>
     public void SetReverseMode(bool rev)
     {
-        shouldReverse = rev;
+        _shouldReverse = rev;
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ public class WaypointPathManager : MonoBehaviour
         distance = Mathf.Infinity;
 
         // Iterate through them and find the closest one
-        for (int i = 0; i < transforms.Count; i++)
+        for (var i = 0; i < transforms.Count; i++)
         {
             // grab a reference to a transform
             TEMPtrans = (Transform)transforms[i];
@@ -188,11 +188,8 @@ public class WaypointPathManager : MonoBehaviour
             // return the waypoint we found in this test
             return TEMPindex;
         }
-        else
-        {
-            // no waypoint was found, so return -1 (this should be acccounted for at the other end!)
-            return -1;
-        }
+        // no waypoint was found, so return -1 (this should be acccounted for at the other end!)
+        return -1;
     }
 
     // this function has the addition of a check to avoid finding the same transform as one passed in. we use
@@ -210,7 +207,7 @@ public class WaypointPathManager : MonoBehaviour
         distance = Mathf.Infinity;
 
         // Iterate through them and find the closest one
-        for (int i = 0; i < totalTransforms; i++)
+        for (var i = 0; i < totalTransforms; i++)
         {
             // grab a reference to a transform
             TEMPtrans = (Transform)transforms[i];
@@ -243,11 +240,8 @@ public class WaypointPathManager : MonoBehaviour
             // return the waypoint we found in this test
             return TEMPindex;
         }
-        else
-        {
-            // no waypoint was found, so return -1 (this should be acccounted for at the other end!)
-            return -1;
-        }
+        // no waypoint was found, so return -1 (this should be acccounted for at the other end!)
+        return -1;
     }
 
     /// <summary>
@@ -259,7 +253,7 @@ public class WaypointPathManager : MonoBehaviour
     public int GetNextWaypoint(int index, bool reverse)
     {
         // If we are already going backward, keep going backward unless we have reached the front again.
-        if (reverse == true && index != 0)
+        if (reverse && index != 0)
         {
             return index - 1;
         }
@@ -268,10 +262,8 @@ public class WaypointPathManager : MonoBehaviour
         {
             return transforms.Count - 2;
         }
-        else
-        {
-            return index + 1;
-        }
+        // otherwise:
+        return index + 1;
     }
 
     /// <summary>
@@ -282,7 +274,7 @@ public class WaypointPathManager : MonoBehaviour
     /// <returns>The transform of the waypoint of the index number.</returns>
     public Transform GetWaypoint(int index)
     {
-        if (shouldReverse)
+        if (_shouldReverse)
         {
             // send back the reverse index'd waypoint
             index = (totalTransforms - 1) - index;

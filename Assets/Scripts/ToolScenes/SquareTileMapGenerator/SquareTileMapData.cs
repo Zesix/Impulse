@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class SquareTileMapData : ScriptableObject
@@ -17,6 +16,6 @@ public class SquareTileMapData : ScriptableObject
     [Range(0,1)]
     public float TileOutlinePercent;
     public List<Vector3> SquareTiles;
-    public Dictionary<Point, SquareTile> tiles;
-    public Dictionary<SquareTile, Transform> obstacles;
+    public Dictionary<Point, SquareTile> Tiles;
+    public Dictionary<SquareTile, Transform> Obstacles;
 }

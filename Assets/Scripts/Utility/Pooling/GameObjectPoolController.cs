@@ -36,7 +36,7 @@ public class GameObjectPoolController : MonoBehaviour
     {
         if (!_pools.ContainsKey(key))
             return;
-        PoolData data = _pools[key];
+        var data = _pools[key];
         data.MaxCount = maxCount;
     }
 
@@ -44,13 +44,15 @@ public class GameObjectPoolController : MonoBehaviour
     {
         if (_pools.ContainsKey(key))
             return false;
-        PoolData data = new PoolData();
-        data.Prefab = prefab;
-        data.MaxCount = maxCount;
-        data.Pool = new Queue<Poolable>(prepopulateAmount);
+        var data = new PoolData
+        {
+            Prefab = prefab,
+            MaxCount = maxCount,
+            Pool = new Queue<Poolable>(prepopulateAmount)
+        };
         _pools.Add(key, data);
 
-        for (int i = 0; i < prepopulateAmount; ++i)
+        for (var i = 0; i < prepopulateAmount; ++i)
             Enqueue(CreateInstance(key, prefab));
         return true;
     }
@@ -60,10 +62,10 @@ public class GameObjectPoolController : MonoBehaviour
         if (!_pools.ContainsKey(key))
             return;
 
-        PoolData data = _pools[key];
+        var data = _pools[key];
         while (data.Pool.Count > 0)
         {
-            Poolable obj = data.Pool.Dequeue();
+            var obj = data.Pool.Dequeue();
             Destroy(obj.gameObject);
         }
         _pools.Remove(key);
@@ -74,7 +76,7 @@ public class GameObjectPoolController : MonoBehaviour
         if (sender == null || sender.IsPooled || !_pools.ContainsKey(sender.Key))
             return;
 
-        PoolData data = _pools[sender.Key];
+        var data = _pools[sender.Key];
         if (data.Pool.Count >= data.MaxCount)
         {
             Destroy(sender.gameObject);
@@ -92,26 +94,26 @@ public class GameObjectPoolController : MonoBehaviour
         if (!_pools.ContainsKey(key))
             return null;
 
-        PoolData data = _pools[key];
+        var data = _pools[key];
         if (data.Pool.Count == 0)
             return CreateInstance(key, data.Prefab);
 
-        Poolable obj = data.Pool.Dequeue();
+        var obj = data.Pool.Dequeue();
         obj.IsPooled = false;
         return obj;
     }
 
     private static void CreateSharedInstance()
     {
-        GameObject obj = new GameObject("GameObject Pool Controller");
+        var obj = new GameObject("GameObject Pool Controller");
         DontDestroyOnLoad(obj);
         _instance = obj.AddComponent<GameObjectPoolController>();
     }
 
     private static Poolable CreateInstance(string key, GameObject prefab)
     {
-        GameObject instance = Instantiate(prefab);
-        Poolable poolableComponent = instance.AddComponent<Poolable>();
+        var instance = Instantiate(prefab);
+        var poolableComponent = instance.AddComponent<Poolable>();
         poolableComponent.Key = key;
         return poolableComponent;
     }

@@ -1,106 +1,105 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class BaseAIController : ExtendedMonoBehaviour
 {
 
     // AI states are defined in the AIStates namespace
 
-    private Transform proxyTarget;
-    private Vector3 relativeTarget;
-    private float targetAngle;
-    private RaycastHit hit;
-    private Vector3 tempDirVec;
+    private Transform _proxyTarget;
+    private Vector3 _relativeTarget;
+    private float _targetAngle;
+    private RaycastHit _hit;
+    private Vector3 _tempDirVec;
 
     // The rate the AI controller updates.
-    public float updateAIRate = 0.1f;
+    public float UpdateAiRate = 0.1f;
 
     // In some cases, we don't want this script to manipulate an object but instead
     // provide input for another script to use for movement. This script's movement inputs
     // are saved in the horz and vert variables.
-    public float horz;
-    public float vert;
+    public float Horz;
+    public float Vert;
 
-    private int obstacleHitType;
+    private int _obstacleHitType;
 
     // editor changeable / visible
 
     // If true, the object will not rotate or provide input values;
     // it will move from waypoint to waypoint purely through Transform.Translate().
-    public bool isStationary;
+    public bool IsStationary;
 
-    public AIState currentAIState;
+    public AIState CurrentAiState;
 
-    public float patrolSpeed = 5f;
-    public float patrolTurnSpeed = 10f;
-    public float wallAvoidDistance = 40f;
+    public float PatrolSpeed = 5f;
+    public float PatrolTurnSpeed = 10f;
+    public float WallAvoidDistance = 40f;
 
-    public Transform followTarget;
+    public Transform FollowTarget;
 
-    public float modelRotateSpeed = 15f;
-    public int followTargetMaxTurnAngle = 120;
+    public float ModelRotateSpeed = 15f;
+    public int FollowTargetMaxTurnAngle = 120;
 
-    public float minChaseDistance = 2f;
-    public float maxChaseDistance = 10f;
-    public float visionHeightOffset = 1f;
+    public float MinChaseDistance = 2f;
+    public float MaxChaseDistance = 10f;
+    public float VisionHeightOffset = 1f;
 
     [System.NonSerialized]
-    public Vector3 moveDirection;
+    public Vector3 MoveDirection;
 
     // waypoint following related variables
-    public WaypointPathManager myWayControl;
+    public WaypointPathManager MyWayControl;
 
-    public int currentWaypointNum;
-
-    [System.NonSerialized]
-    public Transform currentWaypointTransform;
-
-    private int totalWaypoints;
-
-    private Vector3 nodePosition = Vector3.zero;
-    private Vector3 myPosition = Vector3.zero;
-    private Vector3 diff;
-    private float currentWayDist;
+    public int CurrentWaypointNum;
 
     [System.NonSerialized]
-    public bool reachedLastWaypoint;
-    private Vector3 moveVec;
-    private Vector3 targetMoveVec;
-    private float distanceToChaseTarget;
+    public Transform CurrentWaypointTransform;
 
-    public float waypointDistance = 5f;
-    public float moveSpeed = 30f;
-    public float pathSmoothing = 2f;
+    private int _totalWaypoints;
+
+    private Vector3 _nodePosition = Vector3.zero;
+    private Vector3 _myPosition = Vector3.zero;
+    private Vector3 _diff;
+    private float _currentWayDist;
+
+    [System.NonSerialized]
+    public bool ReachedLastWaypoint;
+    private Vector3 _moveVec;
+    private Vector3 _targetMoveVec;
+    private float _distanceToChaseTarget;
+
+    public float WaypointDistance = 5f;
+    public float MoveSpeed = 30f;
+    public float PathSmoothing = 2f;
 
     // If true, the AI object will go through the waypoints in reverse order.
-    public bool shouldReversePathFollowing;
+    public bool ShouldReversePathFollowing;
 
     // If true, the AI object will loop through the waypoints.
-    public bool loopPath;
+    public bool LoopPath;
 
     // If true, the AI object will destroy itself once it reaches the last waypoint.
-    public bool destroyAtEndOfWaypoints;
+    public bool DestroyAtEndOfWaypoints;
 
-    public bool faceWaypoints;
-    public bool startAtFirstWaypoint;
+    public bool FaceWaypoints;
+    public bool StartAtFirstWaypoint;
 
     [System.NonSerialized]
-    public bool isRespawning;
+    public bool IsRespawning;
 
-    private int obstacleFinderResult;
-    public Transform rotateTransform;
+    private int _obstacleFinderResult;
+    public Transform RotateTransform;
 
     [System.NonSerialized]
     public Vector3 RelativeWaypointPosition;
 
-    public bool AIControlled = false;
+    public bool AiControlled;
 
-    void Start()
+    private void Start()
     {
         Init();
 
         // Begin custom AI update loop
-        InvokeRepeating("AIUpdateLoop", 0.0f, updateAIRate);
+        InvokeRepeating(nameof(AiUpdateLoop), 0.0f, UpdateAiRate);
     }
 
     /// <summary>
@@ -108,23 +107,23 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// </summary>
     public virtual void Init()
     {
-        myGameObject = gameObject;
-        myTransform = transform;
+        MyGameObject = gameObject;
+        MyTransform = transform;
 
         // rotateTransform may be set if the object to rotate is different than the main transform.
-        if (rotateTransform == null)
-            rotateTransform = myTransform;
+        if (RotateTransform == null)
+            RotateTransform = MyTransform;
 
-        didInit = true;
+        DidInit = true;
     }
 
     /// <summary>
     /// Sets whether or not this script should take control of the object.
     /// </summary>
     /// <param name="state"></param>
-    public void SetAIControl(bool state)
+    public void SetAiControl(bool state)
     {
-        AIControlled = state;
+        AiControlled = state;
     }
 
     // set up AI parameters --------------------
@@ -135,7 +134,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetPatrolSpeed(float aNum)
     {
-        patrolSpeed = aNum;
+        PatrolSpeed = aNum;
     }
 
     /// <summary>
@@ -144,7 +143,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetPatrolTurnSpeed(float aNum)
     {
-        patrolTurnSpeed = aNum;
+        PatrolTurnSpeed = aNum;
     }
 
     /// <summary>
@@ -154,7 +153,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetWallAvoidDistance(float aNum)
     {
-        wallAvoidDistance = aNum;
+        WallAvoidDistance = aNum;
     }
 
     /// <summary>
@@ -163,7 +162,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetWaypointDistance(float aNum)
     {
-        waypointDistance = aNum;
+        WaypointDistance = aNum;
     }
 
     /// <summary>
@@ -172,7 +171,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetMoveSpeed(float aNum)
     {
-        moveSpeed = aNum;
+        MoveSpeed = aNum;
     }
 
     /// <summary>
@@ -182,7 +181,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetMinChaseDistance(float aNum)
     {
-        minChaseDistance = aNum;
+        MinChaseDistance = aNum;
     }
 
     /// <summary>
@@ -191,7 +190,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetMaxChaseDistance(float aNum)
     {
-        maxChaseDistance = aNum;
+        MaxChaseDistance = aNum;
     }
 
     /// <summary>
@@ -201,7 +200,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <param name="aNum"></param>
     public void SetPathSmoothing(float aNum)
     {
-        pathSmoothing = aNum;
+        PathSmoothing = aNum;
     }
 
     // -----------------------------------------
@@ -213,7 +212,7 @@ public class BaseAIController : ExtendedMonoBehaviour
     public virtual void SetAIState(AIState newState)
     {
         // update AI state
-        currentAIState = newState;
+        CurrentAiState = newState;
     }
 
     /// <summary>
@@ -223,77 +222,77 @@ public class BaseAIController : ExtendedMonoBehaviour
     public virtual void SetChaseTarget(Transform theTransform)
     {
         // set a target for this AI to chase, if required
-        followTarget = theTransform;
+        FollowTarget = theTransform;
     }
 
     /// <summary>
     /// The custom update loop for the AI.
     /// </summary>
-    public virtual void AIUpdateLoop()
+    public virtual void AiUpdateLoop()
     {
         // make sure we have initialized before doing anything
-        if (!didInit)
+        if (!DidInit)
             Init();
 
         // check to see if we're supposed to be controlling the player
-        if (!AIControlled)
+        if (!AiControlled)
             return;
 
         // do AI updates
-        UpdateAI();
+        UpdateAi();
     }
 
-    public virtual void UpdateAI()
+    public virtual void UpdateAi()
     {
         // reset our inputs
-        horz = 0;
-        vert = 0;
+        Horz = 0;
+        Vert = 0;
 
-        int obstacleFinderResult = IsObstacleAhead();
+        var obstacleFinderResult = IsObstacleAhead();
 
-        switch (currentAIState)
+        switch (CurrentAiState)
         {
             // -----------------------------
-            case AIState.moving_looking_for_target:
+            case AIState.MovingLookingForTarget:
                 // look for chase target
-                if (followTarget != null)
-                    LookAroundFor(followTarget);
+                if (FollowTarget != null)
+                    LookAroundFor(FollowTarget);
 
                 // the AvoidWalls function looks to see if there's anything in-front. If there is,
                 // it will automatically change the value of moveDirection before we do the actual move
                 if (obstacleFinderResult == 1)
                 { // GO LEFT
-                    SetAIState(AIState.stopped_turning_left);
+                    SetAIState(AIState.StoppedTurningLeft);
                 }
                 if (obstacleFinderResult == 2)
                 { // GO RIGHT
-                    SetAIState(AIState.stopped_turning_right);
+                    SetAIState(AIState.StoppedTurningRight);
                 }
 
                 if (obstacleFinderResult == 3)
                 { // BACK UP
-                    SetAIState(AIState.backing_up_looking_for_target);
+                    SetAIState(AIState.BackingUpLookingForTarget);
                 }
 
                 // all clear! head forward
                 MoveForward();
                 break;
-            case AIState.chasing_target:
+            case AIState.ChasingTarget:
                 // chasing
                 // in case mode, we point toward the target and go right at it!
 
                 // quick check to make sure that we have a target (if not, we drop back to patrol mode)
-                if (followTarget == null)
-                    SetAIState(AIState.moving_looking_for_target);
+                if (FollowTarget == null)
+                    SetAIState(AIState.MovingLookingForTarget);
 
                 // the TurnTowardTarget function does just that, so to chase we just throw it the current target
-                TurnTowardTarget(followTarget);
+                TurnTowardTarget(FollowTarget);
 
                 // find the distance between us and the chase target to see if it is within range
-                distanceToChaseTarget = Vector3.Distance(myTransform.position, followTarget.position);
+                _distanceToChaseTarget = Vector3.Distance(MyTransform.position, FollowTarget.position);
 
                 // check the range
-                if (distanceToChaseTarget > minChaseDistance)
+                if (_distanceToChaseTarget > MinChaseDistance)
                 {
                     // keep charging forward
                     MoveForward();
@@ -301,20 +300,20 @@ public class BaseAIController : ExtendedMonoBehaviour
 
                 // here we do a quick check to test the distance between AI and target. If it's higher than
                 // our maxChaseDistance variable, we drop out of chase mode and go back to patrolling.
-                if (distanceToChaseTarget > maxChaseDistance || CanSee(followTarget) == false)
+                if (_distanceToChaseTarget > MaxChaseDistance || CanSee(FollowTarget) == false)
                 {
                     // set our state to 1 - moving_looking_for_target
-                    SetAIState(AIState.moving_looking_for_target);
+                    SetAIState(AIState.MovingLookingForTarget);
                 }
 
                 break;
             // -----------------------------
 
-            case AIState.backing_up_looking_for_target:
+            case AIState.BackingUpLookingForTarget:
 
                 // look for chase target
-                if (followTarget != null)
-                    LookAroundFor(followTarget);
+                if (FollowTarget != null)
+                    LookAroundFor(FollowTarget);
 
                 // backing up
                 MoveBack();
@@ -324,33 +323,33 @@ public class BaseAIController : ExtendedMonoBehaviour
                     // now we've backed up, lets randomize whether to go left or right
                     if (Random.Range(0, 100) > 50)
                     {
-                        SetAIState(AIState.stopped_turning_left);
+                        SetAIState(AIState.StoppedTurningLeft);
                     }
                     else
                     {
-                        SetAIState(AIState.stopped_turning_right);
+                        SetAIState(AIState.StoppedTurningRight);
                     }
                 }
 
                 break;
-            case AIState.stopped_turning_left:
+            case AIState.StoppedTurningLeft:
                 // look for chase target
-                if (followTarget != null)
-                    LookAroundFor(followTarget);
+                if (FollowTarget != null)
+                    LookAroundFor(FollowTarget);
 
                 // stopped, turning left
                 TurnLeft();
 
                 if (obstacleFinderResult == 0)
                 {
-                    SetAIState(AIState.moving_looking_for_target);
+                    SetAIState(AIState.MovingLookingForTarget);
                 }
                 break;
 
-            case AIState.stopped_turning_right:
+            case AIState.StoppedTurningRight:
                 // look for chase target
-                if (followTarget != null)
-                    LookAroundFor(followTarget);
+                if (FollowTarget != null)
+                    LookAroundFor(FollowTarget);
 
                 // stopped, turning right
                 TurnRight();
@@ -358,50 +357,50 @@ public class BaseAIController : ExtendedMonoBehaviour
                 // check results from looking, to see if path ahead is clear
                 if (obstacleFinderResult == 0)
                 {
-                    SetAIState(AIState.moving_looking_for_target);
+                    SetAIState(AIState.MovingLookingForTarget);
                 }
                 break;
-            case AIState.paused_looking_for_target:
+            case AIState.PausedLookingForTarget:
                 // standing still, with looking for chase target
                 // look for chase target
-                if (followTarget != null)
-                    LookAroundFor(followTarget);
+                if (FollowTarget != null)
+                    LookAroundFor(FollowTarget);
                 break;
 
-            case AIState.translate_along_waypoint_path:
+            case AIState.TranslateAlongWaypointPath:
                 // following waypoints (moving toward them, not pointing at them) at the speed of
                 // moveSpeed
 
                 // make sure we have been initialized before trying to access waypoints
-                if (!didInit && !reachedLastWaypoint)
+                if (!DidInit && !ReachedLastWaypoint)
                     return;
 
                 UpdateWaypoints();
 
                 // move the ship
-                if (!isStationary)
+                if (!IsStationary)
                 {
-                    targetMoveVec = Vector3.Normalize(currentWaypointTransform.position - myTransform.position);
-                    moveVec = Vector3.Lerp(moveVec, targetMoveVec, Time.deltaTime * pathSmoothing);
-                    myTransform.Translate(moveVec * moveSpeed * Time.deltaTime);
+                    _targetMoveVec = Vector3.Normalize(CurrentWaypointTransform.position - MyTransform.position);
+                    _moveVec = Vector3.Lerp(_moveVec, _targetMoveVec, Time.deltaTime * PathSmoothing);
+                    MyTransform.Translate(_moveVec * MoveSpeed * Time.deltaTime);
                     MoveForward();
 
-                    if (faceWaypoints)
+                    if (FaceWaypoints)
                     {
-                        TurnTowardTarget(currentWaypointTransform);
+                        TurnTowardTarget(CurrentWaypointTransform);
                     }
                 }
                 break;
 
-            case AIState.steer_to_waypoint:
+            case AIState.SteerToWaypoint:
 
                 // make sure we have been initialized before trying to access waypoints
-                if (!didInit && !reachedLastWaypoint)
+                if (!DidInit && !ReachedLastWaypoint)
                     return;
 
                 UpdateWaypoints();
 
-                if (currentWaypointTransform == null)
+                if (CurrentWaypointTransform == null)
                 {
                     // it may be possible that this function gets called before waypoints have been set up, so we catch any nulls here
                     return;
@@ -409,15 +408,15 @@ public class BaseAIController : ExtendedMonoBehaviour
 
                 // now we just find the relative position of the waypoint from the car transform,
                 // that way we can determine how far to the left and right the waypoint is.
-                RelativeWaypointPosition = myTransform.InverseTransformPoint(currentWaypointTransform.position);
+                RelativeWaypointPosition = MyTransform.InverseTransformPoint(CurrentWaypointTransform.position);
 
                 // by dividing the horz position by the magnitude, we get a decimal percentage of the turn angle that we can use to drive the wheels
-                horz = (RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude);
+                Horz = (RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude);
 
                 // now we do the same for torque, but make sure that it doesn't apply any engine torque when going around a sharp turn...
-                if (Mathf.Abs(horz) < 0.5f)
+                if (Mathf.Abs(Horz) < 0.5f)
                 {
-                    vert = RelativeWaypointPosition.z / RelativeWaypointPosition.magnitude - Mathf.Abs(horz);
+                    Vert = RelativeWaypointPosition.z / RelativeWaypointPosition.magnitude - Mathf.Abs(Horz);
                 }
                 else
                 {
@@ -425,13 +424,13 @@ public class BaseAIController : ExtendedMonoBehaviour
                 }
                 break;
 
-            case AIState.steer_to_target:
+            case AIState.SteerToTarget:
 
                 // make sure we have been initialized before trying to access waypoints
-                if (!didInit)
+                if (!DidInit)
                     return;
 
-                if (followTarget == null)
+                if (FollowTarget == null)
                 {
                     // it may be possible that this function gets called before a targer has been set up, so we catch any nulls here
                     return;
@@ -439,13 +438,13 @@ public class BaseAIController : ExtendedMonoBehaviour
 
                 // now we just find the relative position of the waypoint from the car transform,
                 // that way we can determine how far to the left and right the waypoint is.
-                RelativeWaypointPosition = transform.InverseTransformPoint(followTarget.position);
+                RelativeWaypointPosition = transform.InverseTransformPoint(FollowTarget.position);
 
                 // by dividing the horz position by the magnitude, we get a decimal percentage of the turn angle that we can use to drive the wheels
-                horz = (RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude);
+                Horz = (RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude);
 
                 // if we're outside of the minimum chase distance, drive!
-                if (Vector3.Distance(followTarget.position, myTransform.position) > minChaseDistance)
+                if (Vector3.Distance(FollowTarget.position, MyTransform.position) > MinChaseDistance)
                 {
                     MoveForward();
                 }
@@ -454,8 +453,8 @@ public class BaseAIController : ExtendedMonoBehaviour
                     NoMove();
                 }
 
-                if (followTarget != null)
-                    LookAroundFor(followTarget);
+                if (FollowTarget != null)
+                    LookAroundFor(FollowTarget);
 
                 // the AvoidWalls function looks to see if there's anything in-front. If there is,
                 // it will automatically change the value of moveDirection before we do the actual move
@@ -476,57 +475,53 @@ public class BaseAIController : ExtendedMonoBehaviour
 
                 break;
 
-            case AIState.paused_no_target:
+            case AIState.PausedNoTarget:
                 // paused_no_target
-                break;
-
-            default:
-                // idle (do nothing)
                 break;
         }
     }
 
     public virtual void TurnLeft()
     {
-        horz = -1;
+        Horz = -1;
     }
 
     public virtual void TurnRight()
     {
-        horz = 1;
+        Horz = 1;
     }
 
     public virtual void MoveForward()
     {
-        vert = 1;
+        Vert = 1;
     }
 
     public virtual void MoveBack()
     {
-        vert = -1;
+        Vert = -1;
     }
 
     public virtual void NoMove()
     {
-        vert = 0;
+        Vert = 0;
     }
 
     public virtual void LookAroundFor(Transform aTransform)
     {
         // here we do a quick check to test the distance between AI and target. If it's higher than
         // our maxChaseDistance variable, we drop out of chase mode and go back to patrolling.
-        if (Vector3.Distance(myTransform.position, aTransform.position) < maxChaseDistance)
+        if (Vector3.Distance(MyTransform.position, aTransform.position) < MaxChaseDistance)
         {
             // check to see if the target is visible before going into chase mode
-            if (CanSee(followTarget) == true)
+            if (CanSee(FollowTarget))
             {
                 // set our state to chase the target
-                SetAIState(AIState.chasing_target);
+                SetAIState(AIState.ChasingTarget);
             }
         }
     }
 
-    private int obstacleFinding;
+    private int _obstacleFinding;
 
     /// <summary>
     /// Checks if an obstacle using raycasting.
@@ -539,42 +534,42 @@ public class BaseAIController : ExtendedMonoBehaviour
     /// <returns>An integer corresponding to the raycast result.</returns>
     public virtual int IsObstacleAhead()
     {
-        obstacleHitType = 0;
+        _obstacleHitType = 0;
 
         // quick check to make sure that myTransform has been set
-        if (myTransform == null)
+        if (MyTransform == null)
         {
             return 0;
         }
 
         // draw this raycast so we can see what it is doing
-        Debug.DrawRay(myTransform.position, ((myTransform.forward + (myTransform.right * 0.5f)) * wallAvoidDistance));
-        Debug.DrawRay(myTransform.position, ((myTransform.forward + (myTransform.right * -0.5f)) * wallAvoidDistance));
+        Debug.DrawRay(MyTransform.position, ((MyTransform.forward + (MyTransform.right * 0.5f)) * WallAvoidDistance));
+        Debug.DrawRay(MyTransform.position, ((MyTransform.forward + (MyTransform.right * -0.5f)) * WallAvoidDistance));
 
         // cast a ray out forward from our AI and put the 'result' into the variable named hit
-        if (Physics.Raycast(myTransform.position, myTransform.forward + (myTransform.right * 0.5f), out hit, wallAvoidDistance))
+        if (Physics.Raycast(MyTransform.position, MyTransform.forward + (MyTransform.right * 0.5f), out _hit, WallAvoidDistance))
         {
             // obstacle
             // it's a left hit, so it's a type 1 right now (though it could change when we check on the other side)
-            obstacleHitType = 1;
+            _obstacleHitType = 1;
         }
 
-        if (Physics.Raycast(myTransform.position, myTransform.forward + (myTransform.right * -0.5f), out hit, wallAvoidDistance))
+        if (Physics.Raycast(MyTransform.position, MyTransform.forward + (MyTransform.right * -0.5f), out _hit, WallAvoidDistance))
         {
             // obstacle
-            if (obstacleHitType == 0)
+            if (_obstacleHitType == 0)
             {
                 // if we haven't hit anything yet, this is a type 2
-                obstacleHitType = 2;
+                _obstacleHitType = 2;
             }
             else
             {
                 // if we have hits on both left and right raycasts, it's a type 3
-                obstacleHitType = 3;
+                _obstacleHitType = 3;
             }
         }
 
-        return obstacleHitType;
+        return _obstacleHitType;
     }
 
     public void TurnTowardTarget(Transform aTarget)
@@ -587,19 +582,19 @@ public class BaseAIController : ExtendedMonoBehaviour
         // eg. a positive x value means the target is to  
         // to the right of the car, a positive z means 
         // the target is in front of the car 
-        relativeTarget = rotateTransform.InverseTransformPoint(aTarget.position); // note we use rotateTransform as a rotation object rather than myTransform!
+        _relativeTarget = RotateTransform.InverseTransformPoint(aTarget.position); // note we use rotateTransform as a rotation object rather than myTransform!
 
         // Calculate the target angle  
-        targetAngle = Mathf.Atan2(relativeTarget.x, relativeTarget.z);
+        _targetAngle = Mathf.Atan2(_relativeTarget.x, _relativeTarget.z);
 
         // Atan returns the angle in radians, convert to degrees 
-        targetAngle *= Mathf.Rad2Deg;
+        _targetAngle *= Mathf.Rad2Deg;
 
         // The wheels should have a maximum rotation angle 
-        targetAngle = Mathf.Clamp(targetAngle, -followTargetMaxTurnAngle - targetAngle, followTargetMaxTurnAngle);
+        _targetAngle = Mathf.Clamp(_targetAngle, -FollowTargetMaxTurnAngle - _targetAngle, FollowTargetMaxTurnAngle);
 
         // turn towards the target at the rate of modelRotateSpeed
-        rotateTransform.Rotate(0, targetAngle * modelRotateSpeed * Time.deltaTime, 0);
+        RotateTransform.Rotate(0, _targetAngle * ModelRotateSpeed * Time.deltaTime, 0);
     }
 
     /// <summary>
@@ -610,16 +605,16 @@ public class BaseAIController : ExtendedMonoBehaviour
     public bool CanSee(Transform aTarget)
     {
         // first, let's get a vector to use for raycasting by subtracting the target position from our AI position
-        tempDirVec = Vector3.Normalize(aTarget.position - myTransform.position);
+        _tempDirVec = Vector3.Normalize(aTarget.position - MyTransform.position);
 
         // lets have a debug line to check the distance between the two manually, in case you run into trouble!
-        Debug.DrawLine(myTransform.position, aTarget.position);
+        Debug.DrawLine(MyTransform.position, aTarget.position);
 
         // cast a ray from our AI, out toward the target passed in (use the tempDirVec magnitude as the distance to cast)
-        if (Physics.Raycast(myTransform.position + (visionHeightOffset * myTransform.up), tempDirVec, out hit, maxChaseDistance))
+        if (Physics.Raycast(MyTransform.position + (VisionHeightOffset * MyTransform.up), _tempDirVec, out _hit, MaxChaseDistance))
         {
             // check to see if we hit the target
-            if (hit.transform.gameObject == aTarget.gameObject)
+            if (_hit.transform.gameObject == aTarget.gameObject)
             {
                 return true;
             }
@@ -631,88 +626,87 @@ public class BaseAIController : ExtendedMonoBehaviour
 
     public void SetWaypointManager(WaypointPathManager aControl)
     {
-        myWayControl = aControl;
-        aControl = null;
+        MyWayControl = aControl;
 
         // grab total waypoints
-        totalWaypoints = myWayControl.GetTotal();
+        _totalWaypoints = MyWayControl.GetTotal();
 
         // make sure that if you use SetReversePath to set shouldReversePathFollowing that you
         // call SetReversePath for the first time BEFORE SetWayController, otherwise it won't set the first waypoint correctly
 
-        if (shouldReversePathFollowing)
+        if (ShouldReversePathFollowing)
         {
-            currentWaypointNum = totalWaypoints - 1;
+            CurrentWaypointNum = _totalWaypoints - 1;
         }
         else
         {
-            currentWaypointNum = 0;
+            CurrentWaypointNum = 0;
         }
 
         Init();
 
         // get the first waypoint from the waypoint controller
-        currentWaypointTransform = myWayControl.GetWaypoint(currentWaypointNum);
+        CurrentWaypointTransform = MyWayControl.GetWaypoint(CurrentWaypointNum);
 
-        if (startAtFirstWaypoint)
+        if (StartAtFirstWaypoint)
         {
             // position at the currentWaypointTransform position
-            myTransform.position = currentWaypointTransform.position;
+            MyTransform.position = CurrentWaypointTransform.position;
         }
     }
 
     public void SetReversePath(bool shouldRev)
     {
-        shouldReversePathFollowing = shouldRev;
+        ShouldReversePathFollowing = shouldRev;
     }
 
     public void SetSpeed(float aSpeed)
     {
-        moveSpeed = aSpeed;
+        MoveSpeed = aSpeed;
     }
 
     public void SetPathSmoothingRate(float aRate)
     {
-        pathSmoothing = aRate;
+        PathSmoothing = aRate;
     }
 
     public void SetRotateSpeed(float aRate)
     {
-        modelRotateSpeed = aRate;
+        ModelRotateSpeed = aRate;
     }
 
-    void UpdateWaypoints()
+    private void UpdateWaypoints()
     {
         // If we don't have a waypoint controller, we safely drop out
-        if (myWayControl == null)
+        if (MyWayControl == null)
             return;
 
-        if (reachedLastWaypoint && destroyAtEndOfWaypoints)
+        if (ReachedLastWaypoint && DestroyAtEndOfWaypoints)
         {
             // destroy myself(!)
             Destroy(gameObject);
             return;
         }
-        else if (reachedLastWaypoint)
+        if (ReachedLastWaypoint)
         {
-            currentWaypointNum = 0;
-            reachedLastWaypoint = false;
+            CurrentWaypointNum = 0;
+            ReachedLastWaypoint = false;
         }
 
         // because of the order that scripts run and are initialised, it is possible for this function
         // to be called before we have actually finished running the waypoints initialization, which
         // means we need to drop out to avoid doing anything silly or before it breaks the game.
-        if (totalWaypoints == 0)
+        if (_totalWaypoints == 0)
         {
             // grab total waypoints
-            totalWaypoints = myWayControl.GetTotal();
+            _totalWaypoints = MyWayControl.GetTotal();
             return;
         }
 
-        if (currentWaypointTransform == null)
+        if (CurrentWaypointTransform == null)
         {
             // grab our transform reference from the waypoint controller
-            currentWaypointTransform = myWayControl.GetWaypoint(currentWaypointNum);
+            CurrentWaypointTransform = MyWayControl.GetWaypoint(CurrentWaypointNum);
         }
 
         // now we check to see if we are close enough to the current waypoint
@@ -729,29 +723,29 @@ public class BaseAIController : ExtendedMonoBehaviour
 
         // check distance from this to the waypoint
 
-        currentWayDist = Vector3.Distance(nodePosition, myPosition);
+        _currentWayDist = Vector3.Distance(_nodePosition, _myPosition);
 
-        if (currentWayDist < waypointDistance)
+        if (_currentWayDist < WaypointDistance)
         {
             // we are close to the current node, so let's move on to the next one!
 
-            if (shouldReversePathFollowing)
+            if (ShouldReversePathFollowing)
             {
-                currentWaypointNum--;
+                CurrentWaypointNum--;
                 // now check to see if we have been all the way around
-                if (currentWaypointNum < 0)
+                if (CurrentWaypointNum < 0)
                 {
                     // just incase it gets referenced before we are destroyed, let's keep it to a safe index number
-                    currentWaypointNum = 0;
+                    CurrentWaypointNum = 0;
                     // completed the route!
-                    reachedLastWaypoint = true;
+                    ReachedLastWaypoint = true;
                     // if we are set to loop, reset the currentWaypointNum to 0
-                    if (loopPath)
+                    if (LoopPath)
                     {
-                        currentWaypointNum = totalWaypoints;
+                        CurrentWaypointNum = _totalWaypoints;
 
                         // the route keeps going in a loop, so we don't want reachedLastWaypoint to ever become true
-                        reachedLastWaypoint = false;
+                        ReachedLastWaypoint = false;
                     }
                     // drop out of this function before we grab another waypoint into currentWaypointTransform, as
                     // we don't need one and the index may be invalid
@@ -760,19 +754,19 @@ public class BaseAIController : ExtendedMonoBehaviour
             }
             else
             {
-                currentWaypointNum++;
+                CurrentWaypointNum++;
                 // now check to see if we have been all the way around
-                if (currentWaypointNum >= totalWaypoints)
+                if (CurrentWaypointNum >= _totalWaypoints)
                 {
                     // completed the route!
-                    reachedLastWaypoint = true;
+                    ReachedLastWaypoint = true;
                     // if we are set to loop, reset the currentWaypointNum to 0
-                    if (loopPath)
+                    if (LoopPath)
                     {
-                        currentWaypointNum = 0;
+                        CurrentWaypointNum = 0;
 
                         // the route keeps going in a loop, so we don't want reachedLastWaypoint to ever become true
-                        reachedLastWaypoint = false;
+                        ReachedLastWaypoint = false;
                     }
                     // drop out of this function before we grab another waypoint into currentWaypointTransform, as
                     // we don't need one and the index may be invalid
@@ -781,24 +775,19 @@ public class BaseAIController : ExtendedMonoBehaviour
             }
 
             // grab our transform reference from the waypoint controller
-            currentWaypointTransform = myWayControl.GetWaypoint(currentWaypointNum);
+            CurrentWaypointTransform = MyWayControl.GetWaypoint(CurrentWaypointNum);
 
         }
     }
 
-    IEnumerator StartBehaviorWait(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-    }
-
     public float GetHorizontal()
     {
-        return horz;
+        return Horz;
     }
 
     public float GetVertical()
     {
-        return vert;
+        return Vert;
     }
 
 }

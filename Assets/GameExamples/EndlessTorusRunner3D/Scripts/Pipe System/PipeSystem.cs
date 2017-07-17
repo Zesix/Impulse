@@ -1,63 +1,43 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace EndlessTorusRunner3D
 {
     public class PipeSystem : MonoBehaviour
     {
-        #region Properties
         // Pipe prefab.
-        [SerializeField]
-        Pipe pipePrefab;
+        [SerializeField] private Pipe _pipePrefab;
 
         // Number of pipes.
-        [SerializeField]
-        int pipeCount;
+        [SerializeField] private int _pipeCount;
 
         // Number of pipes without any items. Empty pipes are always spawned at the start of the game.
-        [SerializeField]
-        int emptyPipeCount = 2;
+        [SerializeField] private int _emptyPipeCount = 2;
 
         // Used to rotate the system since we want the player to move forward for convenience.
-        [SerializeField]
-        Transform worldOrienter;
-        public Transform WorldOrienter
-        {
-            get { return worldOrienter; }
-        }
+        [SerializeField] private Transform _worldOrienter;
+        public Transform WorldOrienter => _worldOrienter;
 
-        float deltaToRotation;
-        public float DeltaToRotation
-        {
-            get { return deltaToRotation; }
-            set { deltaToRotation = value; }
-        }
+        public float DeltaToRotation { get; set; }
 
-        float systemRotation;
-        public float SystemRotation
-        {
-            get { return systemRotation; }
-            set { systemRotation = value; }
-        }
+        public float SystemRotation { get; set; }
 
-        float worldRotation;
+        private float _worldRotation;
 
-        Pipe[] pipes;
-        #endregion
+        private Pipe[] _pipes;
 
         public void Init()
         {
-            pipes = new Pipe[pipeCount];
-            for (int i = 0; i < pipes.Length; i++)
+            _pipes = new Pipe[_pipeCount];
+            for (var i = 0; i < _pipes.Length; i++)
             {
-                Pipe pipe = pipes[i] = Instantiate<Pipe>(pipePrefab);
+                var pipe = _pipes[i] = Instantiate(_pipePrefab);
                 pipe.transform.SetParent(transform, false);
-                pipe.Generate(i > emptyPipeCount);
+                pipe.Generate(i > _emptyPipeCount);
 
                 // After creating the first pipe, align future pipes with the one created previously.
                 if (i > 0)
                 {
-                    pipe.AlignWith(pipes[i - 1]);
+                    pipe.AlignWith(_pipes[i - 1]);
                 }
             }
             AlignNextPipeWithOrigin();
@@ -69,8 +49,8 @@ namespace EndlessTorusRunner3D
         /// <returns>The first pipe.</returns>
         public Pipe SetupFirstPipe()
         {
-            transform.localPosition = new Vector3(0f, -pipes[1].CurveRadius);
-            return pipes[1];
+            transform.localPosition = new Vector3(0f, -_pipes[1].CurveRadius);
+            return _pipes[1];
         }
 
         /// <summary>
@@ -80,18 +60,18 @@ namespace EndlessTorusRunner3D
         public void OrientWorld(Pipe currentPipe)
         {
             // Set initial delta to rotation. This is used in rotating the system so the player can keep moving forward.
-            deltaToRotation = 360f / (2f * Mathf.PI * currentPipe.CurveRadius);
-            worldRotation += currentPipe.RelativeRotation;
+            DeltaToRotation = 360f / (2f * Mathf.PI * currentPipe.CurveRadius);
+            _worldRotation += currentPipe.RelativeRotation;
 
-            if (worldRotation < 0f)
+            if (_worldRotation < 0f)
             {
-                worldRotation += 360f;
+                _worldRotation += 360f;
             }
-            else if (worldRotation >= 360f)
+            else if (_worldRotation >= 360f)
             {
-                worldRotation -= 360f;
+                _worldRotation -= 360f;
             }
-            worldOrienter.localRotation = Quaternion.Euler(worldRotation, 0f, 0f);
+            _worldOrienter.localRotation = Quaternion.Euler(_worldRotation, 0f, 0f);
         }
 
         /// <summary>
@@ -107,33 +87,33 @@ namespace EndlessTorusRunner3D
             AlignNextPipeWithOrigin();
 
             // Generate next pipe.
-            pipes[pipes.Length - 1].Generate();
-            pipes[pipes.Length - 1].AlignWith(pipes[pipes.Length - 2]);
+            _pipes[_pipes.Length - 1].Generate();
+            _pipes[_pipes.Length - 1].AlignWith(_pipes[_pipes.Length - 2]);
 
             // Reset its position.
-            transform.localPosition = new Vector3(0f, -pipes[1].CurveRadius);
-            return pipes[1];
+            transform.localPosition = new Vector3(0f, -_pipes[1].CurveRadius);
+            return _pipes[1];
         }
 
-        void ShiftPipes()
+        private void ShiftPipes()
         {
-            Pipe temp = pipes[0];
-            for (int i = 1; i < pipes.Length; i++)
+            var temp = _pipes[0];
+            for (int i = 1; i < _pipes.Length; i++)
             {
-                pipes[i - 1] = pipes[i];
+                _pipes[i - 1] = _pipes[i];
             }
-            pipes[pipes.Length - 1] = temp;
+            _pipes[_pipes.Length - 1] = temp;
         }
 
-        void AlignNextPipeWithOrigin()
+        private void AlignNextPipeWithOrigin()
         {
-            Transform transformToAlign = pipes[1].transform;
+            var transformToAlign = _pipes[1].transform;
 
             // Temporarily make all other pipes a children of this pipe.
-            for (int i = 0; i < pipes.Length; i++)
+            for (var i = 0; i < _pipes.Length; i++)
             {
                 if (i != 1)
-                    pipes[i].transform.SetParent(transformToAlign);
+                    _pipes[i].transform.SetParent(transformToAlign);
             }
 
             // Reset transform position and rotation, which shifts all other pipes with it.
@@ -141,10 +121,10 @@ namespace EndlessTorusRunner3D
             transformToAlign.localRotation = Quaternion.identity;
 
             // Re-parent all pipes.
-            for (int i = 0; i < pipes.Length; i++)
+            for (var i = 0; i < _pipes.Length; i++)
             {
                 if (i != 1)
-                    pipes[i].transform.SetParent(transform);
+                    _pipes[i].transform.SetParent(transform);
             }
         }
     }

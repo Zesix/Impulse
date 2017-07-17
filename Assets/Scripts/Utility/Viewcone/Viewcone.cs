@@ -1,44 +1,28 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-// Used to procedurally generate a viewcone. 
+﻿// Used to procedurally generate a viewcone. 
 // Use polar coordinates for drawing all vertices. 
 using UnityEngine;
-using System.Collections;
 
 [RequireComponent (typeof(MeshFilter))]
 [RequireComponent (typeof(MeshRenderer))]
 
 public class Viewcone : MonoBehaviour
 {
-	public float length = 2.0f;
-	public float radius = 2.0f;
-	public int sections = 20;
-	float step;
-	float cAngle;
-	public bool sharedVertices = false;
+	public float Length = 2.0f;
+	public float Radius = 2.0f;
+	public int Sections = 20;
+	
+	private float _step;
+	private float _cAngle;
+	
+	public bool SharedVertices;
 
-	private MeshCollider ourCollider;
-	private ViewconeDetection spotter;
+	private MeshCollider _ourCollider;
+	private ViewconeDetection _spotter;
 
-	void Start ()
+	private void Start ()
 	{
-		spotter = GetComponentInParent<ViewconeDetection> ();
-		if (spotter == null)
+		_spotter = GetComponentInParent<ViewconeDetection> ();
+		if (_spotter == null)
 		{
 			Debug.LogWarning ("ViewconeDetection script not found on parent of " + gameObject.name);
 		}
@@ -46,58 +30,58 @@ public class Viewcone : MonoBehaviour
 
 	public void Rebuild ()
 	{
-		MeshFilter meshFilter = GetComponent<MeshFilter> ();
+		var meshFilter = GetComponent<MeshFilter> ();
 		if (meshFilter == null) {
 			Debug.LogError ("MeshFilter not found!");
 			return;
 		}
                 
-		Mesh mesh = meshFilter.sharedMesh;
+		var mesh = meshFilter.sharedMesh;
 		if (mesh == null) {
 			meshFilter.mesh = new Mesh ();
 			mesh = meshFilter.sharedMesh;
 		}
 		mesh.Clear ();
                 
-		if (sections < 3) {
+		if (Sections < 3) {
 			Debug.LogError ("Number of viewcone sections must be 3 or more");
 			return;
 		}
 
-		step = (2 * Mathf.PI) / sections;
-		cAngle = 2 * Mathf.PI; //-- start in 360 and going decrement
+		_step = (2 * Mathf.PI) / Sections;
+		_cAngle = 2 * Mathf.PI; //-- start in 360 and going decrement
 			
 		// -- each point along circle --plus center  & vertex peak--//
-		Vector3 [] cVertices = new Vector3[sections + 1 + 1];	
+		var cVertices = new Vector3[Sections + 1 + 1];	
 			
 		//--First vertex --//
 		cVertices [0] = new Vector3 (0, 0, 0); // center of circle
 		
 		//--Generate vertices remains --//
-		for (int i=1; i<(sections+1); i++) {
-			cVertices [i] = new Vector3 (Mathf.Sin (cAngle) * radius, Mathf.Cos (cAngle) * radius, 0);
-			cAngle += step;
+		for (var i=1; i<(Sections+1); i++) {
+			cVertices [i] = new Vector3 (Mathf.Sin (_cAngle) * Radius, Mathf.Cos (_cAngle) * Radius, 0);
+			_cAngle += _step;
 		}
 		
 		//--Peak cone vertex --//
-		cVertices [cVertices.Length - 1] = new Vector3 (0, 0, length); // center of circle
+		cVertices [cVertices.Length - 1] = new Vector3 (0, 0, Length); // center of circle
 			
-		int idx = 1;
-		int indices = (sections) * 3; // Only for circle triangles
+		var idx = 1;
+		var indices = (Sections) * 3; // Only for circle triangles
 		indices *= 2; //-- X2 for every triangle in wall of cone
 		
 		// -- Already have vertices, now build triangles --//
-		int [] cTriangles = new int[indices]; // one triagle for each section (has 3 vertex per triang)
+		var cTriangles = new int[indices]; // one triagle for each section (has 3 vertex per triang)
 			
 		//Debug.Log (cVertices [0].x + "   " + cVertices [0].z + "   " + cVertices [0].z);
 			
 		//-- Fill Circle mesh --//
-		for (int i=0; i<(indices*.5); i+=3) {
+		for (var i = 0; i < indices * .5; i += 3) {
 			cTriangles [i] = 0; //center of circle
 			cTriangles [i + 1] = idx; //next vertex
 				
 			
-			if (i >= (indices * .5 - 3)) {
+			if (i >= indices * .5 - 3) {
 				//-- if is the last vertex (one loop)
 				cTriangles [i + 2] = 1;	
 			} else {
@@ -110,13 +94,13 @@ public class Viewcone : MonoBehaviour
 		//-- Reset idx (indices pointer)-- //
 		idx = 1;
 		//--Fill cone wall--//
-		for (int i=(int)(indices*.5); i<(indices); i+=3) {
+		for (var i=(int)(indices*.5); i<indices; i+=3) {
 				
 			cTriangles [i] = idx; //next vertex
 			cTriangles [i + 1] = cVertices.Length - 1; // Peak vertex
 				
 			
-			if (i >= (indices - 3)) {
+			if (i >= indices - 3) {
 				//-- if is the last vertex (one loop)
 				cTriangles [i + 2] = 1; // Peak vertex;	
 			} else {
@@ -129,37 +113,35 @@ public class Viewcone : MonoBehaviour
 				
 		mesh.vertices = cVertices;
 		mesh.triangles = cTriangles;
-		
-		GetComponent<Renderer> ().sharedMaterial = new Material (Shader.Find ("Standard")); // REF1
-		GetComponent<Renderer> ().sharedMaterial.color = Color.yellow;
+
+		GetComponent<Renderer>().sharedMaterial = new Material(Shader.Find("Standard")) {color = Color.yellow}; // REF1
 		mesh.RecalculateNormals ();
 		mesh.RecalculateBounds ();
-		;
 
-		ourCollider = GetComponent<MeshCollider> ();
-		if (ourCollider != null) {
+		_ourCollider = GetComponent<MeshCollider> ();
+		if (_ourCollider != null) {
 			// Redraw convex for new cone.
-			ourCollider.isTrigger = false;
-			ourCollider.convex = false;
-			ourCollider.sharedMesh = mesh;
-			ourCollider.convex = true;
-			ourCollider.isTrigger = true;
+			_ourCollider.isTrigger = false;
+			_ourCollider.convex = false;
+			_ourCollider.sharedMesh = mesh;
+			_ourCollider.convex = true;
+			_ourCollider.isTrigger = true;
 		} else {
-			ourCollider = gameObject.AddComponent<MeshCollider> ();
-			ourCollider.sharedMesh = mesh;
-			ourCollider.convex = true;
-			ourCollider.isTrigger = true;
+			_ourCollider = gameObject.AddComponent<MeshCollider> ();
+			_ourCollider.sharedMesh = mesh;
+			_ourCollider.convex = true;
+			_ourCollider.isTrigger = true;
 		}
 	}
 
-	void OnTriggerStay (Collider col)
+	private void OnTriggerStay (Collider col)
 	{
-		spotter.ObjectSpotted (col);
+		_spotter.ObjectSpotted (col);
 	}
 
-	void OnTriggerExit (Collider col)
+	private void OnTriggerExit (Collider col)
 	{
-		spotter.ObjectLeft (col);
+		_spotter.ObjectLeft (col);
 	}
         
 }

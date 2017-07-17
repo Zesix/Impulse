@@ -1,46 +1,41 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using Debug = System.Diagnostics.Debug;
 
 namespace IsometricShooter3D
 {
     public class HealthUI : MonoBehaviour
     {
         // Reference to text component.
-        Text healthText;
+        private Text _healthText;
 
-        void OnEnable()
+        private void OnEnable()
         {
             this.AddObserver(OnCharacterDamagedNotification, CharacterModel.CharacterDamagedNotification);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             this.RemoveObserver(OnCharacterDamagedNotification, CharacterModel.CharacterDamagedNotification);
         }
 
-        void Start()
+        private void Start()
         {
-            healthText = GetComponent<Text>();
+            _healthText = GetComponent<Text>();
         }
 
         // When damage is dealt to the player, we update the health.
-        void OnCharacterDamagedNotification (object sender, object args)
+        private void OnCharacterDamagedNotification (object sender, object args)
         {
-            CharacterModel damagedCharacter = sender as CharacterModel;
+            var damagedCharacter = sender as CharacterModel;
 
             // Ensure the damaged character is the player.
             if (damagedCharacter.GetComponent<PlayerModel>() != null)
             {
-                PlayerModel player = damagedCharacter.GetComponent<PlayerModel>();
+                var player = damagedCharacter.GetComponent<PlayerModel>();
 
-                healthText.text = "Health : " + Mathf.RoundToInt(player.Health);
+                _healthText.text = "Health : " + Mathf.RoundToInt(player.Health);
             }
-        }
-
-        void Update()
-        {
-
         }
     }
 }

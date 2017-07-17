@@ -1,80 +1,62 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 public class ThirdPerson_Camera : MonoBehaviour
 {
-	public ThirdPerson_Camera instance;                     // Reference to the Main Camera.
-	public Transform targetLookTransform;                   // Transform of the camera will be looking at.
-	public float distance = 5f;                             // Start distance of camera.
-	public float distanceMin = 3f;                          // Minimum distance of camera zoom.
-	public float distanceMax = 10f;                         // Maximum distance of camera zoom.
-	public float distanceSmooth = 0.05f;                    // Camera zooming smooth factor.
-	public float distanceCameraResumeSmooth = 1f;   		// Distance at which point smoothing is resumed after occlusion handling is no longer occuring.
-	public float xSmooth = 0.05f;                           // Smoothness factor for x position calculations.
-	public float ySmooth = 0.1f;                            // Smoothness factor for y position calculations.
-	public float yMinLimit = -40f;
-	public float yMaxLimit = 80f;
-	public float occlusionDistanceStep = 0.5f;
-	public int maxOcclusionChecks = 10;                     // Max number of times to check for occlusion.
+	public ThirdPerson_Camera Instance;                     // Reference to the Main Camera.
+	public Transform TargetLookTransform;                   // Transform of the camera will be looking at.
+	public float Distance = 5f;                             // Start distance of camera.
+	public float DistanceMin = 3f;                          // Minimum distance of camera zoom.
+	public float DistanceMax = 10f;                         // Maximum distance of camera zoom.
+	public float DistanceSmooth = 0.05f;                    // Camera zooming smooth factor.
+	public float DistanceCameraResumeSmooth = 1f;   		// Distance at which point smoothing is resumed after occlusion handling is no longer occuring.
+	public float XSmooth = 0.05f;                           // Smoothness factor for x position calculations.
+	public float YSmooth = 0.1f;                            // Smoothness factor for y position calculations.
+	public float YMinLimit = -40f;
+	public float YMaxLimit = 80f;
+	public float OcclusionDistanceStep = 0.5f;
+	public int MaxOcclusionChecks = 10;                     // Max number of times to check for occlusion.
 
 	[System.NonSerialized]
-	public float mouseX = 0f;
+	public float MouseX;
 	[System.NonSerialized]
-	public float mouseY = 0f;
+	public float MouseY;
 	[System.NonSerialized]
-	public float desiredDistance = 0f;
+	public float DesiredDistance;
 	[System.NonSerialized]
-	public float distanceCameraSmooth = 0f;              // Camera smoothing distance (after occlusion is no longer happening).
+	public float DistanceCameraSmooth;              // Camera smoothing distance (after occlusion is no longer happening).
 	[System.NonSerialized]
-	public float preOccludedDistance = 0f;
+	public float PreOccludedDistance;
 
-	private float velocityX = 0f;
-	private float velocityY = 0f;
-	private float velocityZ = 0f;
-	private float velocityDistance = 0f;
-	private float startDistance = 0f;
-	private Vector3 position = new Vector3 (768f, 3.5f, 903f);
-	private Vector3 desiredPosition = new Vector3 (768f, 3.5f, 903f);
-	
-	void Start ()
+	private float _velocityX;
+	private float _velocityY;
+	private float _velocityZ;
+	private float _velocityDistance;
+	private float _startDistance;
+	private Vector3 _position = new Vector3 (768f, 3.5f, 903f);
+	private Vector3 _desiredPosition = new Vector3 (768f, 3.5f, 903f);
+
+	private void Start ()
 	{
-		if (instance == null)
-			instance = this;
+		if (Instance == null)
+			Instance = this;
 
 		// If main camera is null, set as main camera
 		if (Camera.main == null)
-			this.tag = "MainCamera";
+			tag = "MainCamera";
 
 		// Ensure our distance is between min and max (valid)
-		distance = Mathf.Clamp (distance, distanceMin, distanceMax);
-		startDistance = distance;
+		Distance = Mathf.Clamp (Distance, DistanceMin, DistanceMax);
+		_startDistance = Distance;
 		Reset ();
 	}
 	
 	private void LateUpdate ()
 	{
-		if (targetLookTransform == null) {
+		if (TargetLookTransform == null) {
 			return;
 		}
 		
-		int count = 0;
+		var count = 0;
 		do {
 			CalculateDesiredPosition ();
 			count++;
@@ -88,31 +70,31 @@ public class ThirdPerson_Camera : MonoBehaviour
 	{
 		// Evaluate distance.
 		ResetDesiredDistance ();
-		distance = Mathf.SmoothDamp (distance, desiredDistance, ref velocityDistance, distanceCameraSmooth);
+		Distance = Mathf.SmoothDamp (Distance, DesiredDistance, ref _velocityDistance, DistanceCameraSmooth);
 		
 		// Calculate desired position.
-		desiredPosition = CalculatePosition (mouseY, mouseX, distance);
+		_desiredPosition = CalculatePosition (MouseY, MouseX, Distance);
 	}
 	
 	private bool CheckIfOccluded (int count)
 	{
-		bool isOccluded = false;
-		float nearestDistance = CheckCameraPoints (targetLookTransform.position, desiredPosition);
+		var isOccluded = false;
+		var nearestDistance = CheckCameraPoints (TargetLookTransform.position, _desiredPosition);
 		
 		if (nearestDistance != -1) {
-			if (count < maxOcclusionChecks) {
+			if (count < MaxOcclusionChecks) {
 				isOccluded = true;
-				distance -= occlusionDistanceStep;
+				Distance -= OcclusionDistanceStep;
 				
 				// 0.25 is a good default value.
-				if (distance < 0.25f) {
-					distance = 0.25f;
+				if (Distance < 0.25f) {
+					Distance = 0.25f;
 				}
 			} else {
-				distance = nearestDistance - GetComponent<Camera> ().nearClipPlane;
+				Distance = nearestDistance - GetComponent<Camera> ().nearClipPlane;
 			}
-			desiredDistance = distance;
-			distanceCameraSmooth = distanceCameraResumeSmooth;
+			DesiredDistance = Distance;
+			DistanceCameraSmooth = DistanceCameraResumeSmooth;
 		}
 
 		return isOccluded;
@@ -120,19 +102,18 @@ public class ThirdPerson_Camera : MonoBehaviour
 	
 	private Vector3 CalculatePosition (float rotX, float rotY, float rotDist)
 	{
-		Vector3 direction = new Vector3 (0, 0, -rotDist);                      // -distance because we want it to point behind our character.
-		Quaternion rotation = Quaternion.Euler (rotX, rotY, 0);
-		return targetLookTransform.position + (rotation * direction);
+		var direction = new Vector3 (0, 0, -rotDist);                      // -distance because we want it to point behind our character.
+		var rotation = Quaternion.Euler (rotX, rotY, 0);
+		return TargetLookTransform.position + (rotation * direction);
 	}
 
 	private float CheckCameraPoints (Vector3 from, Vector3 to)
 	{
-		float nearestDistance = -1f;
+		var nearestDistance = -1f;
 		
 		RaycastHit hitInfo;
 		
-		ThirdPerson_Helper.ClipPlanePoints clipPlanePoints =
-			ThirdPerson_Helper.ClipPlaneAtNear (to);
+		var clipPlanePoints = ThirdPerson_Helper.ClipPlaneAtNear (to);
 
 		
 		// Draw the raycasts going through the near clip plane vertexes.
@@ -147,15 +128,15 @@ public class ThirdPerson_Camera : MonoBehaviour
 		Debug.DrawLine (clipPlanePoints.lowerLeft, clipPlanePoints.upperLeft, Color.red);
         
 
-		if (Physics.Linecast (from, clipPlanePoints.upperLeft, out hitInfo) && hitInfo.collider.tag != "Player")
+		if (Physics.Linecast (from, clipPlanePoints.upperLeft, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 			nearestDistance = hitInfo.distance;
-		if (Physics.Linecast (from, clipPlanePoints.lowerLeft, out hitInfo) && hitInfo.collider.tag != "Player")
+		if (Physics.Linecast (from, clipPlanePoints.lowerLeft, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 		if (hitInfo.distance < nearestDistance || nearestDistance == -1)
 			nearestDistance = hitInfo.distance;
-		if (Physics.Linecast (from, clipPlanePoints.upperRight, out hitInfo) && hitInfo.collider.tag != "Player")
+		if (Physics.Linecast (from, clipPlanePoints.upperRight, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 		if (hitInfo.distance < nearestDistance || nearestDistance == -1)
 			nearestDistance = hitInfo.distance;
-		if (Physics.Linecast (from, to + transform.forward * -GetComponent<Camera> ().nearClipPlane, out hitInfo) && hitInfo.collider.tag != "Player")
+		if (Physics.Linecast (from, to + transform.forward * -GetComponent<Camera> ().nearClipPlane, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 		if (hitInfo.distance < nearestDistance || nearestDistance == -1)
 			nearestDistance = hitInfo.distance;
 		
@@ -164,12 +145,12 @@ public class ThirdPerson_Camera : MonoBehaviour
 	
 	private void ResetDesiredDistance ()
 	{
-		if (desiredDistance < preOccludedDistance) {
-			Vector3 pos = CalculatePosition (mouseY, mouseX, preOccludedDistance);
-			float nearestDistance = CheckCameraPoints (targetLookTransform.position, pos);
+		if (DesiredDistance < PreOccludedDistance) {
+			var pos = CalculatePosition (MouseY, MouseX, PreOccludedDistance);
+			var nearestDistance = CheckCameraPoints (TargetLookTransform.position, pos);
 
-			if (CheckBehindCam (desiredPosition) && (nearestDistance == -1 || nearestDistance > preOccludedDistance)) {
-				desiredDistance = preOccludedDistance;
+			if (CheckBehindCam (_desiredPosition) && (nearestDistance == -1 || nearestDistance > PreOccludedDistance)) {
+				DesiredDistance = PreOccludedDistance;
 			}
 		}
 	}
@@ -178,10 +159,9 @@ public class ThirdPerson_Camera : MonoBehaviour
 	{
 		RaycastHit hitInfo;
         
-		Vector3 pos = CalculatePosition (mouseY, mouseX, preOccludedDistance);
+		var pos = CalculatePosition (MouseY, MouseX, PreOccludedDistance);
         
-		ThirdPerson_Helper.ClipPlanePoints clipPlanePoints =
-             ThirdPerson_Helper.ClipPlaneAtNear (to);
+		var clipPlanePoints = ThirdPerson_Helper.ClipPlaneAtNear (to);
 		/* Debug.DrawLine(this.transform.position, pos, Color.blue);
         Debug.DrawLine(clipPlanePoints.upperLeft, pos, Color.blue);
         Debug.DrawLine(clipPlanePoints.upperRight, pos, Color.blue);
@@ -208,23 +188,23 @@ public class ThirdPerson_Camera : MonoBehaviour
 	
 	private void UpdatePosition ()
 	{
-		float posX = Mathf.SmoothDamp (position.x, desiredPosition.x, ref velocityX, xSmooth * Time.deltaTime);
-		float posY = Mathf.SmoothDamp (position.y, desiredPosition.y, ref velocityY, ySmooth * Time.deltaTime);
-		float posZ = Mathf.SmoothDamp (position.z, desiredPosition.z, ref velocityZ, xSmooth * Time.deltaTime);
+		var posX = Mathf.SmoothDamp (_position.x, _desiredPosition.x, ref _velocityX, XSmooth * Time.deltaTime);
+		var posY = Mathf.SmoothDamp (_position.y, _desiredPosition.y, ref _velocityY, YSmooth * Time.deltaTime);
+		var posZ = Mathf.SmoothDamp (_position.z, _desiredPosition.z, ref _velocityZ, XSmooth * Time.deltaTime);
 		
-		position = new Vector3 (posX, posY, posZ);
+		_position = new Vector3 (posX, posY, posZ);
 		
-		transform.position = position;
+		transform.position = _position;
 		
-		transform.LookAt (targetLookTransform);
+		transform.LookAt (TargetLookTransform);
 	}
 
 	public void Reset ()
 	{
-		mouseX = 0f;
-		mouseY = 10f;
-		distance = startDistance;
-		desiredDistance = distance;
-		preOccludedDistance = distance;
+		MouseX = 0f;
+		MouseY = 10f;
+		Distance = _startDistance;
+		DesiredDistance = Distance;
+		PreOccludedDistance = Distance;
 	}
 }

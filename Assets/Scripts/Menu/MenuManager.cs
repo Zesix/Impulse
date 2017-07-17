@@ -1,21 +1,4 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-/* 
+﻿/* 
     READ ME 
 
     How to use:
@@ -37,11 +20,11 @@ using System.Collections;
 
 public class MenuManager : MonoBehaviour
 {
-    string MenuScreens;
+    private string _menuScreens;
     public MenuScreen ActiveScreen;
     public MenuScreen FirstScreen;
     // Use this for initialization
-    void Awake()
+    private void Awake()
     {
 #if UNITY_EDITOR
         if (GameSceneManager.Instance == null)
@@ -66,34 +49,34 @@ public class MenuManager : MonoBehaviour
         GameSceneManager.Instance.LoadLevelFadeInDelegate(index, animate);
     }
 
-    public void LoadScene(string name, bool animate)
+    public void LoadScene(string sceneName, bool animate)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
-    public void LoadSceneFadeIn(string name)
+    public void LoadSceneFadeIn(string sceneName)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(name);
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
-    public void LoadScene(string name)
+    public void LoadScene(string sceneName)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(name, false);
+        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName, false);
     }
 
-    IEnumerator ChangeScreen(MenuScreen target, bool animate)
+    private IEnumerator ChangeScreen(MenuScreen target, bool animate)
     {
         if (animate)
         {
             GameSceneManager.Instance.SetCanvasEnabled(true);
-            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.blackOverlay));
+            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.BlackOverlay));
         }
         ActiveScreen.gameObject.SetActive(false);
         ActiveScreen = target;
         ActiveScreen.gameObject.SetActive(true);
         if (animate)
         {
-            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.blackOverlay));
+            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.BlackOverlay));
             GameSceneManager.Instance.SetCanvasEnabled(false);
         }
     }

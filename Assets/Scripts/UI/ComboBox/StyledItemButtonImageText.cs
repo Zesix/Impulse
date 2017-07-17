@@ -1,70 +1,51 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class StyledItemButtonImageText : StyledItem
 {
-	public RawImage 	rawImageCtrl;
-	public Text   		textCtrl;
-	public Button		buttonCtrl;
+	public RawImage 	RawImageCtrl;
+	public Text   		TextCtrl;
+	public Button		ButtonCtrl;
 	
 	public class Data
 	{
-		public Data(string t, Texture2D tex) { text = t; image = tex; }
-		public string text;
-		public Texture2D image;
+		public Data(string t, Texture2D tex) { Text = t; Image = tex; }
+		public string Text;
+		public Texture2D Image;
 	}
 
-	public override Button GetButton () { return buttonCtrl; }
-	public override Text GetText () { return textCtrl; }
-	public override RawImage GetRawImage () { return rawImageCtrl; }
+	public override Button GetButton () { return ButtonCtrl; }
+	public override Text GetText () { return TextCtrl; }
+	public override RawImage GetRawImage () { return RawImageCtrl; }
 
 	// we accept a string, a texture2d, or a data object if we want both.
 	public override void Populate(object o)
 	{
-		Texture2D tex = o as Texture2D;
+		var tex = o as Texture2D;
 		if (tex != null)
 		{
-			if (rawImageCtrl != null)
+			if (RawImageCtrl != null)
 			{
-				rawImageCtrl.texture = tex;
+				RawImageCtrl.texture = tex;
 			}
 			return;
 		}
 
-		Data d = o as Data;
+		var d = o as Data;
 		if (d == null)
 		{
-			if (textCtrl != null)
-				textCtrl.text = o.ToString();	// string..
+			if (TextCtrl != null)
+				TextCtrl.text = o.ToString();	// string..
 			return;
 		}
 		
-		if (rawImageCtrl != null)
+		if (RawImageCtrl != null)
 		{
-			rawImageCtrl.texture = d.image;
+			RawImageCtrl.texture = d.Image;
 		}
-		if (textCtrl != null)
+		if (TextCtrl != null)
 		{
-			textCtrl.text = d.text;
+			TextCtrl.text = d.Text;
 		}
 	}
 }

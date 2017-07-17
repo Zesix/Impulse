@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+#pragma warning disable 1587
 /// <summary>
 /// This delegate is similar to an EventHandler:
 ///     The first parameter is the sender, 
@@ -14,6 +15,7 @@ using Handler = System.Action<System.Object, System.Object>;
 ///     * Note - When no sender is specified for the SenderTable, 
 ///         the NotificationCenter itself is used as the sender key
 /// </summary>
+#pragma warning restore 1587
 using SenderTable = System.Collections.Generic.Dictionary<System.Object, System.Collections.Generic.List<System.Action<System.Object, System.Object>>>;
 
 public class NotificationCenter
@@ -27,12 +29,10 @@ public class NotificationCenter
     private HashSet<List<Handler>> _invoking = new HashSet<List<Handler>>();
     #endregion
 
-    #region Singleton Pattern
+    // Singleton Pattern
     public static readonly NotificationCenter Instance = new NotificationCenter();
     private NotificationCenter() { }
-    #endregion
 
-    #region Public
     public void AddObserver(Handler handler, string notificationName)
     {
         AddObserver(handler, notificationName, null);
@@ -55,14 +55,14 @@ public class NotificationCenter
         if (!_table.ContainsKey(notificationName))
             _table.Add(notificationName, new SenderTable());
 
-        SenderTable subTable = _table[notificationName];
+        var subTable = _table[notificationName];
 
-        System.Object key = (sender != null) ? sender : this;
+        var key = (sender != null) ? sender : this;
 
         if (!subTable.ContainsKey(key))
             subTable.Add(key, new List<Handler>());
 
-        List<Handler> list = subTable[key];
+        var list = subTable[key];
         if (!list.Contains(handler))
         {
             if (_invoking.Contains(list))
@@ -77,7 +77,7 @@ public class NotificationCenter
         RemoveObserver(handler, notificationName, null);
     }
 
-    public void RemoveObserver(Handler handler, string notificationName, System.Object sender)
+    public void RemoveObserver(Handler handler, string notificationName, object sender)
     {
         if (handler == null)
         {
@@ -95,14 +95,14 @@ public class NotificationCenter
         if (!_table.ContainsKey(notificationName))
             return;
 
-        SenderTable subTable = _table[notificationName];
-        System.Object key = (sender != null) ? sender : this;
+        var subTable = _table[notificationName];
+        var key = sender != null ? sender : this;
 
         if (!subTable.ContainsKey(key))
             return;
 
-        List<Handler> list = subTable[key];
-        int index = list.IndexOf(handler);
+        var list = subTable[key];
+        var index = list.IndexOf(handler);
         if (index != -1)
         {
             if (_invoking.Contains(list))
@@ -113,21 +113,21 @@ public class NotificationCenter
 
     public void Clean()
     {
-        string[] notKeys = new string[_table.Keys.Count];
+        var notKeys = new string[_table.Keys.Count];
         _table.Keys.CopyTo(notKeys, 0);
 
-        for (int i = notKeys.Length - 1; i >= 0; --i)
+        for (var i = notKeys.Length - 1; i >= 0; --i)
         {
-            string notificationName = notKeys[i];
-            SenderTable senderTable = _table[notificationName];
+            var notificationName = notKeys[i];
+            var senderTable = _table[notificationName];
 
-            object[] senKeys = new object[senderTable.Keys.Count];
+            var senKeys = new object[senderTable.Keys.Count];
             senderTable.Keys.CopyTo(senKeys, 0);
 
-            for (int j = senKeys.Length - 1; j >= 0; --j)
+            for (var j = senKeys.Length - 1; j >= 0; --j)
             {
-                object sender = senKeys[j];
-                List<Handler> handlers = senderTable[sender];
+                var sender = senKeys[j];
+                var handlers = senderTable[sender];
                 if (handlers.Count == 0)
                     senderTable.Remove(sender);
             }
@@ -160,25 +160,24 @@ public class NotificationCenter
             return;
 
         // Post to subscribers who specified a sender to observe
-        SenderTable subTable = _table[notificationName];
+        var subTable = _table[notificationName];
         if (sender != null && subTable.ContainsKey(sender))
         {
-            List<Handler> handlers = subTable[sender];
+            var handlers = subTable[sender];
             _invoking.Add(handlers);
-            for (int i = 0; i < handlers.Count; ++i)
-                handlers[i](sender, e);
+            foreach (var t in handlers)
+                t(sender, e);
             _invoking.Remove(handlers);
         }
 
         // Post to subscribers who did not specify a sender to observe
         if (subTable.ContainsKey(this))
         {
-            List<Handler> handlers = subTable[this];
+            var handlers = subTable[this];
             _invoking.Add(handlers);
-            for (int i = 0; i < handlers.Count; ++i)
-                handlers[i](sender, e);
+            foreach (var t in handlers)
+                t(sender, e);
             _invoking.Remove(handlers);
         }
     }
-    #endregion
 }
