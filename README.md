@@ -1,8 +1,7 @@
 # Impulse #
 
-A barebones C# Unity framework for building scalable projects quickly and easily. 
-It includes a combination of utility scripts such as timer class and artificial friction alongside
-easily customizable and out-of-box systems like scene management and mobile-optimized menu.
+A barebones framework of Unity systems for getting any project off the ground very quickly. 
+It is not a restrictive framework. Using a system does not force you into a programming paradigm or require you to structure the rest of your game a certain way - they are meant to be copied and pasted into your project and modified as you need.
 
 ## Video Overviews ##
 
