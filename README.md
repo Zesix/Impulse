@@ -20,21 +20,4 @@ These demonstrate the functionality of the included systems, all of which can be
 ## Model-View-Controller (MVC) Pattern ##
 
 Keep in mind the framework is not intended to force you into any particular programming paradigm. 
-However, the model-view-controller pattern used by the framework is an easy way to organize a project and is recommended as the 'default' way to structure a project.
-
-## Useful Scripts ##
-
-These can be used for a variety of purposes and are easily customizable and extensible.
-
- * ExtendedMonoBehavior.cs - Includes commonly used variable declarations for caching.
- * ChangeScene.cs - Calls the scene manager to switch scenes.
- * AutoSpinObj.cs - Causes an object to spin automatically upon start.
- * ArtificialFriction.cs - Applies artificial friction to an object moved by physics forces.
-
-## Input Handling ##
-
-These extend BaseInputController but the entire input system can be easily replaced with a different solution.
-
- * KeyboardInputController.cs - Translates keyboard inputs into general direction bools such as up, down, left, right, etc.
- * MouseInputController.cs - Grabs mouse position and click types.
- * ThirdPersonCameraMouseInputController.cs - Adds panning and zoom-in controls for use with the third person camera.
+However, the model-view-controller pattern is used by scripts in the framework since it makes systems easier to understand and integrate into any project.
