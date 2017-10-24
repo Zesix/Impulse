@@ -16,8 +16,3 @@ These demonstrate the functionality of the included systems, all of which can be
  * [AI Detection System](https://www.youtube.com/watch?v=1ZLkDv9OUNc&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=7)
  * [Random Object Spawner with Culling](https://www.youtube.com/watch?v=aonCtVL7HGo&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=8)
  * [Events and Notifications](https://www.youtube.com/watch?v=EfVEFU0xxys&list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&index=10)
-
-## Model-View-Controller (MVC) Pattern ##
-
-Keep in mind the framework is not intended to force you into any particular programming paradigm. 
-However, the model-view-controller pattern is used by scripts in the framework since it makes systems easier to understand and integrate into any project.
