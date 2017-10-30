@@ -19,13 +19,13 @@ public class MainSystem : MonoBehaviour
     /// <summary>
     /// 	Inects necessary dependencies and initalizes the object.
     /// </summary>
-    public void Initialize(GameSceneManager sceneManager, MusicManager musicManager)
+    public void Initialize(SceneController sceneController, MusicManager musicManager)
     {
         if (_isInitialized)
             throw new InvalidOperationException("Already initialized.");
 
-        if (sceneManager == null)
-            throw new ArgumentNullException(nameof(sceneManager));
+        if (sceneController == null)
+            throw new ArgumentNullException(nameof(sceneController));
 
         if (musicManager == null)
             throw new ArgumentNullException(nameof(musicManager));

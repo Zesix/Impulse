@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-///     A Singleton Factory that creates the MainSystem and wires it up for use.
+///     A singleton factory that instantiates persistent controllers.
 /// </summary>
 /// <remarks>
 ///     Attach this to a prefab. You do not have to instantiate the prefab to use the factory.
@@ -21,7 +21,7 @@ public class MainSystemFactory : MonoBehaviour
     private static MainSystem _mainSystem;
 
     /// <summary>
-    /// 	Returns a singletone instance of MainManagers. Creates a new one if necessary.
+    /// 	Returns a singleton instance of MainManagers. Creates a new one if necessary.
     /// </summary>
     public MainSystem CreateSingletonMainSystem()
     {
@@ -37,7 +37,7 @@ public class MainSystemFactory : MonoBehaviour
 
         // Create scene manager
         var sceneObject = Instantiate(_sceneManagerPrefab);
-        var sceneManager = sceneObject.GetComponent<GameSceneManager>();
+        var sceneManager = sceneObject.GetComponent<SceneController>();
 
         // Create music manager
         var musicObject = Instantiate(_musicManagerPrefab);

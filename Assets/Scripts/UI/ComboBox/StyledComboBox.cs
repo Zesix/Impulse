@@ -10,7 +10,7 @@ public class StyledComboBox : StyledItem
 
 	public StyledComboBoxPrefab 	ContainerPrefab;		// prefab for whole control
 	public StyledItem 				ItemPrefab;				// prefab for item in drop down
-	public StyledItem 				ItemMenuPrefab;		// prefab for item in menu
+	public StyledItem 				ItemMenuPrefab;			// prefab for item in menu
 
 	public float ScrollSensitivity = 1f;
 
@@ -187,11 +187,4 @@ public class StyledComboBox : StyledItem
 	{
 		_root.ItemPanel.alpha = Mathf.Abs(_root.ItemPanel.alpha - 1.0f);
 	}
-
-
-
-
-
 }
-
-

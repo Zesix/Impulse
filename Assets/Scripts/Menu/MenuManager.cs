@@ -27,7 +27,7 @@ public class MenuManager : MonoBehaviour
     private void Awake()
     {
 #if UNITY_EDITOR
-        if (GameSceneManager.Instance == null)
+        if (SceneController.Instance == null)
             SceneManager.LoadScene(0);
 #endif
         FirstScreen.gameObject.SetActive(true);
@@ -46,38 +46,38 @@ public class MenuManager : MonoBehaviour
 
     public void LoadScene(int index, bool animate)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(index, animate);
+        SceneController.Instance.LoadLevelFadeInDelegate(index, animate);
     }
 
     public void LoadScene(string sceneName, bool animate)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName);
+        SceneController.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
     public void LoadSceneFadeIn(string sceneName)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName);
+        SceneController.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
     public void LoadScene(string sceneName)
     {
-        GameSceneManager.Instance.LoadLevelFadeInDelegate(sceneName, false);
+        SceneController.Instance.LoadLevelFadeInDelegate(sceneName, false);
     }
 
     private IEnumerator ChangeScreen(MenuScreen target, bool animate)
     {
         if (animate)
         {
-            GameSceneManager.Instance.SetCanvasEnabled(true);
-            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(0f, 1f, GameSceneManager.Instance.BlackOverlay));
+            SceneController.Instance.SetCanvasEnabled(true);
+            yield return StartCoroutine(SceneController.Instance.PlayFadeAnimation(0f, 1f, SceneController.Instance.BlackOverlay));
         }
         ActiveScreen.gameObject.SetActive(false);
         ActiveScreen = target;
         ActiveScreen.gameObject.SetActive(true);
         if (animate)
         {
-            yield return StartCoroutine(GameSceneManager.Instance.PlayFadeAnimation(1f, 0f, GameSceneManager.Instance.BlackOverlay));
-            GameSceneManager.Instance.SetCanvasEnabled(false);
+            yield return StartCoroutine(SceneController.Instance.PlayFadeAnimation(1f, 0f, SceneController.Instance.BlackOverlay));
+            SceneController.Instance.SetCanvasEnabled(false);
         }
     }
 

@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 
 /// <summary>
-///     A class that creates MainManagers on awake.
+///     Instantiates factories at start.
 /// </summary>
 public class MainSystemStartup : MonoBehaviour
 {
-
-    [Tooltip("The factory to construct the MainManagers.")]
+    [Tooltip("The factory to construct persistent singleton controllers.")]
     [SerializeField]
     private MainSystemFactory _mainSystemFactory;
 

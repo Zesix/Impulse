@@ -37,7 +37,7 @@ namespace EndlessTorusRunner3D
             controller.MenuSystem.gameObject.SetActive(false);
 
             // Wait for fading out to complete before respawning pipe system.
-            while (GameSceneManager.Instance.TransitionPercent <= 0.5f)
+            while (SceneController.Instance.TransitionPercent <= 0.5f)
             {
                 yield return null;
             }
