@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Zenject;
 
 [RequireComponent(typeof(AudioSource))]
-public class MusicManager : MonoBehaviour
+public class MusicManager : Singleton<MusicManager>
 {
-    public static MusicManager Instance;	        // Singleton
     [SerializeField]
     private float _volume;
 
@@ -26,24 +26,13 @@ public class MusicManager : MonoBehaviour
     public RepeatMode Repeat;
     public float FadeDuration;
     public bool PlayOnAwake;
+
+    [Inject]
     private AudioSource _source;
 
     private void Start()
     {
-        // If there is no instance of this class, set it.
-        if (Instance == null)
-        {
-            DontDestroyOnLoad(gameObject); // Don't destroy this object
-            Instance = this;
-        }
-        else
-        {
-            Debug.LogError("There is already a Music Manager in the scene.");
-            Destroy(this);
-        }
-
         // grab audio source
-        _source = GetComponent<AudioSource>();
         _source.playOnAwake = false;
         if (FadeDuration > 0)
             _source.volume = 0f;
