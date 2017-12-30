@@ -10,9 +10,9 @@ using System.Collections;
 /// 	Call this object to change scene.
 /// 	If you want to display a splash screen, set the image in the ImageToFade child of the SplashFadeIn prefab.
 /// </remarks>
-public class SceneController : MonoBehaviour
+public class SceneService : MonoBehaviour
 {
-    public static SceneController Instance;		// Singleton
+    public static SceneService Instance;		// Singleton
 
     public string[] LevelNames;                 // Scenes to progressively load, in descending array order.
     public int GameLevelNum;

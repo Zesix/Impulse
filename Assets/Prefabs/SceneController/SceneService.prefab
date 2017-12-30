@@ -25,9 +25,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 413118}
-  - component: {fileID: 11413118}
+  - component: {fileID: 114189533320609256}
   m_Layer: 0
-  m_Name: SceneController
+  m_Name: SceneService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,43 +82,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &11413118
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 113118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f641d4347cbaa2843bfe32491b9f6c69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LevelNames: []
-  GameLevelNum: 0
-  SplashObj: {fileID: 122168, guid: c7cf8a20471682f49acf75a97f98d405, type: 2}
-  Interpolation:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  InitialSplashDuration: 3
-  Duration: 2
-  InTransition: 0
-  TransitionPercent: 0
-  BlackOverlay: {fileID: 22560600}
 --- !u!114 &11420494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -252,3 +215,28 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 113118}
   m_IsPrefabParent: 1
+--- !u!114 &114189533320609256
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 113118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 732eceb91429d2248a3a1a30ec3100df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LevelNames: []
+  GameLevelNum: 0
+  SplashObj: {fileID: 0}
+  Interpolation:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  InitialSplashDuration: 3
+  Duration: 2
+  InTransition: 0
+  TransitionPercent: 0
+  BlackOverlay: {fileID: 0}

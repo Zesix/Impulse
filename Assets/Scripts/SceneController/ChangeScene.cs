@@ -10,12 +10,12 @@ public class ChangeScene : MonoBehaviour
 {
     public void LoadScene(int index, bool animate)
     {
-        SceneController.Instance.LoadLevelFadeInDelegate(index, animate);
+        SceneService.Instance.LoadLevelFadeInDelegate(index, animate);
     }
 
     public void LoadScene(string sceneName, bool animate)
     {
-        SceneController.Instance.LoadLevelFadeInDelegate(sceneName);
+        SceneService.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
 }

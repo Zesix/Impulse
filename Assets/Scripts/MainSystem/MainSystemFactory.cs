@@ -37,7 +37,7 @@ public class MainSystemFactory : MonoBehaviour
 
         // Create scene manager
         var sceneObject = Instantiate(_sceneManagerPrefab);
-        var sceneManager = sceneObject.GetComponent<SceneController>();
+        var sceneManager = sceneObject.GetComponent<SceneService>();
 
         // Create music manager
         var musicObject = Instantiate(_musicManagerPrefab);
