@@ -19,7 +19,8 @@ public class ZenjectMainSystemStartup : MonoInstaller
     {
         foreach (GameObject singleton in _singletonsToSpawn)
         {
-            Container.Bind<MonoInstaller>().FromSubContainerResolve().ByNewPrefab(singleton).AsSingle().NonLazy();
+            GameObject instancedSingleton = Instantiate(singleton);
+            instancedSingleton.transform.parent = this.transform;
         }
     }
 }
