@@ -29,26 +29,26 @@ namespace UnityStandardAssets.CrossPlatformInput
             };
 
 
-            public MappingType Type;
-            public string AxisName;
+            public MappingType type;
+            public string axisName;
         }
 
 
-        public AxisMapping Mapping;
-        public AxisOptions TiltAroundAxis = AxisOptions.ForwardAxis;
-        public float FullTiltAngle = 25;
-        public float CentreAngleOffset;
+        public AxisMapping mapping;
+        public AxisOptions tiltAroundAxis = AxisOptions.ForwardAxis;
+        public float fullTiltAngle = 25;
+        public float centreAngleOffset = 0;
 
 
-        private CrossPlatformInputManager.VirtualAxis _mSteerAxis;
+        private CrossPlatformInputManager.VirtualAxis m_SteerAxis;
 
 
         private void OnEnable()
         {
-            if (Mapping.Type == AxisMapping.MappingType.NamedAxis)
+            if (mapping.type == AxisMapping.MappingType.NamedAxis)
             {
-                _mSteerAxis = new CrossPlatformInputManager.VirtualAxis(Mapping.AxisName);
-                CrossPlatformInputManager.RegisterVirtualAxis(_mSteerAxis);
+                m_SteerAxis = new CrossPlatformInputManager.VirtualAxis(mapping.axisName);
+                CrossPlatformInputManager.RegisterVirtualAxis(m_SteerAxis);
             }
         }
 
@@ -58,26 +58,24 @@ namespace UnityStandardAssets.CrossPlatformInput
             float angle = 0;
             if (Input.acceleration != Vector3.zero)
             {
-                switch (TiltAroundAxis)
+                switch (tiltAroundAxis)
                 {
                     case AxisOptions.ForwardAxis:
                         angle = Mathf.Atan2(Input.acceleration.x, -Input.acceleration.y)*Mathf.Rad2Deg +
-                                CentreAngleOffset;
+                                centreAngleOffset;
                         break;
                     case AxisOptions.SidewaysAxis:
                         angle = Mathf.Atan2(Input.acceleration.z, -Input.acceleration.y)*Mathf.Rad2Deg +
-                                CentreAngleOffset;
+                                centreAngleOffset;
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
 
-            var axisValue = Mathf.InverseLerp(-FullTiltAngle, FullTiltAngle, angle)*2 - 1;
-            switch (Mapping.Type)
+            float axisValue = Mathf.InverseLerp(-fullTiltAngle, fullTiltAngle, angle)*2 - 1;
+            switch (mapping.type)
             {
                 case AxisMapping.MappingType.NamedAxis:
-                    _mSteerAxis.Update(axisValue);
+                    m_SteerAxis.Update(axisValue);
                     break;
                 case AxisMapping.MappingType.MousePositionX:
                     CrossPlatformInputManager.SetVirtualMousePositionX(axisValue*Screen.width);
@@ -88,15 +86,13 @@ namespace UnityStandardAssets.CrossPlatformInput
                 case AxisMapping.MappingType.MousePositionZ:
                     CrossPlatformInputManager.SetVirtualMousePositionZ(axisValue*Screen.width);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
 
         private void OnDisable()
         {
-            _mSteerAxis.Remove();
+            m_SteerAxis.Remove();
         }
     }
 }
@@ -112,9 +108,9 @@ namespace UnityStandardAssets.CrossPlatformInput.Inspector
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            var x = position.x;
-            var y = position.y;
-            var inspectorWidth = position.width;
+            float x = position.x;
+            float y = position.y;
+            float inspectorWidth = position.width;
 
             // Don't make child fields be indented
             var indent = EditorGUI.indentLevel;
@@ -129,12 +125,12 @@ namespace UnityStandardAssets.CrossPlatformInput.Inspector
                 widths = new[] {1f};
             }
             const float lineHeight = 18;
-            for (var n = 0; n < props.Length; ++n)
+            for (int n = 0; n < props.Length; ++n)
             {
-                var w = widths[n]*inspectorWidth;
+                float w = widths[n]*inspectorWidth;
 
                 // Calculate rects
-                var rect = new Rect(x, y, w, lineHeight);
+                Rect rect = new Rect(x, y, w, lineHeight);
                 x += w;
 
                 EditorGUI.PropertyField(rect, property.FindPropertyRelative(props[n]), GUIContent.none);

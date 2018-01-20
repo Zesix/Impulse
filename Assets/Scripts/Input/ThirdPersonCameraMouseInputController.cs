@@ -29,7 +29,7 @@ public class ThirdPersonCameraMouseInputController : MonoBehaviour
 		}
 		
 		// Clamp (limit) mouse Y rotation. Uses thirdPersonCameraHelper.cs.
-		_thirdPersonCamera.MouseY = ThirdPerson_Helper.clampingAngle (_thirdPersonCamera.MouseY, 
+		_thirdPersonCamera.MouseY = ThirdPerson_Helper.ClampingAngle (_thirdPersonCamera.MouseY, 
 		                                                             _thirdPersonCamera.YMinLimit, 
 		                                                             _thirdPersonCamera.YMaxLimit
 		);
