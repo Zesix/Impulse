@@ -171,7 +171,7 @@ public class GameStateMachine : MonoBehaviour
 
     // Internal
     private StateMachine<GameStateMachine, GameStateId, GameStateTransition> GameFsm { get; set; }
-    private List<State&lt;GameStateMachine, GameStateId, GameStateTransition&gt> _states;
+    private List<State<GameStateMachine, GameStateId, GameStateTransition>> _states;
 
     [Inject]
     private void Construct(List<State<GameStateMachine, GameStateId, GameStateTransition>> states)
