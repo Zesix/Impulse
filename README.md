@@ -1,7 +1,7 @@
 ![Impulse Framework Splash](https://raw.githubusercontent.com/Zesix/Impulse/master/Assets/Textures/Not_Available_For_Commercial_Use/Impulse_Splash.png)
 
 
-**Impulse Framework**
+## Impulse Framework
 
 A bootstrap framework designed to expedite the creation of Unity projects. The purpose of the framework is to empower developers to focus on developing the game features and worry less about common game systems such as scene management, camera systems, etc. by providing customizable implementations out of the box.
 
@@ -11,7 +11,7 @@ A bootstrap framework designed to expedite the creation of Unity projects. The p
 - Zenject Framework, located in &quot;Assets/Plugins/Zenject&quot;. Zenject is licensed under [MIT](https://github.com/modesttree/Zenject/blob/master/License.md).
 - Fonts, located in the &quot;Assets/Fonts&quot; folder. These free fonts are included only so the demo scenes render properly, however they are not available under the Unlicense. Please acquire the appropriate license to use them from their respective websites.
 
-**Development Philosophy**
+## Development Philosophy
 
 We, the creators, believe clean code is based around SOLID principles. More specifically, this means:
 
@@ -25,7 +25,7 @@ We, the creators, believe clean code is based around SOLID principles. More spec
 
 The framework, however, does not enforce any rigid programming structure. It provides several tools that just work out of the box but leaves the implementation of your game up to you.
 
-**Project Setup**
+## Project Setup
 
 In the Build Settings, set the Splash scene to 0 and Menu to 1. Unity preloads everything in each scene, with the exception of the first scene (scene 0). For optimal performance, you should keep your splash scene as lightweight as possible and try not to add too many objects.
 
@@ -63,7 +63,7 @@ To switch menus using UGUI OnClick(), call the MenuManager.ChangeMenuAndFade() o
 
 To run one of the examples in the GameExamples folder, replace Menu and the sample Level01 in the build settings with the specific menu and game scene from the example game&#39;s \_Scenes folder.
 
-**StateMachine (Finite State Machine)**
+## StateMachine (Finite State Machine)
 
 A deterministic finite state machine that works with C# objects as states. It derives from MonoBehaviour to be compatible as a component on game objects that need their own state machine but can also be used for controlling overall project state. While the setup can seem cumbersome, it ensures states are properly identified by their class implementations while also allowing for mocking of states through Zenject binding a different array of test states.
 
@@ -281,7 +281,7 @@ We put the transition after the yield statement to ensure setup completes before
 
 Note: Because we override StartCoroutine(), you cannot use nameof() to generate the argument, you must reference the coroutine function with curly brackets on the end, like above.
 
-**Audio**
+## Audio
 
 **Playing Music and Managing Playlists**
 
@@ -292,7 +292,7 @@ For a video demonstration of the music manager and music playlists: [https://www
 1. Drag the MusicManager prefab from Assets/Prefabs/Music/MusicManager into your splash scene, or whichever scene is the first one in your build settings. The MusicManager is persistent from scene to scene, so you do not need to instantiate it in each scene.
 2. In each scene where you want music to be played, create a new empty game object and attach the MusicPlaylist.cs script. This script can be found in Assets/Scripts/Music/MusicPlaylist.cs. I recommend naming the game object &#39;MusicPlaylist&#39;. Then, just populate the Music List array in the game object with song files. Leave &#39;Activate On Awake&#39; to true if you want the playlist to begin playing as soon as the scene is loaded.
 
-**Cameras**
+## Cameras
 
 **Top-Down Camera**
 
@@ -318,7 +318,7 @@ For a video demonstration of the third person camera: [https://www.youtube.com/w
 5. Assign the LookAt object in the Target Look Transform parameter of the Third Person Camera component on the camera.
 6. To add mouse controls such as zoom-in with the mouse scrollwheel, attach the Third\_Person\_Mouse\_Input.cs script to the camera. This script is located in the Assets/Scripts/Camera folder.
 
-**User Interface**
+## User Interface
 
 The framework includes an InterfaceManager that works similar to the Menu System. You can find the Interface Manager prefab in the &quot;Assets/Prefabs/UI&quot; folder.
 
@@ -326,7 +326,7 @@ The Interface Manager works with game objects containing an Interface Screen com
 
 The Interface Manager can also load scenes by calling InterfaceManager.LoadScene(string sceneName) or InterfaceManager.LoadSceneFadeIn(string sceneName). This allows you to create a Pause menu with options such as a &#39;Return to Main Menu&#39; button.
 
-**AI**
+## AI
 
 Most AI scripts in the framework are based around a Faction component that specifies what faction a gameobject belongs to. For a gameobject to be used with the AI scripts, it must have the Faction.cs script attached along with a faction specified (factions can be neutral in addition to friendly or hostile).
 
@@ -367,7 +367,7 @@ For a video demonstration of the sphere detector: [https://www.youtube.com/watch
 
 The Detector component includes useful methods for fetching data during runtime:
 
-**Data Loading**
+## Data Loading
 
 The framework comes with a basic data loading system that reads JSON files and turns them into .asset files with an associated prefab.
 
