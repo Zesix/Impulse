@@ -264,7 +264,7 @@ The first argument is the enum of the transition state, while the second argumen
 You can transition to another state by calling MakeTransition([enum ID of transition]);
 
 It is important to note you cannot change state within the Enter() or Exit() methods of an existing state since you cannot change state during the middle of a state transition. In some cases it is necessary to use a coroutine to change state to allow an Enter() or Exit() method to finish. This is especially true in states where gameplay setup is done:
-```chsarp
+```csharp
 public override void Enter()
 {
     base.Enter();
