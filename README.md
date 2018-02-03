@@ -256,7 +256,7 @@ Before transitioning to a new state, you must first add the transitions by calli
 ```csharp
 public override void BuildTransitions ()
 {
-    AddTransition(StateTransition.BEGIN\_PLAY, StateID.PLAY);
+    AddTransition(StateTransition.BEGIN_PLAY, StateID.PLAY);
 }
 ```
 The first argument is the enum of the transition state, while the second argument is the enum of the state to transition to.
