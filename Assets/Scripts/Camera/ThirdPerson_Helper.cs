@@ -1,34 +1,17 @@
-﻿/*****************************************
- * This file is part of Impulse Framework.
-
-    Impulse Framework is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Impulse Framework is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Impulse Framework.  If not, see <http://www.gnu.org/licenses/>.
-*****************************************/
-
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class ThirdPerson_Helper
 {
 	public struct ClipPlanePoints
 	{
-		public Vector3 upperLeft;
-		public Vector3 upperRight;
-		public Vector3 lowerLeft;
-		public Vector3 lowerRight;
+		public Vector3 UpperLeft;
+		public Vector3 UpperRight;
+		public Vector3 LowerLeft;
+		public Vector3 LowerRight;
 	}
 	
 	// Clamp angle to between -360, 360.
-	public static float clampingAngle (float angle, float min, float max)
+	public static float ClampingAngle (float angle, float min, float max)
 	{
 		do {
 			if (angle < -360)
@@ -42,35 +25,35 @@ public static class ThirdPerson_Helper
 	
 	public static ClipPlanePoints ClipPlaneAtNear (Vector3 pos)
 	{
-		ClipPlanePoints clipPlanePoints = new ClipPlanePoints ();
+		var clipPlanePoints = new ClipPlanePoints ();
 		
 		// Ensure there is a main camera for us to check.
 		if (!Camera.main)
 			return clipPlanePoints;
 		
 		// Properties to determine the main camera's near clip plane.
-		Transform mainCameraTransform = Camera.main.transform;
-		float halfFieldOfView = (Camera.main.fieldOfView / 2) * Mathf.Deg2Rad;
-		float aspect = Camera.main.aspect;
-		float distance = Camera.main.nearClipPlane;
-		float height = distance * Mathf.Tan (halfFieldOfView);
-		float width = height * aspect;
+		var mainCameraTransform = Camera.main.transform;
+		var halfFieldOfView = (Camera.main.fieldOfView / 2) * Mathf.Deg2Rad;
+		var aspect = Camera.main.aspect;
+		var distance = Camera.main.nearClipPlane;
+		var height = distance * Mathf.Tan (halfFieldOfView);
+		var width = height * aspect;
 		
-		clipPlanePoints.lowerRight = pos + mainCameraTransform.right * width;
-		clipPlanePoints.lowerRight -= mainCameraTransform.up * height;
-		clipPlanePoints.lowerRight += mainCameraTransform.forward * distance;
+		clipPlanePoints.LowerRight = pos + mainCameraTransform.right * width;
+		clipPlanePoints.LowerRight -= mainCameraTransform.up * height;
+		clipPlanePoints.LowerRight += mainCameraTransform.forward * distance;
 		
-		clipPlanePoints.lowerLeft = pos - mainCameraTransform.right * width;
-		clipPlanePoints.lowerLeft -= mainCameraTransform.up * height;
-		clipPlanePoints.lowerLeft += mainCameraTransform.forward * distance;
+		clipPlanePoints.LowerLeft = pos - mainCameraTransform.right * width;
+		clipPlanePoints.LowerLeft -= mainCameraTransform.up * height;
+		clipPlanePoints.LowerLeft += mainCameraTransform.forward * distance;
 		
-		clipPlanePoints.upperRight = pos + mainCameraTransform.right * width;
-		clipPlanePoints.upperRight += mainCameraTransform.up * height;
-		clipPlanePoints.upperRight += mainCameraTransform.forward * distance;
+		clipPlanePoints.UpperRight = pos + mainCameraTransform.right * width;
+		clipPlanePoints.UpperRight += mainCameraTransform.up * height;
+		clipPlanePoints.UpperRight += mainCameraTransform.forward * distance;
 		
-		clipPlanePoints.upperLeft = pos - mainCameraTransform.right * width;
-		clipPlanePoints.upperLeft += mainCameraTransform.up * height;
-		clipPlanePoints.upperLeft += mainCameraTransform.forward * distance;
+		clipPlanePoints.UpperLeft = pos - mainCameraTransform.right * width;
+		clipPlanePoints.UpperLeft += mainCameraTransform.up * height;
+		clipPlanePoints.UpperLeft += mainCameraTransform.forward * distance;
 		
 		return clipPlanePoints;
 	}

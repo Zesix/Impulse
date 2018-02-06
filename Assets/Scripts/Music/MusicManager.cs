@@ -146,7 +146,7 @@ public class MusicManager : Singleton<MusicManager>
             else
             {
                 _counter++;
-                if (_counter >= Playlist.MusicList.Length - 1)
+                if (_counter > Playlist.MusicList.Length - 1)
                 {
                     if (Repeat == RepeatMode.Playlist)
                     {

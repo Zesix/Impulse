@@ -118,22 +118,22 @@ public class ThirdPerson_Camera : MonoBehaviour
 		
 		// Draw the raycasts going through the near clip plane vertexes.
 		Debug.DrawLine (from, to + transform.forward * -GetComponent<Camera> ().nearClipPlane, Color.red);
-		Debug.DrawLine (from, clipPlanePoints.upperLeft, Color.red);
-		Debug.DrawLine (from, clipPlanePoints.upperRight, Color.red);
-		Debug.DrawLine (from, clipPlanePoints.lowerLeft, Color.red);
-		Debug.DrawLine (from, clipPlanePoints.lowerRight, Color.red);
-		Debug.DrawLine (clipPlanePoints.upperLeft, clipPlanePoints.upperRight, Color.red);
-		Debug.DrawLine (clipPlanePoints.upperRight, clipPlanePoints.lowerRight, Color.red);
-		Debug.DrawLine (clipPlanePoints.lowerRight, clipPlanePoints.lowerLeft, Color.red);
-		Debug.DrawLine (clipPlanePoints.lowerLeft, clipPlanePoints.upperLeft, Color.red);
+		Debug.DrawLine (from, clipPlanePoints.UpperLeft, Color.red);
+		Debug.DrawLine (from, clipPlanePoints.UpperRight, Color.red);
+		Debug.DrawLine (from, clipPlanePoints.LowerLeft, Color.red);
+		Debug.DrawLine (from, clipPlanePoints.LowerRight, Color.red);
+		Debug.DrawLine (clipPlanePoints.UpperLeft, clipPlanePoints.UpperRight, Color.red);
+		Debug.DrawLine (clipPlanePoints.UpperRight, clipPlanePoints.LowerRight, Color.red);
+		Debug.DrawLine (clipPlanePoints.LowerRight, clipPlanePoints.LowerLeft, Color.red);
+		Debug.DrawLine (clipPlanePoints.LowerLeft, clipPlanePoints.UpperLeft, Color.red);
         
 
-		if (Physics.Linecast (from, clipPlanePoints.upperLeft, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
+		if (Physics.Linecast (from, clipPlanePoints.UpperLeft, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 			nearestDistance = hitInfo.distance;
-		if (Physics.Linecast (from, clipPlanePoints.lowerLeft, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
+		if (Physics.Linecast (from, clipPlanePoints.LowerLeft, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 		if (hitInfo.distance < nearestDistance || nearestDistance == -1)
 			nearestDistance = hitInfo.distance;
-		if (Physics.Linecast (from, clipPlanePoints.upperRight, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
+		if (Physics.Linecast (from, clipPlanePoints.UpperRight, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
 		if (hitInfo.distance < nearestDistance || nearestDistance == -1)
 			nearestDistance = hitInfo.distance;
 		if (Physics.Linecast (from, to + transform.forward * -GetComponent<Camera> ().nearClipPlane, out hitInfo) && !hitInfo.collider.CompareTag("Player"))
@@ -168,19 +168,19 @@ public class ThirdPerson_Camera : MonoBehaviour
         Debug.DrawLine(clipPlanePoints.lowerLeft, pos, Color.blue);
         Debug.DrawLine(clipPlanePoints.lowerRight, pos, Color.blue);
         */
-		if (Physics.Linecast (clipPlanePoints.upperLeft, pos, out hitInfo)) {
+		if (Physics.Linecast (clipPlanePoints.UpperLeft, pos, out hitInfo)) {
 			return false;
 		}
-		if (Physics.Linecast (clipPlanePoints.upperLeft, pos, out hitInfo)) {
+		if (Physics.Linecast (clipPlanePoints.UpperLeft, pos, out hitInfo)) {
 			return false;
 		}
-		if (Physics.Linecast (clipPlanePoints.upperRight, pos, out hitInfo)) {
+		if (Physics.Linecast (clipPlanePoints.UpperRight, pos, out hitInfo)) {
 			return false;
 		}
-		if (Physics.Linecast (clipPlanePoints.lowerLeft, pos, out hitInfo)) {
+		if (Physics.Linecast (clipPlanePoints.LowerLeft, pos, out hitInfo)) {
 			return false;
 		}
-		if (Physics.Linecast (clipPlanePoints.lowerRight, pos, out hitInfo)) {
+		if (Physics.Linecast (clipPlanePoints.LowerRight, pos, out hitInfo)) {
 			return false;
 		}
 		return true;

@@ -70,7 +70,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new ArgumentNullException("name");
 			}
 			activeInput.UnRegisterVirtualAxis(name);
 		}

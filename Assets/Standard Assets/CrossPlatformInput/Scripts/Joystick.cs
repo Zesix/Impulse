@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -24,17 +25,17 @@ namespace UnityStandardAssets.CrossPlatformInput
 		CrossPlatformInputManager.VirtualAxis m_HorizontalVirtualAxis; // Reference to the joystick in the cross platform input
 		CrossPlatformInputManager.VirtualAxis m_VerticalVirtualAxis; // Reference to the joystick in the cross platform input
 
-		private void OnEnable()
+		void OnEnable()
 		{
 			CreateVirtualAxes();
 		}
 
-		private void Start()
+        void Start()
         {
             m_StartPos = transform.position;
         }
 
-		private void UpdateVirtualAxes(Vector3 value)
+		void UpdateVirtualAxes(Vector3 value)
 		{
 			var delta = m_StartPos - value;
 			delta.y = -delta.y;
@@ -50,7 +51,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 			}
 		}
 
-		private void CreateVirtualAxes()
+		void CreateVirtualAxes()
 		{
 			// set axes to use
 			m_UseX = (axesToUse == AxisOption.Both || axesToUse == AxisOption.OnlyHorizontal);
@@ -72,18 +73,18 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		public void OnDrag(PointerEventData data)
 		{
-			var newPos = Vector3.zero;
+			Vector3 newPos = Vector3.zero;
 
 			if (m_UseX)
 			{
-				var delta = (int)(data.position.x - m_StartPos.x);
+				int delta = (int)(data.position.x - m_StartPos.x);
 				delta = Mathf.Clamp(delta, - MovementRange, MovementRange);
 				newPos.x = delta;
 			}
 
 			if (m_UseY)
 			{
-				var delta = (int)(data.position.y - m_StartPos.y);
+				int delta = (int)(data.position.y - m_StartPos.y);
 				delta = Mathf.Clamp(delta, -MovementRange, MovementRange);
 				newPos.y = delta;
 			}
@@ -101,7 +102,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		public void OnPointerDown(PointerEventData data) { }
 
-		private void OnDisable()
+		void OnDisable()
 		{
 			// remove the joysticks from the cross platform input
 			if (m_UseX)
