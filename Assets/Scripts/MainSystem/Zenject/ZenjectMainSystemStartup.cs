@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-
-public interface Initializable
-{
-
-}
-
-
 /// <summary>
 /// Use this class for initialization of core systems (core singleton manager instatiation)
 /// </summary>
