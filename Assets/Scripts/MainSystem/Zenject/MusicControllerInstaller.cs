@@ -12,6 +12,6 @@ public class MusicControllerInstaller : MonoInstaller<MusicControllerInstaller>
     {
         _audioSource = GetComponent<AudioSource>();
 
-        Container.BindInstance(_audioSource);
+        transform.GetComponent<GameObjectContext>().Container.BindInstance(_audioSource);
     }
 }

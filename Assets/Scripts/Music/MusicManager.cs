@@ -3,7 +3,7 @@ using System.Collections;
 using Zenject;
 
 [RequireComponent(typeof(AudioSource))]
-public class MusicManager : Singleton<MusicManager>
+public class MusicManager : Singleton<MusicManager>, Initializable
 {
     [SerializeField]
     private float _volume;
