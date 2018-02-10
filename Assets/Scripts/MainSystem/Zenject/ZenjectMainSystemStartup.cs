@@ -18,8 +18,21 @@ public class ZenjectMainSystemStartup : MonoInstaller
     {
         foreach (GameObject singleton in _singletonsToSpawn)
         {
-            Container.Bind<AudioSource>().FromSubContainerResolve().ByNewPrefab(singleton).AsSingle().NonLazy();
-            // todo: add extra injects here by copying the above line and changing its type
+            // Zenject based singletons (objects in need of reference injection)
+            if (singleton.GetComponent<GameObjectContext>() != null)
+            {
+                Container.Bind<AudioSource>().FromSubContainerResolve().ByNewPrefab(singleton).AsSingle().NonLazy();
+                // todo: add extra injects here by copying the above line and changing its type
+            }
+            // Regular based singletons
+            else
+            {
+                GameObject instancedSingleton = Instantiate(singleton);
+                instancedSingleton.transform.parent = this.transform;
+                instancedSingleton.transform.localPosition = Vector3.zero;
+                instancedSingleton.transform.localRotation = Quaternion.identity;
+                instancedSingleton.transform.localScale = Vector3.zero;
+            }
         }
     }
 
