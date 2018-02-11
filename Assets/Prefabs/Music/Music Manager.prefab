@@ -123,10 +123,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e268d0e0cc1aed74caf5f98f5654e77f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _volume: 0
-  Playlist: {fileID: 0}
-  Shuffle: 0
-  Repeat: 2
+  _volume: 1
+  Playlists:
+  - {fileID: 114880227815102232, guid: 7c9cf400b33a3fe40bbf5c5bcae79acb, type: 2}
+  - {fileID: 114137211030796018, guid: 4462d34024cb97a448588b0c2e81fc2d, type: 2}
+  ShufflePlaylists: 1
+  RepeatPlaylists: 0
   FadeDuration: 3
   PlayOnAwake: 1
 --- !u!1001 &100100000

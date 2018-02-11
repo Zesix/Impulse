@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Zenject;
+using System.Collections.Generic;
+using System.Linq;
 
 [RequireComponent(typeof(AudioSource))]
 public class MusicManager : Singleton<MusicManager>
@@ -21,41 +23,99 @@ public class MusicManager : Singleton<MusicManager>
         }
     }
 
-    public MusicPlaylist Playlist;
-    public bool Shuffle;
-    public RepeatMode Repeat;
+    // General playlist variables
+    [Header("Playlist Parameters")]
+    [Tooltip("List of playlist to execute")]
+    public List<MusicPlaylist> Playlists;
+
+    // General playlist execution mode
+    public bool ShufflePlaylists;
+    public bool RepeatPlaylists;
+    
+    [Header("General Parameters")]
     public float FadeDuration;
     public bool PlayOnAwake;
+
+    // Counter of current playlist in execution
+    private int _playlistCounter;
+
+    // Counter of current song in execution inside a playlist
+    private int _songCounter;
 
     [Inject]
     private AudioSource _source;
 
     private void Start()
     {
-        // grab audio source
-        _source.playOnAwake = false;
+        // Safety check
+        if (Playlists.Count <= 0)
+            return;
+
+        // Tweak audio source parameters
+        _source.playOnAwake = true;
+
         if (FadeDuration > 0)
             _source.volume = 0f;
         else
             Volume = _volume;
-        if (Playlist == null)
-            return;
-        if (Playlist.MusicList.Length > 0)
-            _source.clip = Playlist.MusicList[0];
-        else
-            Debug.LogError("There are no music in the list");
 
+        // Shuffle Playlists
+        if (ShufflePlaylists)
+        {
+            Playlists = Shuffle(Playlists);
+        }
+
+        // Start playlist play
         if (PlayOnAwake)
-            Play();
+            PlayAllTracks();
     }
 
-    public void Play()
+    /// <summary>
+    /// Use this method to play all possible tracks
+    /// </summary>
+    public void PlayAllTracks()
     {
-        if (Playlist)
+        StopAllCoroutines();
+
+        // Execute playlist with first element
+        _playlistCounter = 0;
+        StartCoroutine(PlayPlaylist(Playlists[_playlistCounter]));
+    }
+
+
+    private IEnumerator PlayPlaylist(MusicPlaylist targetPlaylist)
+    {
+        // Shuffle target playlist if it is required
+        if(targetPlaylist.Shuffle)
         {
-            StartCoroutine(PlayMusicList());
+            targetPlaylist.MusicList = Shuffle(targetPlaylist.MusicList);
+        }
+
+        // Execute target playlist until it finishes
+        _songCounter = 0;
+        while (_songCounter < targetPlaylist.MusicList.Count)
+        {
+            // Execute current song
+            yield return StartCoroutine(PlaySongE(targetPlaylist.MusicList[_songCounter]));
+
+            // Move to next song
+            _songCounter++;
+        }
+
+        // Check if there is another playlist to execute, if so do so
+        _playlistCounter++;
+        if(Playlists.Count < _playlistCounter)
+        {
+            StartCoroutine(PlayPlaylist(Playlists[_playlistCounter]));
+        }
+        // Otherwise, and if this system is set to loop, restart the play cycle
+        else
+        {
+            _playlistCounter = 0;
+            StartCoroutine(PlayPlaylist(Playlists[_playlistCounter]));
         }
     }
+
 
     public void Stop(bool fade)
     {
@@ -69,21 +129,6 @@ public class MusicManager : Singleton<MusicManager>
     public void Next()
     {
         _source.Stop();
-    }
-
-    public void ChangePlaylist(MusicPlaylist list)
-    {
-        Playlist = list;
-        _counter = 0;
-        StopAllCoroutines();
-        StartCoroutine(ChangePlaylistE());
-    }
-
-    private IEnumerator ChangePlaylistE()
-    {
-        if (_source.isPlaying)
-            yield return StartCoroutine(StopWithFade());
-        StartCoroutine(PlayMusicList());
     }
 
     private IEnumerator StopWithFade()
@@ -122,43 +167,6 @@ public class MusicManager : Singleton<MusicManager>
         }
     }
 
-    private int _counter;
-
-    private IEnumerator PlayMusicList()
-    {
-        while (true)
-        {
-            yield return StartCoroutine(PlaySongE(Playlist.MusicList[_counter]));
-            if (Repeat == RepeatMode.Track)
-            {
-
-            }
-            else if (Shuffle)
-            {
-                int newTrack = GetNewTrack();
-                while (newTrack == _counter && Playlist.MusicList.Length != 1)
-                {
-                    newTrack = GetNewTrack();
-                }
-                _counter = newTrack;
-
-            }
-            else
-            {
-                _counter++;
-                if (_counter > Playlist.MusicList.Length - 1)
-                {
-                    if (Repeat == RepeatMode.Playlist)
-                    {
-                        _counter = 0;
-                    }
-                    else
-                        yield break;
-                }
-            }
-        }
-    }
-
     private IEnumerator FadeOut()
     {
         if (FadeDuration > 0f)
@@ -190,16 +198,12 @@ public class MusicManager : Singleton<MusicManager>
         }
     }
 
-    private int GetNewTrack()
+    /// <summary>
+    /// Use this method to randomize any list
+    /// </summary>
+    public static List<T> Shuffle<T>(List<T> list)
     {
-        return Random.Range(0, Playlist.MusicList.Length);
+        return list.OrderBy(x => Random.value).ToList();
     }
 
-}
-
-public enum RepeatMode
-{
-    Playlist,
-    Track,
-    None
 }
