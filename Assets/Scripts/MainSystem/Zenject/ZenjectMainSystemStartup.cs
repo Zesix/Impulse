@@ -31,7 +31,7 @@ public class ZenjectMainSystemStartup : MonoInstaller
                 instancedSingleton.transform.parent = this.transform;
                 instancedSingleton.transform.localPosition = Vector3.zero;
                 instancedSingleton.transform.localRotation = Quaternion.identity;
-                instancedSingleton.transform.localScale = Vector3.zero;
+                instancedSingleton.transform.localScale = Vector3.one;
             }
         }
     }

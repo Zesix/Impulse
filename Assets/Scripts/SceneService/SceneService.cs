@@ -79,7 +79,7 @@ public class SceneService : MonoBehaviour
                 TransitionPercent = lerpValue / Duration;
             }
             //Set the alpha by the interpolated lerp value
-            target.alpha = Mathf.Lerp(start, end, Interpolation.Evaluate(lerpValue));
+            target.alpha = Mathf.Lerp(start, end, lerpValue);
             yield return null;
         }
         InTransition = false;
