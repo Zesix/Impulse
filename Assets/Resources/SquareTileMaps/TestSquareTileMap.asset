@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e3d796912ced3a40aea22e00be3edea, type: 3}
+  m_Name: TestSquareTileMap
+  m_EditorClassIdentifier: 
+  MinMapSize: {x: 10, y: 10}
+  MaxMapSize: {x: 20, y: 20}
+  ObstaclePercent: 0.8
+  ObstaclePlaceSeed: 0
+  MinObstacleHeight: 0.5
+  MaxObstacleHeight: 1
+  ForegroundColor: {r: 0.10588235, g: 0.366491, b: 0.62352943, a: 0}
+  BackgroundColor: {r: 0.16868506, g: 0.25838196, b: 0.58823526, a: 0}
+  TileSize: 1
+  TileOutlinePercent: 0.095
+  SquareTiles:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 0, z: 2}
+  - {x: 0, y: 0, z: 3}
+  - {x: 0, y: 0, z: 4}
+  - {x: 0, y: 0, z: 5}
+  - {x: 0, y: 0, z: 6}
+  - {x: 0, y: 0, z: 7}
+  - {x: 0, y: 0, z: 8}
+  - {x: 0, y: 0, z: 9}
+  - {x: 1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 1}
+  - {x: 1, y: 0, z: 2}
+  - {x: 1, y: 0, z: 3}
+  - {x: 1, y: 0, z: 4}
+  - {x: 1, y: 0, z: 5}
+  - {x: 1, y: 0, z: 6}
+  - {x: 1, y: 0, z: 7}
+  - {x: 1, y: 0, z: 8}
+  - {x: 1, y: 0, z: 9}
+  - {x: 2, y: 0, z: 0}
+  - {x: 2, y: 0, z: 1}
+  - {x: 2, y: 0, z: 2}
+  - {x: 2, y: 0, z: 3}
+  - {x: 2, y: 0, z: 4}
+  - {x: 2, y: 0, z: 5}
+  - {x: 2, y: 0, z: 6}
+  - {x: 2, y: 0, z: 7}
+  - {x: 2, y: 0, z: 8}
+  - {x: 2, y: 0, z: 9}
+  - {x: 3, y: 0, z: 0}
+  - {x: 3, y: 0, z: 1}
+  - {x: 3, y: 0, z: 2}
+  - {x: 3, y: 0, z: 3}
+  - {x: 3, y: 0, z: 4}
+  - {x: 3, y: 0, z: 5}
+  - {x: 3, y: 0, z: 6}
+  - {x: 3, y: 0, z: 7}
+  - {x: 3, y: 0, z: 8}
+  - {x: 3, y: 0, z: 9}
+  - {x: 4, y: 0, z: 0}
+  - {x: 4, y: 0, z: 1}
+  - {x: 4, y: 0, z: 2}
+  - {x: 4, y: 0, z: 3}
+  - {x: 4, y: 0, z: 4}
+  - {x: 4, y: 0, z: 5}
+  - {x: 4, y: 0, z: 6}
+  - {x: 4, y: 0, z: 7}
+  - {x: 4, y: 0, z: 8}
+  - {x: 4, y: 0, z: 9}
+  - {x: 5, y: 0, z: 0}
+  - {x: 5, y: 0, z: 1}
+  - {x: 5, y: 0, z: 2}
+  - {x: 5, y: 0, z: 3}
+  - {x: 5, y: 0, z: 4}
+  - {x: 5, y: 0, z: 5}
+  - {x: 5, y: 0, z: 6}
+  - {x: 5, y: 0, z: 7}
+  - {x: 5, y: 0, z: 8}
+  - {x: 5, y: 0, z: 9}
+  - {x: 6, y: 0, z: 0}
+  - {x: 6, y: 0, z: 1}
+  - {x: 6, y: 0, z: 2}
+  - {x: 6, y: 0, z: 3}
+  - {x: 6, y: 0, z: 4}
+  - {x: 6, y: 0, z: 5}
+  - {x: 6, y: 0, z: 6}
+  - {x: 6, y: 0, z: 7}
+  - {x: 6, y: 0, z: 8}
+  - {x: 6, y: 0, z: 9}
+  - {x: 7, y: 0, z: 0}
+  - {x: 7, y: 0, z: 1}
+  - {x: 7, y: 0, z: 2}
+  - {x: 7, y: 0, z: 3}
+  - {x: 7, y: 0, z: 4}
+  - {x: 7, y: 0, z: 5}
+  - {x: 7, y: 0, z: 6}
+  - {x: 7, y: 0, z: 7}
+  - {x: 7, y: 0, z: 8}
+  - {x: 7, y: 0, z: 9}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 1}
+  - {x: 8, y: 0, z: 2}
+  - {x: 8, y: 0, z: 3}
+  - {x: 8, y: 0, z: 4}
+  - {x: 8, y: 0, z: 5}
+  - {x: 8, y: 0, z: 6}
+  - {x: 8, y: 0, z: 7}
+  - {x: 8, y: 0, z: 8}
+  - {x: 8, y: 0, z: 9}
+  - {x: 9, y: 0, z: 0}
+  - {x: 9, y: 0, z: 1}
+  - {x: 9, y: 0, z: 2}
+  - {x: 9, y: 0, z: 3}
+  - {x: 9, y: 0, z: 4}
+  - {x: 9, y: 0, z: 5}
+  - {x: 9, y: 0, z: 6}
+  - {x: 9, y: 0, z: 7}
+  - {x: 9, y: 0, z: 8}
+  - {x: 9, y: 0, z: 9}
