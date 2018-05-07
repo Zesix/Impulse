@@ -54,3 +54,4 @@ MonoBehaviour:
   _singletonsToSpawn:
   - {fileID: 145322, guid: 114804eacd5f0fc46868932170fb9ecc, type: 2}
   - {fileID: 113118, guid: 6e2062a61652dd64e81ab98ead5df324, type: 2}
+  - {fileID: 1407333099049222, guid: f02c622a8de5095498cc6c86e665b6d2, type: 2}
