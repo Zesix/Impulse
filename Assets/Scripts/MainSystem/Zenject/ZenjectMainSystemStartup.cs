@@ -21,8 +21,8 @@ public class ZenjectMainSystemStartup : MonoInstaller
             // Zenject based singletons (objects in need of reference injection)
             if (singleton.GetComponent<GameObjectContext>() != null)
             {
-                Container.Bind<AudioSource>().FromSubContainerResolve().ByNewPrefab(singleton).AsSingle().NonLazy();
-                // todo: add extra injects here by copying the above line and changing its type
+                if(singleton.GetComponent<AudioSource>() != null)
+                    Container.Bind<AudioSource>().FromSubContainerResolve().ByNewPrefab(singleton).AsSingle().NonLazy();
             }
             // Regular based singletons
             else
