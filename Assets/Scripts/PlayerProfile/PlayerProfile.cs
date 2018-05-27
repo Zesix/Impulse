@@ -20,4 +20,26 @@ public class PlayerProfile {
             _playerID = value;
         }
     }
+
+
+    // Presentation parameters
+    private string _resolution;
+    public string Resolution
+    {
+        get
+        {
+            return _resolution;
+        }
+        set
+        {
+            _resolution = value;
+        }
+    }
+
+    // Default constructor
+    public PlayerProfile()
+    {
+        _playerID = "NotDefined";
+        _resolution = "1024x768";
+    }
 }

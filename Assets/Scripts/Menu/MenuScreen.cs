@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
+
+/// <summary>
+/// Use this to control menu variables
+/// </summary>
 public class MenuScreen : MonoBehaviour {
-	/*
-	void Start()
-	{
-		gameObject.SetActive (false);
-	}
-	*/
+
+    protected virtual void Start()
+    {
+
+    }
 }

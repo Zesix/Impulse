@@ -36,5 +36,20 @@ public class ZenjectMainSystemStartup : MonoInstaller
         }
     }
 
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
+    private void Start()
+    {
+        // Initialize core managers
+        SaveManager.Instance.Initialize();
+
+        // Load player profile
+        SaveManager.Instance.LoadData();
+
+        // Use presentation data
+        PresentationManager.Instance.Initialize();
+    }
+
 
 }

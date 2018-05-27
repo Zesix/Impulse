@@ -7,7 +7,7 @@ public class SaveManager : Singleton<SaveManager> {
     private PersistentLocalDataService _localSaveService;
     private ILocalDataManager _dataManager;
 
-    private void Start()
+    public void Initialize()
     {
         _dataManager = GetComponentInChildren<ILocalDataManager>(true);
 
