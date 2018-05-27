@@ -34,4 +34,12 @@ public class SaveManager : Singleton<SaveManager> {
     {
         _localSaveService.LoadProfile();
     }
+
+    public PlayerProfile GetLocalData()
+    {
+        if (_localSaveService.LocalPlayerData == null)
+            return new PlayerProfile();
+
+        return _localSaveService.LocalPlayerData;
+    }
 }
