@@ -5,12 +5,11 @@ using Zenject;
 public class SaveManager : Singleton<SaveManager> {
 
     private PersistentLocalDataService _localSaveService;
+    [Inject]
     private ILocalDataManager _dataManager;
 
     public void Initialize()
     {
-        _dataManager = GetComponentInChildren<ILocalDataManager>(true);
-
         _localSaveService = new PersistentLocalDataService();
         _localSaveService.Initialize(_dataManager);
     }

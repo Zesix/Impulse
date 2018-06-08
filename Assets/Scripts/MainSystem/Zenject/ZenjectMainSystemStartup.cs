@@ -21,8 +21,7 @@ public class ZenjectMainSystemStartup : MonoInstaller
             // Zenject based singletons (objects in need of reference injection)
             if (singleton.GetComponent<GameObjectContext>() != null)
             {
-                if(singleton.GetComponent<AudioSource>() != null)
-                    Container.Bind<AudioSource>().FromSubContainerResolve().ByNewPrefab(singleton).AsSingle().NonLazy();
+                Container.InstantiatePrefab(singleton);
             }
             // Regular based singletons
             else
@@ -39,7 +38,7 @@ public class ZenjectMainSystemStartup : MonoInstaller
     /// <summary>
     /// Use this for initialization
     /// </summary>
-    private void Start()
+    public override void Start()
     {
         // Initialize core managers
         SaveManager.Instance.Initialize();
