@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 /// <summary>
 /// 	Scene manager.
@@ -26,7 +27,14 @@ public class SceneService : MonoBehaviour
 
     public CanvasGroup BlackOverlay;			//Canvas for black overlay
 
-    private GameObject _canvasObj;				// The canvas game object.
+    private GameObject _canvasObj;              // The canvas game object.
+
+    [SerializeField]
+    private GameObject _loadProgressCanvas;
+    [SerializeField]
+    private Image _loadProgress;
+    [SerializeField]
+    private float _afterLoadscreenDelay = 0.5f;
 
 #if UNITY_EDITOR
     private bool _skipSplash;
@@ -45,11 +53,12 @@ public class SceneService : MonoBehaviour
                 _canvasObj = Instantiate(SplashObj);
                 _canvasObj.transform.SetParent(transform);
                 _canvasObj.transform.position = Vector3.zero;
-                _splashCanvasGroup = _canvasObj.GetComponent<CanvasGroup>();
+                _splashCanvasGroup = _canvasObj.GetComponentInChildren<CanvasGroup>();
                 _canvasObj.GetComponent<Canvas>().sortingOrder = 999;
+
+                _loadProgressCanvas.gameObject.SetActive(false);
                 DontDestroyOnLoad(SplashObj);
             }
-            BlackOverlay.GetComponent<Canvas>().sortingOrder = 998;
             Instance.StartCoroutine(LoadNextLevelFadeIn());
         }
         else
@@ -102,6 +111,11 @@ public class SceneService : MonoBehaviour
         yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true));
     }
 
+    public IEnumerator LoadNextLevelWithLoadingScreen()
+    {
+        yield return StartCoroutine(LoadLevelLoadScreen(SceneManager.GetActiveScene().buildIndex + 1));
+    }
+
     public void SetCanvasEnabled(bool isCanvasActive)
     {
         BlackOverlay.gameObject.SetActive(isCanvasActive);
@@ -117,7 +131,7 @@ public class SceneService : MonoBehaviour
         if (animate)
             Instance.StartCoroutine(LoadLevelFadeIn(index));
         else
-            SceneManager.LoadScene(index);
+            Instance.StartCoroutine(LoadLevelLoadScreen(index));
     }
 
     public void LoadLevelFadeInDelegate(string sceneName, bool animate = true)
@@ -125,7 +139,7 @@ public class SceneService : MonoBehaviour
         if (animate)
             Instance.StartCoroutine(LoadLevelFadeIn(sceneName));
         else
-            SceneManager.LoadScene(sceneName);
+            Instance.StartCoroutine(LoadLevelLoadScreen(sceneName));
     }
 
     public IEnumerator LoadLevelFadeIn(int index, bool showSplash = false)
@@ -150,6 +164,64 @@ public class SceneService : MonoBehaviour
         yield return async; // Wait for the async operation and animation to complete.
         yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
         SetCanvasEnabled(false);
+    }
+
+    public IEnumerator LoadLevelLoadScreen(int index)
+    {
+        _loadProgressCanvas.gameObject.SetActive(true);
+        _loadProgress.fillAmount = 0;
+
+        yield return null;
+
+        AsyncOperation ao = SceneManager.LoadSceneAsync(index);
+        ao.allowSceneActivation = false;
+
+        while (!ao.isDone)
+        {
+            _loadProgress.fillAmount = ao.progress;
+
+            if (ao.progress >= 0.9f)
+            {
+                ao.allowSceneActivation = true;
+            }
+            yield return null;
+        }
+
+        _loadProgress.fillAmount = 1;
+
+        yield return new WaitForSeconds(_afterLoadscreenDelay);
+
+        ao.allowSceneActivation = true;
+        _loadProgressCanvas.gameObject.SetActive(false);
+    }
+
+    public IEnumerator LoadLevelLoadScreen(string sceneName)
+    {
+        _loadProgressCanvas.gameObject.SetActive(true);
+        _loadProgress.fillAmount = 0;
+
+        yield return null;
+
+        AsyncOperation ao = SceneManager.LoadSceneAsync(sceneName);
+        ao.allowSceneActivation = false;
+
+        while (!ao.isDone)
+        {
+            _loadProgress.fillAmount = ao.progress;
+
+            if (ao.progress >= 1.0f)
+            {
+                ao.allowSceneActivation = true;
+            }
+            yield return null;
+        }
+
+        _loadProgress.fillAmount = 1;
+
+        yield return new WaitForSeconds(_afterLoadscreenDelay);
+
+        ao.allowSceneActivation = true;
+        _loadProgressCanvas.gameObject.SetActive(false);
     }
 
     public void ResetGame()
