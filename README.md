@@ -29,23 +29,28 @@ The framework, however, does not enforce any rigid programming structure. It pro
 
 In the Build Settings, set the Splash scene to 0 and Menu to 1. Unity preloads everything in each scene, with the exception of the first scene (scene 0). For optimal performance, you should keep your splash scene as lightweight as possible and try not to add too many objects.
 
+## SceneService
+
+The SceneService is used for loading scenes (with or without transitions). A scene can be loaded in the following ways:
+
+ * Show a custom splash image when the game is first started, then load the main menu. This is the default behavior of the SceneService.
+ * Load a scene with a fade to black transition.
+ * Load a scene with a fade to black, then loading screen, then fade out transition.
+ behavior when loading a new scene from the main menu.
+
 **Set a Custom Splash Image**
 
-Most games have a splash image or studio logo shown before the game begins. This framework can be set up to display a custom splash image before loading the main menu.
+Many games have a splash image or studio logo shown before the game begins. The framework can be set up to display a custom splash image before loading the main menu.
 
-A video demonstration of setting the splash image, setting up scene loading, and customizing the menu can be found here: [https://www.youtube.com/watch?v=btNqHCoRwB8&amp;list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&amp;index=1](https://www.youtube.com/watch?v=btNqHCoRwB8&amp;list=PLLXw4Fw6qNw5WVLPn1hhJNEcwXjxt3b9j&amp;index=1)
-
-1. Locate the Resources/Prefabs/Scene/SplashFadeIn object in the project files (not in the hierarchy!). Select the ImageToFade child object.
+1. Locate the Resources/Prefabs/Scene/SplashFadeIn object in the project files. Select the ImageToFade child object.
 2. Set the Source Image of the Image component to whatever splash image you want to display.
 
-**Set Scene Loading Parameters (fade in/out, interpolation, duration)**
+**Scene Loading Methods (fade in/out, interpolation, duration, loading screen, wait key)**
 
-The framework provides a scene manager to handle transitioning between scenes, such as fading in/out and transition delay.
+1. Locate the Resources/Prefabs/Scene/SceneService object.
+2. In the SceneService component, you can specify the Duration of fade in/out as well as the Interpolation of the fade. If you do not want to fade in/out scenes, set the duration to 0. 
 
-Refer to the video in the section above for a video walkthrough of the scene manager.
-
-1. Locate the Resources/Prefabs/Scene/SceneManager object.
-2. In the SceneManager component, you can specify the Duration of fade in/out as well as the Interpolation of the fade. If you do not want to fade in/out scenes, set the duration to 0.
+TODO: Add notes on how to use loading screen.
 
 **Customize the Main Menu**
 
