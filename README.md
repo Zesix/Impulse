@@ -35,8 +35,7 @@ The SceneService is used for loading scenes (with or without transitions). A sce
 
  * Show a custom splash image when the game is first started, then load the main menu. This is the default behavior of the SceneService.
  * Load a scene with a fade to black transition.
- * Load a scene with a fade to black, then loading screen, then fade out transition.
- behavior when loading a new scene from the main menu.
+ * Load a scene with a fade to black, then loading screen, then fade out transition. This is the default behavior when loading a new scene from the main menu.
 
 **Set a Custom Splash Image**
 
