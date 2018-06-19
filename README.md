@@ -29,6 +29,29 @@ The framework, however, does not enforce any rigid programming structure. It pro
 
 In the Build Settings, set the Splash scene to 0 and Menu to 1. Unity preloads everything in each scene, with the exception of the first scene (scene 0). For optimal performance, you should keep your splash scene as lightweight as possible and try not to add too many objects.
 
+## Project-Scoped Services (Singleton Managers)
+
+The framework comes with commonly used services such as SceneService. If you want to add your own project-scoped managers, you can do so via the following:
+
+1. Create a prefab for your singleton service and add your desired component scripts necessary for functionality.
+2. Add a GameObjectContext and MonoInstaller component. Ensure the MonoInstaller binds your instance. For example:
+
+```csharp
+using UnityEngine;
+using Zenject;
+
+public class SaveControllerInstaller : MonoInstaller<SaveControllerInstaller>
+{
+    public override void InstallBindings()
+    {
+        transform.GetComponent<GameObjectContext>().Container.BindInstance(GetComponent<ILocalDataManager>());
+    }
+}
+```
+3. Drag the prefab to the _MainSystemStartup (Zenject) prefab.
+
+Your singleton service prefab will now be spawned in the project scope no matter what scene you start Play mode from.
+
 ## SceneService
 
 The SceneService is used for loading scenes (with or without transitions). A scene can be loaded in the following ways:
