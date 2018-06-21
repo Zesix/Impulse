@@ -25,17 +25,19 @@ public class SceneService : MonoBehaviour
     public bool InTransition;                   // Are we in the middle of a fade transition?
     public float TransitionPercent;             // How far are we in a transition?
 
+
     public CanvasGroup BlackOverlay;			//Canvas for black overlay
 
     private GameObject _canvasObj;              // The canvas game object.
 
-    [SerializeField]
-    private GameObject _loadProgressCanvas;
-    [SerializeField]
-    private Image _loadProgress;
-    [SerializeField]
-    private float _afterLoadscreenDelay = 0.5f;
 
+    [SerializeField]
+    private GameObject _loadScreenParent;
+    /*
+    [SerializeField]
+    private LoadingScreenConfig _loadScreenConfig;
+    private LoadingScreenPresenter _instancedLoadScreen;
+    */
 #if UNITY_EDITOR
     private bool _skipSplash;
     private string _firstScene;
@@ -56,7 +58,6 @@ public class SceneService : MonoBehaviour
                 _splashCanvasGroup = _canvasObj.GetComponentInChildren<CanvasGroup>();
                 _canvasObj.GetComponent<Canvas>().sortingOrder = 999;
 
-                _loadProgressCanvas.gameObject.SetActive(false);
                 DontDestroyOnLoad(SplashObj);
             }
             Instance.StartCoroutine(LoadNextLevelFadeIn());
@@ -106,14 +107,14 @@ public class SceneService : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadNextLevelFadeIn()
+    public IEnumerator LoadNextLevelFadeIn(bool usePlayerInput = false)
     {
-        yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true));
+        yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true, usePlayerInput));
     }
 
-    public IEnumerator LoadNextLevelWithLoadingScreen()
+    public IEnumerator LoadNextLevelWithLoadingScreen(bool usePlayerInput = false)
     {
-        yield return StartCoroutine(LoadLevelLoadScreen(SceneManager.GetActiveScene().buildIndex + 1));
+        yield return StartCoroutine(LoadLevelLoadScreen(SceneManager.GetActiveScene().buildIndex + 1, usePlayerInput));
     }
 
     public void SetCanvasEnabled(bool isCanvasActive)
@@ -126,23 +127,23 @@ public class SceneService : MonoBehaviour
         }
     }
 
-    public void LoadLevelFadeInDelegate(int index, bool animate = true)
+    public void LoadLevelFadeInDelegate(int index, bool animate = true,bool usePlayerInput = false)
     {
         if (animate)
-            Instance.StartCoroutine(LoadLevelFadeIn(index));
+            Instance.StartCoroutine(LoadLevelFadeIn(index, usePlayerInput));
         else
-            Instance.StartCoroutine(LoadLevelLoadScreen(index));
+            Instance.StartCoroutine(LoadLevelLoadScreen(index, usePlayerInput));
     }
 
-    public void LoadLevelFadeInDelegate(string sceneName, bool animate = true)
+    public void LoadLevelFadeInDelegate(string sceneName, bool animate = true, bool usePlayerInput = false)
     {
         if (animate)
-            Instance.StartCoroutine(LoadLevelFadeIn(sceneName));
+            Instance.StartCoroutine(LoadLevelFadeIn(sceneName, usePlayerInput));
         else
-            Instance.StartCoroutine(LoadLevelLoadScreen(sceneName));
+            Instance.StartCoroutine(LoadLevelLoadScreen(sceneName, usePlayerInput));
     }
 
-    public IEnumerator LoadLevelFadeIn(int index, bool showSplash = false)
+    public IEnumerator LoadLevelFadeIn(int index, bool showSplash = false, bool usePlayerInput = false)
     {
         SetCanvasEnabled(true);
         yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
@@ -156,20 +157,25 @@ public class SceneService : MonoBehaviour
         SetCanvasEnabled(false);
     }
 
-    public IEnumerator LoadLevelFadeIn(string sceneName)
+    public IEnumerator LoadLevelFadeIn(string sceneName, bool usePlayerInput)
     {
+        // Execute fade in
         SetCanvasEnabled(true);
         yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
         var async = SceneManager.LoadSceneAsync(sceneName);
         yield return async; // Wait for the async operation and animation to complete.
+
+        // Now execute the loading screen
+        yield return Instance.StartCoroutine(LoadLevelLoadScreen(sceneName,false));
+
+        // Execute fade out
         yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
         SetCanvasEnabled(false);
     }
 
-    public IEnumerator LoadLevelLoadScreen(int index)
+    public IEnumerator LoadLevelLoadScreen(int index,bool usePlayerInput)
     {
-        _loadProgressCanvas.gameObject.SetActive(true);
-        _loadProgress.fillAmount = 0;
+        //_instancedLoadScreen = RequestLoadingScreen(usePlayerInput);
 
         yield return null;
 
@@ -178,7 +184,7 @@ public class SceneService : MonoBehaviour
 
         while (!ao.isDone)
         {
-            _loadProgress.fillAmount = ao.progress;
+            //_instancedLoadScreen.RefreshLoadingProgress(ao.progress);
 
             if (ao.progress >= 0.9f)
             {
@@ -187,18 +193,17 @@ public class SceneService : MonoBehaviour
             yield return null;
         }
 
-        _loadProgress.fillAmount = 1;
+        //_instancedLoadScreen.RefreshLoadingProgress(1);
 
-        yield return new WaitForSeconds(_afterLoadscreenDelay);
+        //yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
 
         ao.allowSceneActivation = true;
-        _loadProgressCanvas.gameObject.SetActive(false);
+        RemoveLoadingScreen();
     }
 
-    public IEnumerator LoadLevelLoadScreen(string sceneName)
+    public IEnumerator LoadLevelLoadScreen(string sceneName, bool usePlayerInput)
     {
-        _loadProgressCanvas.gameObject.SetActive(true);
-        _loadProgress.fillAmount = 0;
+        //_instancedLoadScreen = RequestLoadingScreen(usePlayerInput);
 
         yield return null;
 
@@ -207,7 +212,7 @@ public class SceneService : MonoBehaviour
 
         while (!ao.isDone)
         {
-            _loadProgress.fillAmount = ao.progress;
+          //  _instancedLoadScreen.RefreshLoadingProgress( ao.progress);
 
             if (ao.progress >= 1.0f)
             {
@@ -216,12 +221,12 @@ public class SceneService : MonoBehaviour
             yield return null;
         }
 
-        _loadProgress.fillAmount = 1;
+        //_instancedLoadScreen.RefreshLoadingProgress(1);
 
-        yield return new WaitForSeconds(_afterLoadscreenDelay);
+        //yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
 
         ao.allowSceneActivation = true;
-        _loadProgressCanvas.gameObject.SetActive(false);
+        RemoveLoadingScreen();
     }
 
     public void ResetGame()
@@ -234,4 +239,22 @@ public class SceneService : MonoBehaviour
     {
         Application.Quit();
     }
+
+    #region LoadingScreen Manangement
+    /*
+    private LoadingScreenPresenter RequestLoadingScreen(bool requirePlayerInput)
+    {
+       return _loadScreenConfig.GetLoadScreen(requirePlayerInput);
+    }
+    
+    private void RefreshLoadingScreen(float progress)
+    {
+        _instancedLoadScreen.RefreshLoadingProgress(progress);
+    }
+    */
+    private void RemoveLoadingScreen()
+    {
+      //  Destroy(_instancedLoadScreen.gameObject);
+    }
+    #endregion
 }
