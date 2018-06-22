@@ -8,14 +8,14 @@
 /// </remarks>
 public class ChangeScene : MonoBehaviour
 {
-    public void LoadScene(int index, bool animate, bool usePlayerInput)
+    public void LoadScene(int index, bool animate,bool useLoadingScreen, bool usePlayerInput)
     {
-        SceneService.Instance.LoadLevelFadeInDelegate(index, animate, usePlayerInput);
+        SceneService.Instance.LoadLevelFadeInDelegate(index, animate, useLoadingScreen, usePlayerInput);
     }
 
-    public void LoadScene(string sceneName, bool animate, bool usePlayerInput)
+    public void LoadScene(string sceneName, bool animate, bool useLoadingScreen, bool usePlayerInput)
     {
-        SceneService.Instance.LoadLevelFadeInDelegate(sceneName, usePlayerInput);
+        SceneService.Instance.LoadLevelFadeInDelegate(sceneName,animate, useLoadingScreen, usePlayerInput);
     }
 
 }

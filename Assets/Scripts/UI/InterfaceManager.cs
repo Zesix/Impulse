@@ -30,9 +30,9 @@ public class InterfaceManager : MonoBehaviour
         StartCoroutine(ChangeScreen(screen, false));
     }
 
-    public void LoadScene(int index, bool animate)
+    public void LoadScene(int index, bool animate, bool useLoadingScreen,bool usePlayerInput)
     {
-        SceneService.Instance.LoadLevelFadeInDelegate(index, animate);
+        SceneService.Instance.LoadLevelFadeInDelegate(index, animate, useLoadingScreen, usePlayerInput);
     }
 
     public void LoadScene(string sceneName, bool animate)

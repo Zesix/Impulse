@@ -33,11 +33,11 @@ public class SceneService : MonoBehaviour
 
     [SerializeField]
     private GameObject _loadScreenParent;
-    /*
+
     [SerializeField]
-    private LoadingScreenConfig _loadScreenConfig;
+    private LoadingSceneConfig _loadScreenConfig;
     private LoadingScreenPresenter _instancedLoadScreen;
-    */
+    
 #if UNITY_EDITOR
     private bool _skipSplash;
     private string _firstScene;
@@ -60,7 +60,7 @@ public class SceneService : MonoBehaviour
 
                 DontDestroyOnLoad(SplashObj);
             }
-            Instance.StartCoroutine(LoadNextLevelFadeIn());
+            Instance.StartCoroutine(LoadNextLevelFadeIn(true,true));
         }
         else
         {
@@ -107,14 +107,9 @@ public class SceneService : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadNextLevelFadeIn(bool usePlayerInput = false)
+    public IEnumerator LoadNextLevelFadeIn(bool useLoadingScreen = true, bool usePlayerInput = false)
     {
-        yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true, usePlayerInput));
-    }
-
-    public IEnumerator LoadNextLevelWithLoadingScreen(bool usePlayerInput = false)
-    {
-        yield return StartCoroutine(LoadLevelLoadScreen(SceneManager.GetActiveScene().buildIndex + 1, usePlayerInput));
+        yield return StartCoroutine(LoadLevelFadeIn(SceneManager.GetActiveScene().buildIndex + 1, true, useLoadingScreen, usePlayerInput));
     }
 
     public void SetCanvasEnabled(bool isCanvasActive)
@@ -127,55 +122,26 @@ public class SceneService : MonoBehaviour
         }
     }
 
-    public void LoadLevelFadeInDelegate(int index, bool animate = true,bool usePlayerInput = false)
+    public void LoadLevelFadeInDelegate(int index, bool animate = true,bool useLoadingScreen = true, bool usePlayerInput = false)
     {
         if (animate)
-            Instance.StartCoroutine(LoadLevelFadeIn(index, usePlayerInput));
+            Instance.StartCoroutine(LoadLevelFadeIn(index,false, useLoadingScreen, usePlayerInput));
         else
-            Instance.StartCoroutine(LoadLevelLoadScreen(index, usePlayerInput));
+            Instance.StartCoroutine(LoadLevelLoadScreen(index,usePlayerInput));
     }
 
-    public void LoadLevelFadeInDelegate(string sceneName, bool animate = true, bool usePlayerInput = false)
+    public void LoadLevelFadeInDelegate(string sceneName, bool animate = true,bool useLoadingScreen = true, bool usePlayerInput = false)
     {
         if (animate)
-            Instance.StartCoroutine(LoadLevelFadeIn(sceneName, usePlayerInput));
+            Instance.StartCoroutine(LoadLevelFadeIn(sceneName,false, useLoadingScreen,usePlayerInput));
         else
             Instance.StartCoroutine(LoadLevelLoadScreen(sceneName, usePlayerInput));
     }
 
-    public IEnumerator LoadLevelFadeIn(int index, bool showSplash = false, bool usePlayerInput = false)
-    {
-        SetCanvasEnabled(true);
-        yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
-        if (showSplash && _splashCanvasGroup != null)
-            yield return Instance.StartCoroutine(PlayFadeAnimation(true, _splashCanvasGroup));
-        var async = SceneManager.LoadSceneAsync(index);
-        yield return async; // Wait for the async operation and animation to complete.
-        if (showSplash && _splashCanvasGroup != null)
-            yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
-        yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
-        SetCanvasEnabled(false);
-    }
-
-    public IEnumerator LoadLevelFadeIn(string sceneName, bool usePlayerInput)
-    {
-        // Execute fade in
-        SetCanvasEnabled(true);
-        yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
-        var async = SceneManager.LoadSceneAsync(sceneName);
-        yield return async; // Wait for the async operation and animation to complete.
-
-        // Now execute the loading screen
-        yield return Instance.StartCoroutine(LoadLevelLoadScreen(sceneName,false));
-
-        // Execute fade out
-        yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
-        SetCanvasEnabled(false);
-    }
 
     public IEnumerator LoadLevelLoadScreen(int index,bool usePlayerInput)
     {
-        //_instancedLoadScreen = RequestLoadingScreen(usePlayerInput);
+        _instancedLoadScreen = RequestLoadingScreen(usePlayerInput);
 
         yield return null;
 
@@ -184,7 +150,7 @@ public class SceneService : MonoBehaviour
 
         while (!ao.isDone)
         {
-            //_instancedLoadScreen.RefreshLoadingProgress(ao.progress);
+            _instancedLoadScreen.RefreshLoadingProgress(ao.progress);
 
             if (ao.progress >= 0.9f)
             {
@@ -193,9 +159,9 @@ public class SceneService : MonoBehaviour
             yield return null;
         }
 
-        //_instancedLoadScreen.RefreshLoadingProgress(1);
+        _instancedLoadScreen.RefreshLoadingProgress(1);
 
-        //yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
+        yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
 
         ao.allowSceneActivation = true;
         RemoveLoadingScreen();
@@ -203,7 +169,7 @@ public class SceneService : MonoBehaviour
 
     public IEnumerator LoadLevelLoadScreen(string sceneName, bool usePlayerInput)
     {
-        //_instancedLoadScreen = RequestLoadingScreen(usePlayerInput);
+        _instancedLoadScreen = RequestLoadingScreen(usePlayerInput);
 
         yield return null;
 
@@ -212,7 +178,7 @@ public class SceneService : MonoBehaviour
 
         while (!ao.isDone)
         {
-          //  _instancedLoadScreen.RefreshLoadingProgress( ao.progress);
+            _instancedLoadScreen.RefreshLoadingProgress( ao.progress);
 
             if (ao.progress >= 1.0f)
             {
@@ -221,9 +187,9 @@ public class SceneService : MonoBehaviour
             yield return null;
         }
 
-        //_instancedLoadScreen.RefreshLoadingProgress(1);
+        _instancedLoadScreen.RefreshLoadingProgress(1);
 
-        //yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
+        yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
 
         ao.allowSceneActivation = true;
         RemoveLoadingScreen();
@@ -241,20 +207,101 @@ public class SceneService : MonoBehaviour
     }
 
     #region LoadingScreen Manangement
-    /*
+    
     private LoadingScreenPresenter RequestLoadingScreen(bool requirePlayerInput)
     {
-       return _loadScreenConfig.GetLoadScreen(requirePlayerInput);
+        LoadingScreenPresenter loadingScreenPrefab = _loadScreenConfig.GetLoadScreen(requirePlayerInput);
+
+        LoadingScreenPresenter instance = Instantiate(loadingScreenPrefab);
+        instance.transform.parent = _loadScreenParent.transform;
+        instance.transform.localPosition = Vector3.zero;
+        instance.transform.localScale = Vector3.one;
+
+        instance.Initialize();
+
+        return instance;
     }
     
     private void RefreshLoadingScreen(float progress)
     {
         _instancedLoadScreen.RefreshLoadingProgress(progress);
     }
-    */
+    
     private void RemoveLoadingScreen()
     {
-      //  Destroy(_instancedLoadScreen.gameObject);
+        Destroy(_instancedLoadScreen.gameObject);
+    }
+    #endregion
+
+    #region Core Transition
+    public IEnumerator LoadLevelFadeIn(int index, bool showSplash = false, bool useLoadingScreen = true, bool usePlayerInput = false)
+    {
+        SetCanvasEnabled(true);
+        yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
+
+        // Transition with splash screen
+        if (showSplash && _splashCanvasGroup != null)
+        {
+            yield return Instance.StartCoroutine(PlayFadeAnimation(true, _splashCanvasGroup));
+            // Transition without loading screen
+            if (!useLoadingScreen)
+            {
+                var async = SceneManager.LoadSceneAsync(index);
+                yield return async; // Wait for the async operation and animation to complete.
+
+                yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
+            }
+            // Transition with loading screen
+            else
+            {
+                yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
+
+                yield return LoadLevelLoadScreen(index, usePlayerInput);
+            }
+        }
+        // Transition without splash screen
+        else
+        {
+            yield return LoadLevelLoadScreen(index, usePlayerInput);
+        }
+
+        yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
+        SetCanvasEnabled(false);
+    }
+
+    public IEnumerator LoadLevelFadeIn(string sceneId, bool showSplash = false, bool useLoadingScreen = true, bool usePlayerInput = false)
+    {
+        SetCanvasEnabled(true);
+        yield return Instance.StartCoroutine(PlayFadeAnimation(true, BlackOverlay));
+
+        // Transition with splash screen
+        if (showSplash && _splashCanvasGroup != null)
+        {
+            yield return Instance.StartCoroutine(PlayFadeAnimation(true, _splashCanvasGroup));
+            // Transition without loading screen
+            if (!useLoadingScreen)
+            {
+                var async = SceneManager.LoadSceneAsync(sceneId);
+                yield return async; // Wait for the async operation and animation to complete.
+
+                yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
+            }
+            // Transition with loading screen
+            else
+            {
+                yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
+
+                yield return LoadLevelLoadScreen(sceneId, usePlayerInput);
+            }
+        }
+        // Transition without splash screen
+        else
+        {
+            yield return LoadLevelLoadScreen(sceneId, usePlayerInput);
+        }
+
+        yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
+        SetCanvasEnabled(false);
     }
     #endregion
 }
