@@ -48,7 +48,6 @@ public class SceneService : MonoBehaviour
         // If there is no instance of this class, set it.
         if (Instance == null)
         {
-            DontDestroyOnLoad(gameObject); // Don't destroy this object
             Instance = this;
             if (SplashObj != null)
             {
@@ -213,7 +212,7 @@ public class SceneService : MonoBehaviour
         LoadingScreenPresenter loadingScreenPrefab = _loadScreenConfig.GetLoadScreen(requirePlayerInput);
 
         LoadingScreenPresenter instance = Instantiate(loadingScreenPrefab);
-        instance.transform.parent = _loadScreenParent.transform;
+        instance.transform.SetParent(_loadScreenParent.transform,false);
         instance.transform.localPosition = Vector3.zero;
         instance.transform.localScale = Vector3.one;
 
