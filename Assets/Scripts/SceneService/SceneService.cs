@@ -60,7 +60,7 @@ public class SceneService : MonoBehaviour
 
                 DontDestroyOnLoad(SplashObj);
             }
-            Instance.StartCoroutine(LoadNextLevelFadeIn(true,true));
+            Instance.StartCoroutine(LoadNextLevelFadeIn(true,false));
         }
         else
         {
@@ -180,7 +180,7 @@ public class SceneService : MonoBehaviour
         {
             _instancedLoadScreen.RefreshLoadingProgress( ao.progress);
 
-            if (ao.progress >= 1.0f)
+            if (ao.progress >= 0.9f)
             {
                 ao.allowSceneActivation = true;
             }

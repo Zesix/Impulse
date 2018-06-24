@@ -59,6 +59,11 @@ public class MenuManager : MonoBehaviour
         SceneService.Instance.LoadLevelFadeInDelegate(sceneName);
     }
 
+    public void LoadSceneFadeInWithInput(string sceneName)
+    {
+        SceneService.Instance.LoadLevelFadeInDelegate(sceneName,true,true,true);
+    }
+
     public void LoadScene(string sceneName)
     {
         SceneService.Instance.LoadLevelFadeInDelegate(sceneName, false);
