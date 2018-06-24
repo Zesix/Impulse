@@ -67,12 +67,19 @@ Many games have a splash image or studio logo shown before the game begins. The 
 1. Locate the Resources/Prefabs/Scene/SplashFadeIn object in the project files. Select the ImageToFade child object.
 2. Set the Source Image of the Image component to whatever splash image you want to display.
 
-**Scene Loading Methods (fade in/out, interpolation, duration, loading screen, wait key)**
+**Scene Loading Methods (fade in/out, interpolation, duration, loading screen, wait for keypress)**
+
+Fade In / Out:
 
 1. Locate the Resources/Prefabs/Scene/SceneService object.
-2. In the SceneService component, you can specify the Duration of fade in/out as well as the Interpolation of the fade. If you do not want to fade in/out scenes, set the duration to 0. 
+2. In the SceneService component, you can specify the Duration of fade in/out as well as the Interpolation of the fade. If you do not want to fade in/out scenes, set the duration to 0.
 
-TODO: Add notes on how to use loading screen.
+By default, SceneService scene changes have a fade in / out time. You can change this by editing the SceneService prefab or programmatically.
+For the latter, the SceneService is assigned to the main system startup prefab and can be injected as a dependency into any script.
+
+Loading Screen:
+
+TODO: Add loading screen instructions.
 
 **Customize the Main Menu**
 
