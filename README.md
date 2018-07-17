@@ -79,7 +79,19 @@ For the latter, the SceneService is assigned to the main system startup prefab a
 
 Loading Screen:
 
-TODO: Add loading screen instructions.
+The loading screen service of both interactive and automatic loading screens. To add a new type of loading screen please follow the next steps:
+
+1. Create the UI for the new loading screen, the initial parent must be regular rectTransform (not a canvas!)
+2. Add to the parent of the UI the component LoadingScreenPresenter and fill its fields as follows
+	If it isn't an interactive screen:
+	2.1a: Fill the progress fill Image and Text fields as desired, you can leave them empty the display fields that you don't wanna use
+	2.2a: Make sure that the Requires User Input field is empty
+	2.3a: Set the default delay after loading you wan't in the Time After Completion field
+
+	If it is an interactive screen:
+	2.1b: Follow the same steps as above but ignore 2.2a, and make sure the Requires User Input field is marked as Active
+	2.2b: If desired, place in the Press Any Key Obj field the gameobject you want to display when the loading process is completed and the user must press a key to continue
+3. Finally, locate the LoadingScreenConfig scripteable object (normally in Assets/Configurations) and add the newly created loading screen to the Possible Loading Screens collection
 
 **Customize the Main Menu**
 
