@@ -27,6 +27,7 @@ GameObject:
   m_Component:
   - component: {fileID: 413118}
   - component: {fileID: 114189533320609256}
+  - component: {fileID: 114180376892769468}
   m_Layer: 0
   m_Name: SceneService
   m_TagString: Untagged
@@ -277,6 +278,25 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114180376892769468
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 113118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89715ad69b973a14899afa2c6730b30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _installers: []
+  _installerPrefabs: []
+  _scriptableObjectInstallers: []
+  _autoRun: 1
+  _parentNewObjectsUnderRoot: 0
+  _contractNames: []
+  _parentContractName: 
+  _parentContractNames: []
 --- !u!114 &114189533320609256
 MonoBehaviour:
   m_ObjectHideFlags: 1

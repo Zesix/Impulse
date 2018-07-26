@@ -73,6 +73,7 @@ public class MenuManager : MonoBehaviour
     {
         if (animate)
         {
+            // [JC] todo: these internal screen transitions shouldn't be handled by the scene service but by the scene itself
             SceneService.Instance.SetCanvasEnabled(true);
             yield return StartCoroutine(SceneService.Instance.PlayFadeAnimation(0f, 1f, SceneService.Instance.BlackOverlay));
         }
@@ -81,6 +82,7 @@ public class MenuManager : MonoBehaviour
         ActiveScreen.gameObject.SetActive(true);
         if (animate)
         {
+            // [JC] todo: these internal screen transitions shouldn't be handled by the scene service but by the scene itself
             yield return StartCoroutine(SceneService.Instance.PlayFadeAnimation(1f, 0f, SceneService.Instance.BlackOverlay));
             SceneService.Instance.SetCanvasEnabled(false);
         }
