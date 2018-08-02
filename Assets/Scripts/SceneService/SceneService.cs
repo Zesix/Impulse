@@ -73,8 +73,6 @@ public class SceneService : MonoBehaviour
             Debug.LogError("There is already a SceneController in the scene.");
             Destroy(this);
         }
-
-        Debug.LogError(loader);
     }
 
     #region Adhoc Loading Methods
