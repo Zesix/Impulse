@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
+/// <summary>
+/// Base class for any UI interface
+/// </summary>
 public class InterfaceScreen : MonoBehaviour {
-	/*
-	void Start()
-	{
-		gameObject.SetActive (false);
-	}
-	*/
+    protected virtual void Start()
+    {}
 }

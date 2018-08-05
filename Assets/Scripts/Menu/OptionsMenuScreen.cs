@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OptionsMenuScreen : MenuScreen
+public class OptionsMenuScreen : InterfaceScreen
 {
 
     [SerializeField]

@@ -2,85 +2,79 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+/// <summary>
+/// Handles the transition between interfaces
+/// </summary>
 public class InterfaceManager : MonoBehaviour
 {
-    private string _interfaceScreens;
-    public InterfaceScreen GameplayUi;
-    public InterfaceScreen GameOverUi;
-    public InterfaceScreen ActiveScreen;
+    [SerializeField]
+    private InterfaceScreen _currentActiveScreen;
 
     public bool InTransition { get; } = false;
 
-    // Use this for initialization
-    private void Awake()
+    #region Transition Requests
+
+    /// <summary>
+    /// Use this to request the transition to other scene
+    /// </summary>
+    /// <param name="sceneId"></param>
+    public void RequestSceneLoad(string sceneId)
     {
-#if UNITY_EDITOR
-        if (SceneService.Instance == null)
-            SceneManager.LoadScene(0);
-#endif
+        SceneService.Instance.LoadLevelLoadScreen(sceneId, false);
     }
 
-    public void ChangeScreenAndFade(InterfaceScreen screen)
+    /// <summary>
+    /// Core transition method, use this to transition from one screen to another with fade
+    /// </summary>
+    public void ChangeScreenWithFade(InterfaceScreen screen)
     {
-        StartCoroutine(ChangeScreen(screen, true));
+        StartCoroutine(ChangeScreenRoutine(screen, true));
     }
 
+    /// <summary>
+    /// Core transition method, use this to transition from one screen to another
+    /// </summary>
     public void ChangeScreen(InterfaceScreen screen)
     {
-        StartCoroutine(ChangeScreen(screen, false));
+        StartCoroutine(ChangeScreenRoutine(screen, false));
     }
-
-    public void LoadScene(int index, bool animate, bool useLoadingScreen,bool usePlayerInput)
+    /// <summary>
+    /// Request application exit
+    /// </summary>
+    public void QuitRequest()
     {
-        SceneService.Instance.LoadLevelFadeInDelegate(index, animate, useLoadingScreen, usePlayerInput);
+        Application.Quit();
     }
+    #endregion
 
-    public void LoadScene(string sceneName, bool animate)
+    /// <summary>
+    /// Internal request for scene transition
+    /// </summary>
+    private IEnumerator ChangeScreenRoutine(InterfaceScreen target, bool animate)
     {
-        SceneService.Instance.LoadLevelFadeInDelegate(sceneName);
-    }
-
-    public void LoadSceneFadeIn(string sceneName)
-    {
-        SceneService.Instance.LoadLevelFadeInDelegate(sceneName);
-    }
-
-    public void LoadScene(string sceneName)
-    {
-        SceneService.Instance.LoadLevelFadeInDelegate(sceneName, false);
-    }
-
-    public void ClearScreen()
-    {
-        if (ActiveScreen != null)
-        {
-            ActiveScreen.gameObject.SetActive(false);
-        }
-    }
-
-    IEnumerator ChangeScreen(InterfaceScreen target, bool animate)
-    {
+        // Execute fade out animation
         if (animate)
         {
             SceneService.Instance.SetCanvasEnabled(true);
             yield return StartCoroutine(SceneService.Instance.PlayFadeAnimation(0f, 1f, SceneService.Instance.BlackOverlay));
         }
-        if (ActiveScreen != null)
+
+        // Deactivate previous screen 
+        if (_currentActiveScreen != null)
         {
-            ActiveScreen.gameObject.SetActive(false);
+            _currentActiveScreen.gameObject.SetActive(false);
         }
-        ActiveScreen = target;
-        ActiveScreen.gameObject.SetActive(true);
+
+        // Activate next screen
+        _currentActiveScreen = target;
+        _currentActiveScreen.gameObject.SetActive(true);
+
+        // Execute fade in animation
         if (animate)
         {
             yield return StartCoroutine(SceneService.Instance.PlayFadeAnimation(1f, 0f, SceneService.Instance.BlackOverlay));
             SceneService.Instance.SetCanvasEnabled(false);
         }
-    }
-
-    public void QuitRequest()
-    {
-        Application.Quit();
     }
 }
 

@@ -750,11 +750,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 511002141}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 168b7d48200aa4774a3c2d633b29fb02, type: 3}
+  m_Script: {fileID: 11500000, guid: 732a9f64f1b0d064099acf130091917f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActiveScreen: {fileID: 0}
-  FirstScreen: {fileID: 869459267}
+  _currentActiveScreen: {fileID: 869459267}
 --- !u!114 &511002144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,11 +888,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: ChangeMenuAndFade
+        m_MethodName: ChangeScreenWithFade
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 869459267}
-          m_ObjectArgumentAssemblyTypeName: MenuScreen, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: InterfaceScreen, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Options
@@ -1344,7 +1343,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 869459265}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6df1afc904416dd49b4ac06ae7df2a7b, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c52860b48cf73049b745668b0f0f518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1049891234
@@ -2895,11 +2894,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: ChangeMenuAndFade
+        m_MethodName: ChangeScreenWithFade
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1128451561}
-          m_ObjectArgumentAssemblyTypeName: MenuScreen, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: InterfaceScreen, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Options
@@ -3559,14 +3558,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: LoadSceneFadeInWithInput
+        m_MethodName: RequestSceneLoad
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Level01
+          m_StringArgument: SampleLevel
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
