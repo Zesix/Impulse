@@ -47,6 +47,8 @@ public class SceneService : MonoBehaviour
     private string _firstScene;
 #endif
 
+    private const string DEFAULT_SCENE = "Menu";
+
     private void Start()
     {
         // Initialize loader
@@ -66,7 +68,7 @@ public class SceneService : MonoBehaviour
 
                 DontDestroyOnLoad(SplashObj);
             }
-            Instance.StartCoroutine(LoadNextLevelFadeIn(true,false));
+            Instance.StartCoroutine(LoadLevelFadeIn(DEFAULT_SCENE, true,false));
         }
         else
         {
