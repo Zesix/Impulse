@@ -47,7 +47,7 @@ public class SceneService : MonoBehaviour
     private string _firstScene;
 #endif
 
-    private const string DEFAULT_SCENE = "Menu";
+    private const string DEFAULT_SCENE = "MainMenu";
 
     private void Start()
     {
@@ -68,7 +68,7 @@ public class SceneService : MonoBehaviour
 
                 DontDestroyOnLoad(SplashObj);
             }
-            Instance.StartCoroutine(LoadLevelFadeIn(DEFAULT_SCENE, true,false));
+            Instance.StartCoroutine(LoadLevelFadeIn(DEFAULT_SCENE.Trim(), true,false));
         }
         else
         {
@@ -113,7 +113,7 @@ public class SceneService : MonoBehaviour
             // Transition without loading screen
             if (!useLoadingScreen)
             {
-                var async = loader.LoadSceneAsync(sceneId);
+                var async = SceneManager.LoadSceneAsync(sceneId);
                 yield return async; // Wait for the async operation and animation to complete.
 
                 yield return Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
