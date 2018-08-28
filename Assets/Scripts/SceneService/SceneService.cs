@@ -155,6 +155,7 @@ public class SceneService : MonoBehaviour
             if (ao.progress >= 0.9f)
             {
                 ao.allowSceneActivation = true;
+                break;
             }
             yield return null;
         }

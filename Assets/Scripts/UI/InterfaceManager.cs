@@ -10,9 +10,23 @@ public class InterfaceManager : MonoBehaviour
     [SerializeField]
     private InterfaceScreen _currentActiveScreen;
 
-    public bool InTransition { get; } = false;
+    public bool InTransition { get; private set; } = false;
 
     #region Transition Requests
+
+    IEnumerator LoadLevel(string sceneId)
+    {
+        InTransition = true;
+        yield  return StartCoroutine(SceneService.Instance.LoadLevelLoadScreen(sceneId, false));
+        InTransition = false;
+    }
+
+    IEnumerator LoadScreen(InterfaceScreen screen, bool fade)
+    {
+        InTransition = true;
+        yield return StartCoroutine(ChangeScreenRoutine(screen, fade));
+        InTransition = false;
+    }
 
     /// <summary>
     /// Use this to request the transition to other scene
@@ -20,7 +34,10 @@ public class InterfaceManager : MonoBehaviour
     /// <param name="sceneId"></param>
     public void RequestSceneLoad(string sceneId)
     {
-        SceneService.Instance.LoadLevelLoadScreen(sceneId, false);
+        if (InTransition)
+            return;
+
+        StartCoroutine(LoadLevel(sceneId));
     }
 
     /// <summary>
@@ -28,6 +45,9 @@ public class InterfaceManager : MonoBehaviour
     /// </summary>
     public void ChangeScreenWithFade(InterfaceScreen screen)
     {
+        if (InTransition)
+            return;
+
         StartCoroutine(ChangeScreenRoutine(screen, true));
     }
 
@@ -36,6 +56,8 @@ public class InterfaceManager : MonoBehaviour
     /// </summary>
     public void ChangeScreen(InterfaceScreen screen)
     {
+        if (InTransition)
+            return;
         StartCoroutine(ChangeScreenRoutine(screen, false));
     }
     /// <summary>

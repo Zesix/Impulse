@@ -43,7 +43,8 @@ public class LoadingScreenPresenter : MonoBehaviour {
         // Wait for delay
         if (!RequiresUserInput)
         {
-            yield return new WaitForSeconds(TimeAfterCompletionDelay);
+            // todo: restore delay after completion if required
+            //yield return new WaitForSecondsRealtime(TimeAfterCompletionDelay);
         }
         // Wait for user input
         else
