@@ -17,6 +17,9 @@ public class LoadingScreenPresenter : MonoBehaviour {
     public bool RequiresUserInput = false;
     public float TimeAfterCompletionDelay = 0.5f;
 
+    [HideInInspector]
+    public bool InExecution = true;
+
     public void Initialize()
     {
         if (_pressAnyKeyObj != null)
@@ -64,5 +67,7 @@ public class LoadingScreenPresenter : MonoBehaviour {
                 yield return null; // wait until next frame, then continue execution from here (loop continues)
             }
         }
+
+        InExecution = false;
     }
 }

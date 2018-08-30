@@ -19,7 +19,6 @@ public class SceneService : MonoBehaviour
 
     public static SceneService Instance;		// Singleton
 
-    public string[] LevelNames;                 // Scenes to progressively load, in descending array order.
     public int GameLevelNum;
     public GameObject SplashObj;           		// Put a canvas here (with image child object) for splash screen loading.
     public AnimationCurve Interpolation;		// Interpolates the splash screen with the curve.
@@ -162,7 +161,13 @@ public class SceneService : MonoBehaviour
 
         _instancedLoadScreen.RefreshLoadingProgress(1);
 
-        yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
+        // Temp wait system while waiting for 2017.4
+        
+        StartCoroutine(_instancedLoadScreen.WaitForCompletion());
+        while (_instancedLoadScreen.InExecution)
+            yield return null;
+
+        // yield return _instancedLoadScreen.WaitForCompletion();
 
         ao.allowSceneActivation = true;
         RemoveLoadingScreen();
