@@ -76,22 +76,12 @@ namespace Impulse
             }
         }
 
-        #region Adhoc Loading Methods
-
-        public IEnumerator LoadNextLevelFadeIn(bool useLoadingScreen = true, bool usePlayerInput = false)
-        {
-            var initalSceneId = SceneUtilityEx.GetNextSceneName();
-            yield return StartCoroutine(LoadLevelFadeIn(initalSceneId, true, useLoadingScreen, usePlayerInput));
-        }
-
-        #endregion
-
-        #region Core Loader Methods
+        #region Scene Loading (Optional Fade In / Out)
 
         public void LoadLevelFadeInDelegate(int index, bool animate = true, bool useLoadingScreen = true,
             bool usePlayerInput = false)
         {
-            string sceneId = SceneManager.GetSceneAt(index).name;
+            var sceneId = SceneManager.GetSceneAt(index).name;
             LoadLevelFadeInDelegate(sceneId, animate, useLoadingScreen, usePlayerInput);
         }
 
@@ -103,8 +93,6 @@ namespace Impulse
             else
                 Instance.StartCoroutine(LoadLevelLoadScreen(sceneName, usePlayerInput));
         }
-
-        #region Internal Core Transition
 
         private IEnumerator LoadLevelFadeIn(string sceneId, bool showSplash = false, bool useLoadingScreen = true,
             bool usePlayerInput = false)
@@ -143,12 +131,10 @@ namespace Impulse
             yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
             SetCanvasEnabled(false);
         }
-
+        
         #endregion
-
-        #endregion
-
-        #region Loading Screen
+        
+        #region Scene Loading With Loading Screen (Optional Player Input)
 
         public IEnumerator LoadLevelLoadScreen(string sceneName, bool usePlayerInput)
         {
@@ -186,8 +172,6 @@ namespace Impulse
             RemoveLoadingScreen();
         }
 
-        #region Internal LoadingScreen Manangement
-
         private LoadingScreenPresenter RequestLoadingScreen(bool requirePlayerInput)
         {
             var loadingScreenPrefab = _loadScreenConfig.GetLoadScreen(requirePlayerInput);
@@ -211,9 +195,7 @@ namespace Impulse
         {
             Destroy(_instancedLoadScreen.gameObject);
         }
-
-        #endregion
-
+        
         #endregion
 
         #region Animation
@@ -289,7 +271,7 @@ namespace Impulse
             return string.Empty;
         }
 
-        public static string GetSceneNameByBuildIndex(int buildIndex)
+        private static string GetSceneNameByBuildIndex(int buildIndex)
         {
             return GetSceneNameFromScenePath(SceneUtility.GetScenePathByBuildIndex(buildIndex));
         }
