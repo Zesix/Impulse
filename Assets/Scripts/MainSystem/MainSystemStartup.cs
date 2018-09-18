@@ -1,20 +1,22 @@
 ﻿using UnityEngine;
 
-/// <summary>
-///     Instantiates factories at start.
-/// </summary>
-public class MainSystemStartup : MonoBehaviour
+namespace Impulse
 {
-    [Tooltip("The factory to construct persistent singleton controllers.")]
-    [SerializeField]
-    private MainSystemFactory _mainSystemFactory;
-
-    public void Start()
+    /// <summary>
+    ///     Instantiates factories at start.
+    /// </summary>
+    public class MainSystemStartup : MonoBehaviour
     {
-        // Create MainManagers
-        _mainSystemFactory.CreateSingletonMainSystem();
+        [Tooltip("The factory to construct persistent singleton controllers.")] [SerializeField]
+        private MainSystemFactory _mainSystemFactory;
 
-        // Self destruct.
-        Destroy(gameObject);
+        public void Start()
+        {
+            // Create MainManagers
+            _mainSystemFactory.CreateSingletonMainSystem();
+
+            // Self destruct.
+            Destroy(gameObject);
+        }
     }
 }

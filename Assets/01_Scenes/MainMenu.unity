@@ -807,7 +807,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 1
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
@@ -936,7 +936,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: ChangeScreenWithFade
+        m_MethodName: ChangeInterfaceScreenWithFade
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 869459267}
@@ -1204,7 +1204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -0.099991, y: 0}
+  m_AnchoredPosition: {x: -0.099990845, y: 0}
   m_SizeDelta: {x: 140.23, y: 25.815}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &662959385
@@ -2942,7 +2942,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: ChangeScreenWithFade
+        m_MethodName: ChangeInterfaceScreenWithFade
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1128451561}
@@ -3342,7 +3342,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: QuitRequest
+        m_MethodName: QuitApplicationRequest
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3606,7 +3606,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 511002143}
-        m_MethodName: RequestSceneLoad
+        m_MethodName: RequestSceneLoadWithLoadScreenAndUserInput
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
