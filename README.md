@@ -58,7 +58,10 @@ The SceneService is used for loading scenes (with or without transitions). A sce
 
  * Show a custom splash image when the game is first started, then load the main menu. This is the default behavior of the SceneService.
  * Load a scene with a fade to black transition.
- * Load a scene with a fade to black, then loading screen, then fade out transition. This is the default behavior when loading a new scene from the main menu.
+ * Load a scene with a fade to black, then loading screen, then fade out transition once the scene is ready.
+ * Load a scene with a fade to black, then loading screen, prompt user for input once scene is ready, then fade out transition once input is received. This is the default behavior when loading a new scene from the main menu.
+
+These loading methods are called programmatically - look at SceneService.cs to see the methods.
 
 **Set a Custom Splash Image**
 
@@ -376,11 +379,11 @@ For a video demonstration of the third person camera: [https://www.youtube.com/w
 
 ## User Interface
 
-The framework includes an InterfaceManager that works similar to the Menu System. You can find the Interface Manager prefab in the &quot;Assets/Prefabs/UI&quot; folder.
+The framework includes an InterfaceManager that allows easy switching between interface screen (canvas) objects by setting them active / inactive. The only requirement is that each canvas object has an Interface Screen component (InterfaceScreen.cs). You can find the Interface Manager prefab in the &quot;Assets/02_Prefabs/UI&quot; folder.
 
-The Interface Manager works with game objects containing an Interface Screen component. Each screen can be switched to by calling InterfaceManager.ChangeScreen(InterfaceScreen screen).
+The Interface Manager also has methods for calling the SceneService to change scenes. This is useful for games that have a main menu.
 
-The Interface Manager can also load scenes by calling InterfaceManager.LoadScene(string sceneName) or InterfaceManager.LoadSceneFadeIn(string sceneName). This allows you to create a Pause menu with options such as a &#39;Return to Main Menu&#39; button.
+See InterfaceManager.cs for different interface screen (canvas object) switching methods, as well as scene change methods.
 
 ## AI
 
