@@ -1796,8 +1796,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21379fd1b0a1f604fa697b2c26ea7384, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dropdownSystem: {fileID: 1728350269}
-  _resolutionOptions:
+  DropdownSystem: {fileID: 1728350269}
+  ResolutionOptions:
   - 1024x768
   - 1280x800
   - 1360x768

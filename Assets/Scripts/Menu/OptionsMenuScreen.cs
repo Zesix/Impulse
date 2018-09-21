@@ -1,43 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Impulse;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OptionsMenuScreen : InterfaceScreen
 {
+    [SerializeField]
+    protected Dropdown DropdownSystem;
 
     [SerializeField]
-    protected Dropdown _dropdownSystem;
-
-    [SerializeField]
-    protected List<string> _resolutionOptions = new List<string>()
+    protected List<string> ResolutionOptions = new List<string>
     {
         "1024x768", "1280x800","1360x768","1366x768","1440x900","1600x900","1680x1050","1920x1080","2560x1080","2560x1440","2560x1600"
     };
 
-    /// <summary>
-    /// Use this for initialization
-    /// </summary>
     protected override void Start()
     {
-        _dropdownSystem.ClearOptions();
-        _dropdownSystem.AddOptions(_resolutionOptions);
+        DropdownSystem.ClearOptions();
+        DropdownSystem.AddOptions(ResolutionOptions);
 
         // Load saved resolution
-        string savedResolution = SaveManager.Instance.GetLocalData().Resolution;
-        int indexOfSavedResolution = _resolutionOptions.IndexOf(savedResolution);
-        _dropdownSystem.value = indexOfSavedResolution;
-        _dropdownSystem.RefreshShownValue();
+        var savedResolution = LocalPlayerProfileService.Instance.GetLocalData().Resolution;
+        var indexOfSavedResolution = ResolutionOptions.IndexOf(savedResolution);
+        DropdownSystem.value = indexOfSavedResolution;
+        DropdownSystem.RefreshShownValue();
     }
 
     public void SetResolution()
     {
-        // Notify resolution manager
-        PresentationManager.Instance.SetResolution(_resolutionOptions[_dropdownSystem.value]);
+        PresentationService.Instance.SetResolution(ResolutionOptions[DropdownSystem.value]);
 
-        // Update player prefs
-        string resolutionToSave = _resolutionOptions[_dropdownSystem.value];
-        SaveManager.Instance.GetLocalData().Resolution = resolutionToSave;
-        SaveManager.Instance.SaveData();
+        // Update player profile settings.
+        var resolutionToSave = ResolutionOptions[DropdownSystem.value];
+        LocalPlayerProfileService.Instance.GetLocalData().Resolution = resolutionToSave;
+        LocalPlayerProfileService.Instance.SaveData();
     }
 }

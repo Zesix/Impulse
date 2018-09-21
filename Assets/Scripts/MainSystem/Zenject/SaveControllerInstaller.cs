@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
+﻿using Zenject;
 
-public class SaveControllerInstaller : MonoInstaller<SaveControllerInstaller>
+namespace Impulse
 {
-    public override void InstallBindings()
+    public class SaveControllerInstaller : MonoInstaller<SaveControllerInstaller>
     {
-        transform.GetComponent<GameObjectContext>().Container.BindInstance(GetComponent<ILocalDataManager>());
+        public override void InstallBindings()
+        {
+            transform.GetComponent<GameObjectContext>().Container.BindInstance(GetComponent<ILocalPlayerProfileService>());
+        }
     }
 }

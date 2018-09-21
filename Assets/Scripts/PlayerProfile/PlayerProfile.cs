@@ -1,45 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
-/// Class that contains the player information to be stored
-/// </summary>
-public class PlayerProfile {
-
-    // Player parameters
-    private string _playerID;
-    public string PlayerID
+﻿namespace Impulse
+{
+    /// <summary>
+    /// Class that contains the player information to be stored
+    /// </summary>
+    public class PlayerProfile
     {
-        get
-        {
-            return _playerID;
-        }
-        set
-        {
-            _playerID = value;
-        }
-    }
 
+        // Player parameters
+        private string _playerId;
 
-    // Presentation parameters
-    private string _resolution;
-    public string Resolution
-    {
-        get
+        public string PlayerId
         {
-            return _resolution;
+            get { return _playerId; }
+            set { _playerId = value; }
         }
-        set
-        {
-            _resolution = value;
-        }
-    }
 
-    // Default constructor
-    public PlayerProfile()
-    {
-        _playerID = "NotDefined";
-        _resolution = "1024x768";
+        // Presentation parameters
+        private string _resolution;
+
+        public string Resolution
+        {
+            get { return _resolution; }
+            set { _resolution = value; }
+        }
+
+        // Default constructor
+        public PlayerProfile()
+        {
+            _playerId = "NotDefined";
+            _resolution = "1024x768";
+        }
     }
 }
