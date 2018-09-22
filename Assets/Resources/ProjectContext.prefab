@@ -55,3 +55,14 @@ MonoBehaviour:
   _installerPrefabs:
   - {fileID: 114087118271742454, guid: 891b121a5f3e06f499e526bfa1877741, type: 2}
   _scriptableObjectInstallers: []
+  _parentNewObjectsUnderContext: 1
+  _settings:
+    _ensureDeterministicDestructionOrderOnApplicationQuit: 0
+    _displayWarningWhenResolvingDuringInstall: 0
+    _validationRootResolveMethod: 0
+    _validationErrorResponse: 0
+    _signalSettings:
+      _defaultSyncMode: 0
+      _missingHandlerDefaultResponse: 2
+      _requireStrictUnsubscribe: 0
+      _defaultAsyncTickPriority: 1

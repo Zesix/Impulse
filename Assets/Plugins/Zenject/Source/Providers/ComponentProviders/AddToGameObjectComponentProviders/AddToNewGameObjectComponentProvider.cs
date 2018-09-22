@@ -13,8 +13,10 @@ namespace Zenject
 
         public AddToNewGameObjectComponentProvider(
             DiContainer container, Type componentType,
-            object concreteIdentifier, List<TypeValuePair> extraArguments, GameObjectCreationParameters gameObjectBindInfo)
-            : base(container, componentType, concreteIdentifier, extraArguments)
+            List<TypeValuePair> extraArguments, GameObjectCreationParameters gameObjectBindInfo,
+            object concreteIdentifier,
+            Action<InjectContext, object> instantiateCallback)
+            : base(container, componentType, extraArguments, concreteIdentifier, instantiateCallback)
         {
             _gameObjectBindInfo = gameObjectBindInfo;
         }
@@ -28,7 +30,7 @@ namespace Zenject
         {
             if (_gameObjectBindInfo.Name == null)
             {
-                _gameObjectBindInfo.Name = ConcreteIdentifier as string ?? ComponentType.Name;
+                _gameObjectBindInfo.Name = ComponentType.Name;
             }
 
             return Container.CreateEmptyGameObject(_gameObjectBindInfo, context);

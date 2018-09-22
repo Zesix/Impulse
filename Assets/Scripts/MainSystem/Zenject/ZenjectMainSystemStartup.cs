@@ -17,9 +17,6 @@ namespace Impulse
         /// </summary>
         public override void InstallBindings()
         {
-            // Deactivate install warning - we don't need to worry about installation order as every singleton initialization should be order independent.
-            Container.ShouldCheckForInstallWarning = false;
-
             foreach (var singleton in _singletonsToSpawn)
             {
                 // Zenject based singletons (objects in need of reference injection)

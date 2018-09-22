@@ -10,21 +10,34 @@ namespace Zenject
 {
     public abstract class AddToGameObjectComponentProviderBase : IProvider
     {
-        readonly object _concreteIdentifier;
         readonly Type _componentType;
         readonly DiContainer _container;
         readonly List<TypeValuePair> _extraArguments;
+        readonly object _concreteIdentifier;
+        readonly Action<InjectContext, object> _instantiateCallback;
 
         public AddToGameObjectComponentProviderBase(
             DiContainer container, Type componentType,
-            object concreteIdentifier, List<TypeValuePair> extraArguments)
+            List<TypeValuePair> extraArguments, object concreteIdentifier,
+            Action<InjectContext, object> instantiateCallback)
         {
             Assert.That(componentType.DerivesFrom<Component>());
 
-            _concreteIdentifier = concreteIdentifier;
             _extraArguments = extraArguments;
             _componentType = componentType;
             _container = container;
+            _concreteIdentifier = concreteIdentifier;
+            _instantiateCallback = instantiateCallback;
+        }
+
+        public bool IsCached
+        {
+            get { return false; }
+        }
+
+        public bool TypeVariesBasedOnMemberType
+        {
+            get { return false; }
         }
 
         protected DiContainer Container
@@ -37,11 +50,6 @@ namespace Zenject
             get { return _componentType; }
         }
 
-        protected object ConcreteIdentifier
-        {
-            get { return _concreteIdentifier; }
-        }
-
         protected abstract bool ShouldToggleActive
         {
             get;
@@ -52,7 +60,8 @@ namespace Zenject
             return _componentType;
         }
 
-        public IEnumerator<List<object>> GetAllInstancesWithInjectSplit(InjectContext context, List<TypeValuePair> args)
+        public List<object> GetAllInstancesWithInjectSplit(
+            InjectContext context, List<TypeValuePair> args, out Action injectAction)
         {
             Assert.IsNotNull(context);
 
@@ -70,7 +79,7 @@ namespace Zenject
                 gameObj.SetActive(false);
             }
 
-            if (!_container.IsValidating || DiContainer.CanCreateOrInjectDuringValidation(_componentType))
+            if (!_container.IsValidating || TypeAnalyzer.ShouldAllowDuringValidation(_componentType))
             {
                 if (_componentType == typeof(Transform))
                 // Treat transform as a special case because it's the one component that's always automatically added
@@ -92,28 +101,33 @@ namespace Zenject
                 instance = new ValidationMarker(_componentType);
             }
 
-            // Note that we don't just use InstantiateComponentOnNewGameObjectExplicit here
-            // because then circular references don't work
-            yield return new List<object>() { instance };
-
-            try
+            injectAction = () =>
             {
-                var injectArgs = new InjectArgs()
+                try
                 {
-                    ExtraArgs = _extraArguments.Concat(args).ToList(),
-                    Context = context,
-                    ConcreteIdentifier = _concreteIdentifier,
-                };
+                    var injectArgs = new InjectArgs()
+                    {
+                        ExtraArgs = _extraArguments.Concat(args).ToList(),
+                        Context = context,
+                        ConcreteIdentifier = _concreteIdentifier
+                    };
 
-                _container.InjectExplicit(instance, _componentType, injectArgs);
-            }
-            finally
-            {
-                if (wasActive && ShouldToggleActive)
-                {
-                    gameObj.SetActive(true);
+                    _container.InjectExplicit(instance, _componentType, injectArgs);
+
+                    if (_instantiateCallback != null)
+                    {
+                        _instantiateCallback(context, instance);
+                    }
                 }
-            }
+                finally
+                {
+                    if (wasActive && ShouldToggleActive)
+                    {
+                        gameObj.SetActive(true);
+                    }
+                }
+            };
+            return new List<object>() { instance };
         }
 
         protected abstract GameObject GetGameObject(InjectContext context);

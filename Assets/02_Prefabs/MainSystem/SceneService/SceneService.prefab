@@ -295,7 +295,6 @@ MonoBehaviour:
   _autoRun: 1
   _parentNewObjectsUnderRoot: 0
   _contractNames: []
-  _parentContractName: 
   _parentContractNames: []
 --- !u!114 &114189533320609256
 MonoBehaviour:
@@ -312,12 +311,24 @@ MonoBehaviour:
   SplashObj: {fileID: 122168, guid: c7cf8a20471682f49acf75a97f98d405, type: 2}
   Interpolation:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   InitialSplashDuration: 3
-  Duration: 2
+  Duration: 1
   InTransition: 0
   TransitionPercent: 0
   BlackOverlay: {fileID: 225707431815244660}
