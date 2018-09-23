@@ -332,8 +332,7 @@ MonoBehaviour:
   InTransition: 0
   TransitionPercent: 0
   BlackOverlay: {fileID: 225707431815244660}
-  _loadScreenParent: {fileID: 1618294903412902, guid: 9ceb96b46c800ba4eaa2ac744e85d948,
-    type: 2}
+  _loadScreenParent: {fileID: 1688821567091762}
   _loadScreenConfig: {fileID: 11400000, guid: d5ca6e3737221a848a55e17fb7d4f8c9, type: 2}
 --- !u!114 &114370389722791324
 MonoBehaviour:
