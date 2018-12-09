@@ -11,13 +11,15 @@ namespace Impulse
     public class MainSystemFactory : MonoBehaviour
     {
 
-        [SerializeField] private GameObject _mainSystemPrefab;
+		[SerializeField] private MainSystem _mainSystemPrefab;
 
-        [SerializeField] private GameObject _sceneManagerPrefab;
+		[SerializeField] private SceneService _sceneManagerPrefab;
 
-        [SerializeField] private GameObject _musicManagerPrefab;
+		[SerializeField] private MusicManager _musicManagerPrefab;
 
-        private static MainSystem _mainSystem;
+		[SerializeField] private JsonService _jsonServicePrefab;
+
+		private static MainSystem _mainSystem;
 
         /// <summary>
         /// 	Returns a singleton instance of MainManagers. Creates a new one if necessary.
@@ -31,19 +33,19 @@ namespace Impulse
             }
 
             // Create main system
-            var mainObject = Instantiate(_mainSystemPrefab);
-            _mainSystem = mainObject.GetComponent<MainSystem>();
+			_mainSystem = Instantiate(_mainSystemPrefab);
 
             // Create scene manager
             var sceneObject = Instantiate(_sceneManagerPrefab);
-            var sceneManager = sceneObject.GetComponent<SceneService>();
 
             // Create music manager
             var musicObject = Instantiate(_musicManagerPrefab);
-            var musicManager = musicObject.GetComponent<MusicManager>();
+
+			// Create music manager
+			var jsonObject = Instantiate(_jsonServicePrefab);
 
             // Initialize main system
-            _mainSystem.Initialize(sceneManager, musicManager);
+			_mainSystem.Initialize(sceneObject, musicObject,jsonObject);
 
             return _mainSystem;
         }

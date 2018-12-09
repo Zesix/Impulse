@@ -21,7 +21,7 @@ namespace Impulse
         /// <summary>
         /// 	Injects necessary dependencies and initializes the object.
         /// </summary>
-        public void Initialize(SceneService sceneController, MusicManager musicManager)
+		public void Initialize(SceneService sceneController, MusicManager musicManager, JsonService jsonManager)
         {
             if (_isInitialized)
                 throw new InvalidOperationException("Already initialized.");
@@ -31,6 +31,9 @@ namespace Impulse
 
             if (musicManager == null)
                 throw new ArgumentNullException(nameof(musicManager));
+
+			if (jsonManager == null)
+				throw new ArgumentNullException(nameof(jsonManager));
 
             _isInitialized = true;
         }

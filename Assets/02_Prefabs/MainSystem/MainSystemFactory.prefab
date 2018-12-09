@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 496520}
-  - 114: {fileID: 11424084}
+  - component: {fileID: 496520}
+  - component: {fileID: 11424084}
   m_Layer: 0
   m_Name: MainSystemFactory
   m_TagString: Untagged
@@ -25,10 +25,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11424084
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -40,9 +40,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a43cb76a9d916f4f90fc4a432d09454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainSystemPrefab: {fileID: 157038, guid: 7504d7fb1fd262d4794a377c93d89db2, type: 2}
-  _sceneManagerPrefab: {fileID: 113118, guid: 6e2062a61652dd64e81ab98ead5df324, type: 2}
-  _musicManagerPrefab: {fileID: 145322, guid: 114804eacd5f0fc46868932170fb9ecc, type: 2}
+  _mainSystemPrefab: {fileID: 11461390, guid: 7504d7fb1fd262d4794a377c93d89db2, type: 2}
+  _sceneManagerPrefab: {fileID: 114189533320609256, guid: 6e2062a61652dd64e81ab98ead5df324,
+    type: 2}
+  _musicManagerPrefab: {fileID: 11419580, guid: 114804eacd5f0fc46868932170fb9ecc,
+    type: 2}
+  _jsonServicePrefab: {fileID: 114858419608138190, guid: 59cf6a4be2416ae4e827e6a012848729,
+    type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
