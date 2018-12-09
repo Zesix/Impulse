@@ -89,9 +89,9 @@ namespace Impulse
             bool usePlayerInput = false)
         {
             if (animate)
-                Instance.StartCoroutine(LoadLevelFadeIn(sceneName, false, useLoadingScreen, usePlayerInput));
+                StartCoroutine(LoadLevelFadeIn(sceneName, false, useLoadingScreen, usePlayerInput));
             else
-                Instance.StartCoroutine(LoadLevelLoadScreen(sceneName, usePlayerInput));
+                StartCoroutine(LoadLevelLoadScreen(sceneName, usePlayerInput));
         }
 
         private IEnumerator LoadLevelFadeIn(string sceneId, bool showSplash = false, bool useLoadingScreen = true,
@@ -119,13 +119,13 @@ namespace Impulse
                     yield return
                         Instance.StartCoroutine(PlayFadeAnimation(false, _splashCanvasGroup)); // remove overlay
 
-                    yield return LoadLevelLoadScreen(sceneId, usePlayerInput);
+					yield return StartCoroutine(LoadLevelLoadScreen(sceneId, usePlayerInput));
                 }
             }
             // Transition without splash screen
             else
             {
-                yield return LoadLevelLoadScreen(sceneId, usePlayerInput);
+				yield return StartCoroutine(LoadLevelLoadScreen(sceneId, usePlayerInput));
             }
 
             yield return Instance.StartCoroutine(PlayFadeAnimation(false, BlackOverlay));
@@ -161,13 +161,13 @@ namespace Impulse
             _instancedLoadScreen.RefreshLoadingProgress(1);
 
             // Temp wait system while waiting for 2017.4
+			yield return StartCoroutine(_instancedLoadScreen.WaitForCompletion());
 
-            StartCoroutine(_instancedLoadScreen.WaitForCompletion());
-            while (_instancedLoadScreen.InExecution)
-                yield return null;
+			while (_instancedLoadScreen.InExecution) {
+				yield return null;
+			}
 
             // yield return _instancedLoadScreen.WaitForCompletion();
-
             ao.allowSceneActivation = true;
             RemoveLoadingScreen();
         }

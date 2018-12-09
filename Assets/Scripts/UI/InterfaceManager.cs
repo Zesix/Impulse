@@ -38,7 +38,7 @@ namespace Impulse
         private IEnumerator RequestSceneLoadWithLoadScreenEnumerator(string sceneId, bool withUserInput)
         {
             InTransition = true;
-            yield return StartCoroutine(SceneService.Instance.LoadLevelLoadScreen(sceneId, withUserInput));
+			yield return SceneService.Instance.StartCoroutine(SceneService.Instance.LoadLevelLoadScreen(sceneId, withUserInput));
             InTransition = false;
         }
 
