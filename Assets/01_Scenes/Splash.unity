@@ -146,7 +146,6 @@ MonoBehaviour:
   _autoRun: 1
   _parentNewObjectsUnderRoot: 0
   _contractNames: []
-  _parentContractName: 
   _parentContractNames: []
 --- !u!4 &975352346
 Transform:
