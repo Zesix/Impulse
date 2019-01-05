@@ -435,9 +435,33 @@ To see an example of how it works:
 1. Inspect the ItemsJson.json file located at Assets/Resources/InventoryDemo/Text/
 These JSON objects will have their data converted into .asset files, which will be used to generate prefabs.
 2. Inspect the JsonReader.cs script located at Assets/Scripts/Inventory/
-This script is invoked by the JsonItemExtractor.cs script to read the JSON file and converts the JSON object data into a dictionary.
+This script is invoked by the JsonI temExtractor.cs script to read the JSON file and converts the JSON object data into a dictionary.
 3. Inspect the JsonItemExtractor.cs script located at Assets/Scripts/Inventory/
 This script uses the JsonReader.cs script to create .asset files and generate prefabs for each object.
 
 In actual production, you probably don&#39;t want to generate new prefabs each time the JSON files change but instead have the .asset files read at runtime when necessary. The prefab generation is included in the JsonItemExtractor functionality for demonstration purposes.
+
+## Player Profile
+
+The core profile manager is LocalPlayerProfileService, which internally uses a PersistentLocalProfileService. This works by using a ILocalPlayerProfileService interface to request the storage and loading of the player information.
+The first, and currently only, implementation of ILocalPlayerProfileService is PlayerPrefsService, which loads and saves serialized data using Unity's prefab system.
+
+To edit which information will be managed, the developer must edit the PlayerProfile class. Be aware that only public variables will be serialized and saved.
+
+In all cases, the developers must interact directy with the LocalPlayerProfileService singleton in order to access, load, save or reset the PlayerProfileInfomation.
+
+** Player Profile Reading **
+1) To access and modify the player profile just use LocalPlayerProfileService.Instance.GetPlayerProfile()
+
+** Player Profile Saving **
+1) Access and modify the LocalPlayerProfileService.Instance.GetPlayerProfile()
+2) Request saving by calling LocalPlayerProfileService.Instance.SaveData()
+
+** Player Profile Loading **
+1) To load the player profile just request LocalPlayerProfileService.Instance.LoadData(), be aware that this is done automatically at game start so in most cases it won't be necessary to request this
+
+** Player Profile Reset **
+1) To request the player resetting just call LocalPlayerProfileService.Instance.ResetProfile()
+2) To confirm the reset, afterwards call LocalPlayerProfileService.Instance.SaveData()
+
 
