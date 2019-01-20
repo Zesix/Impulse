@@ -1206,6 +1206,9 @@ MonoBehaviour:
   DetectedEnemies: []
   DetectedAllies: []
   DetectedNeutral: []
+  _obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
   _displayDetectionRange: 1
   _displayAttackRange: 1
   _displayAvoidRange: 1
