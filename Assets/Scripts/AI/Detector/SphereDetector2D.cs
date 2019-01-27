@@ -6,10 +6,12 @@ using System.Collections.Generic;
 /// </summary>
 public class SphereDetector2D : MonoBehaviour
 {
-
     // Detection parameters
     [Range(0, 1000)]
     public float DetectionRange = 8.0f;
+    // Detection parameters
+    [SerializeField] [Range(0, 360)] private float _viewAngle;
+    public float ViewAngle => _viewAngle;
     [Range(0, 1000)]
     public float AttackRange = 5.0f;
     [Range(0, 1000)]
@@ -26,6 +28,8 @@ public class SphereDetector2D : MonoBehaviour
     public List<Faction> DetectedEnemies = new List<Faction>();
     public List<Faction> DetectedAllies = new List<Faction>();
     public List<Faction> DetectedNeutral = new List<Faction>();
+
+    [SerializeField] private LayerMask _obstacleLayerMask;
 
     // Debug
     [SerializeField] private bool _displayDetectionRange = true;
@@ -95,17 +99,30 @@ public class SphereDetector2D : MonoBehaviour
     public GameObject ClosestEnemy()
     {
         GameObject closestEnemy = null;
-        const float currentMinDistance = Mathf.Infinity;
+        float currentMinDistance = Mathf.Infinity;
 
         // Analize all detected enemies
         foreach (var current in DetectedEnemies)
         {
+            bool shouldAddEnemy = true;
+
+            // Verify enemy is within viewing angle.
+            shouldAddEnemy &= IsObjectInFieldOfView(transform, current.transform.position, _viewAngle, true, _obstacleLayerMask);
+
             // Get distance to the enemy
             var distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= DetectionRange && distance < currentMinDistance)
+            if (distance > DetectionRange || distance > currentMinDistance)
+            {
+                shouldAddEnemy &= false;
+            }
+
+            if (shouldAddEnemy)
+            {
                 closestEnemy = current.gameObject;
+                currentMinDistance = distance;
+            }
         }
 
         return closestEnemy;
@@ -119,7 +136,7 @@ public class SphereDetector2D : MonoBehaviour
     public GameObject ClosestFactionType(Faction type)
     {
         GameObject closestEnemy = null;
-        const float currentMinDistance = Mathf.Infinity;
+        float currentMinDistance = Mathf.Infinity;
 
         // Analize all detected enemies
         foreach (var current in DetectedEnemies)
@@ -127,12 +144,25 @@ public class SphereDetector2D : MonoBehaviour
             // Check if the current faction object belongs to the desired faction
             if (current.FactionName == type.FactionName)
             {
+                bool shouldAddFactionMember = true;
+
+                // Verify enemy is within viewing angle.
+                shouldAddFactionMember &= IsObjectInFieldOfView(transform, current.transform.position, _viewAngle, true, _obstacleLayerMask);
+
                 // Get distance to the enemy
                 var distance = Vector3.Distance(transform.position, current.transform.position);
 
                 // First check the enemy is in the detection range and is the closest distance found until now
-                if (distance <= DetectionRange && distance < currentMinDistance)
+                if (distance > DetectionRange || distance > currentMinDistance)
+                {
+                    shouldAddFactionMember &= false;
+                }
+
+                if (shouldAddFactionMember)
+                {
                     closestEnemy = current.gameObject;
+                    currentMinDistance = distance;
+                }
             }
         }
 
@@ -151,11 +181,19 @@ public class SphereDetector2D : MonoBehaviour
         var possibleEnemies = new List<Faction>();
         foreach (var current in DetectedEnemies)
         {
+            bool shouldAddEnemy = true;
+
+            // Verify enemy is within viewing angle.
+            shouldAddEnemy &= IsObjectInFieldOfView(transform, current.transform.position, _viewAngle, true, _obstacleLayerMask);
+
             // Get distance to the enemy
             var distance = Vector3.Distance(transform.position, current.transform.position);
 
             // First check the enemy is in the detection range and is the closest distance found until now
-            if (distance <= DetectionRange)
+            if (distance > DetectionRange)
+                shouldAddEnemy &= false;
+
+            if (shouldAddEnemy)
                 possibleEnemies.Add(current);
         }
 
@@ -180,12 +218,26 @@ public class SphereDetector2D : MonoBehaviour
             // Check if the current faction object belongs to the desired faction
             if (current.FactionName == type.FactionName)
             {
-                // Get distance to the enemy
+                // Core checker
+                bool shouldAddEnemy = true;
+
+                // Verify enemy is within viewing angle.
+                shouldAddEnemy &= IsObjectInFieldOfView(transform, current.transform.position, _viewAngle, true, _obstacleLayerMask);
+
+                // Get distance to the enemy.
                 var distance = Vector3.Distance(transform.position, current.transform.position);
 
-                // First check the enemy is in the detection range and is the closest distance found until now
-                if (distance <= DetectionRange)
+                // Finally, verify enemy is also within detection range.
+                if (distance > DetectionRange)
+                {
+                    shouldAddEnemy &= false;
+                }
+
+                // If the enemy fulfilled all the conditions, add it to the list
+                if (shouldAddEnemy)
+                {
                     possibleEnemies.Add(current);
+                }
             }
         }
 
@@ -195,6 +247,29 @@ public class SphereDetector2D : MonoBehaviour
 
         return randomEnemy;
     }
+
+    /// <summary>
+    /// Check if the target object is in the field of view from the origin position
+    /// </summary>
+    public static bool IsObjectInFieldOfView(Transform originObject, Vector3 targetPosition, float viewAngle, bool checkObstacle, LayerMask obstacleLayer)
+    {
+        var angleToTarget = (targetPosition - originObject.position).normalized;
+        if (Vector3.Angle(originObject.forward, angleToTarget) < viewAngle / 2)
+        {
+            // Check if there is an obstacle blocking view of the target.
+            if (checkObstacle && Physics.Linecast(originObject.position, targetPosition, obstacleLayer))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 
     #endregion
 
