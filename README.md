@@ -1,6 +1,6 @@
 ![Impulse Framework Splash](https://raw.githubusercontent.com/Zesix/Impulse/master/Assets/Textures/Not_Available_For_Commercial_Use/Impulse_Splash.png)
 
-
+ 
 ## Impulse Framework
 
 A bootstrap framework designed to expedite the creation of Unity projects. The purpose of the framework is to empower developers to focus on developing the game features and worry less about common game systems such as scene management, camera systems, etc. by providing customizable implementations out of the box.
